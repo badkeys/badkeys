@@ -1,7 +1,7 @@
 import sys
 import argparse
 
-from .checks import detectandcheck, allchecks
+from .checks import detectandcheck, allchecks, checkrsa
 
 MAXINPUTSIZE = 10000
 
@@ -32,7 +32,13 @@ def runcli():
         else:
             f = open(fn)
         if args.moduli:
-            sys.exit("not implemented yet")
+            for line in f:
+                n = int(line, 16)
+                r = checkrsa(userchecks, n)
+                for check, result in r.items():
+                    print(f"{check} vulnerability found, modulus {n:02x}")
+                    if args.debug and "debug" in result:
+                        print(result["debug"])
         else:
             fcontent = f.read(MAXINPUTSIZE)
             r = detectandcheck(fcontent, userchecks)
