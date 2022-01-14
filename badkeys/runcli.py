@@ -24,7 +24,7 @@ def runcli():
             if c not in allchecks:
                 sys.exit(f"{c} is not a valid check")
     else:
-        userchecks = ["fermat"]
+        userchecks = allchecks.keys()
 
     for fn in args.infiles:
         if fn == "-":
