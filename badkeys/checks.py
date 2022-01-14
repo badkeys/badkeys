@@ -3,6 +3,7 @@ from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.primitives.serialization import load_pem_public_key
 
 from .rsakeys import fermat
+from .rsakeys import smallfactors
 
 # List of available checks
 allchecks = {
@@ -10,7 +11,12 @@ allchecks = {
         "type": "rsa",
         "function": fermat,
         "desc": "Fermat factorization / close prime vulnerability",
-    }
+    },
+    "smallfactors": {
+        "type": "rsa",
+        "function": smallfactors,
+        "desc": "Small prime factors (<=65537, usually corrupt)",
+    },
 }
 
 
