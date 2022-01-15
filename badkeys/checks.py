@@ -50,9 +50,20 @@ def checkcrt(rawcert, runchecks):
     print("non-RSA keys not implemented yet")
 
 
+def checkcsr(rawcsr, runchecks):
+    csr = x509.load_pem_x509_csr(rawcsr.encode())
+    if isinstance(csr.public_key(), rsa.RSAPublicKey):
+        n = csr.public_key().public_numbers().n
+        e = csr.public_key().public_numbers().e
+        return checkrsa(runchecks, n, e=e)
+    print("non-RSA keys not implemented yet")
+
+
 def detectandcheck(inkey, userchecks):
     if "-----BEGIN CERTIFICATE-----" in inkey:
         return checkcrt(inkey, userchecks)
+    elif "-----BEGIN CERTIFICATE REQUEST-----" in inkey:
+        return checkcsr(inkey, userchecks)
     elif "-----BEGIN PUBLIC KEY-----" in inkey:
         return checkpkey(inkey, userchecks)
     elif "-----BEGIN RSA PUBLIC KEY-----" in inkey:
