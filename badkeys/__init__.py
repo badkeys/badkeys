@@ -1,2 +1,4 @@
-__all__ = ["checkcrt", "checkcsr", "detectandcheck", "checkpkey", "allchecks"]
-from .checks import checkcrt, checkcsr, detectandcheck, checkpkey, allchecks
+__all__ = ["allchecks", "checkrsa", "checkpkey", "checkcrt", "checkcsr",
+           "detectandcheck"]
+from .checks import (allchecks, checkrsa, checkpkey, checkcrt, checkcsr,
+                     detectandcheck)
