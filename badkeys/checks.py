@@ -26,9 +26,9 @@ allchecks = {
 }
 
 
-def checkrsa(runchecks, n, e=65537):
+def checkrsa(n, e=65537, checks=allchecks.keys()):
     results = {}
-    for check in runchecks:
+    for check in checks:
         if allchecks[check]["type"] != "rsa":
             continue
         callcheck = allchecks[check]["function"]
@@ -38,39 +38,39 @@ def checkrsa(runchecks, n, e=65537):
     return results
 
 
-def checkpkey(rawkey, runchecks):
+def checkpkey(rawkey, checks=allchecks.keys()):
     key = load_pem_public_key(rawkey.encode())
     if isinstance(key, rsa.RSAPublicKey):
         n = key.public_numbers().n
         e = key.public_numbers().e
-        return checkrsa(runchecks, n, e=e)
+        return checkrsa(n, e=e, checks=checks)
     print("non-RSA keys not implemented yet")
 
 
-def checkcrt(rawcert, runchecks):
+def checkcrt(rawcert, checks=allchecks.keys()):
     crt = x509.load_pem_x509_certificate(rawcert.encode())
     if isinstance(crt.public_key(), rsa.RSAPublicKey):
         n = crt.public_key().public_numbers().n
         e = crt.public_key().public_numbers().e
-        return checkrsa(runchecks, n, e=e)
+        return checkrsa(n, e=e, checks=checks)
     print("non-RSA keys not implemented yet")
 
 
-def checkcsr(rawcsr, runchecks):
+def checkcsr(rawcsr, checks=allchecks.keys()):
     csr = x509.load_pem_x509_csr(rawcsr.encode())
     if isinstance(csr.public_key(), rsa.RSAPublicKey):
         n = csr.public_key().public_numbers().n
         e = csr.public_key().public_numbers().e
-        return checkrsa(runchecks, n, e=e)
+        return checkrsa(n, e=e, checks=checks)
     print("non-RSA keys not implemented yet")
 
 
-def detectandcheck(inkey, userchecks):
+def detectandcheck(inkey, checks=allchecks.keys()):
     if "-----BEGIN CERTIFICATE-----" in inkey:
-        return checkcrt(inkey, userchecks)
+        return checkcrt(inkey, checks)
     elif "-----BEGIN CERTIFICATE REQUEST-----" in inkey:
-        return checkcsr(inkey, userchecks)
+        return checkcsr(inkey, checks)
     elif "-----BEGIN PUBLIC KEY-----" in inkey:
-        return checkpkey(inkey, userchecks)
+        return checkpkey(inkey, checks)
     elif "-----BEGIN RSA PUBLIC KEY-----" in inkey:
-        return checkpkey(inkey, userchecks)
+        return checkpkey(inkey, checks)
