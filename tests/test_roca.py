@@ -11,11 +11,11 @@ class TestRoca(unittest.TestCase):
     def test_roca(self):
         with open(f"{TDPATH}rsa-roca.key") as f:
             key = f.read()
-        r = badkeys.checkpkey(key, ["roca"])
+        r = badkeys.checkpkey(key, checks=["roca"])
         self.assertTrue("roca" in r)
         with open(f"{TDPATH}rsa-ok.key") as f:
             key = f.read()
-        r = badkeys.checkpkey(key, ["roca"])
+        r = badkeys.checkpkey(key, checks=["roca"])
         self.assertFalse(r)
 
 

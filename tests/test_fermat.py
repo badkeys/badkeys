@@ -18,34 +18,34 @@ class TestFermat(unittest.TestCase):
             inp = f.read()
         r = badkeys.checkcrt(inp, ["fermat"])
         self.assertTrue("fermat" in r)
-        r = badkeys.detectandcheck(inp, ["fermat"])
+        r = badkeys.detectandcheck(inp, checks=["fermat"])
         self.assertTrue("fermat" in r)
 
         with open(f"{TDPATH}rsa-fermat.csr") as f:
             inp = f.read()
         r = badkeys.checkcsr(inp, ["fermat"])
         self.assertTrue("fermat" in r)
-        r = badkeys.detectandcheck(inp, ["fermat"])
+        r = badkeys.detectandcheck(inp, checks=["fermat"])
         self.assertTrue("fermat" in r)
 
         with open(f"{TDPATH}rsa-fermat-pkcs1.key") as f:
             inp = f.read()
         r = badkeys.checkpkey(inp, ["fermat"])
         self.assertTrue("fermat" in r)
-        r = badkeys.detectandcheck(inp, ["fermat"])
+        r = badkeys.detectandcheck(inp, checks=["fermat"])
         self.assertTrue("fermat" in r)
 
         with open(f"{TDPATH}rsa-fermat-pkcs8.key") as f:
             inp = f.read()
-        r = badkeys.checkpkey(inp, ["fermat"])
+        r = badkeys.checkpkey(inp, checks=["fermat"])
         self.assertTrue("fermat" in r)
-        r = badkeys.detectandcheck(inp, ["fermat"])
+        r = badkeys.detectandcheck(inp, checks=["fermat"])
         self.assertTrue("fermat" in r)
 
         with open(f"{TDPATH}rsa-fermat-hexmodulus.txt") as f:
             inp = f.read()
         n = int(inp, 16)
-        r = badkeys.checkrsa(["fermat"], n=n)
+        r = badkeys.checkrsa(n=n, checks=["fermat"])
         self.assertTrue("fermat" in r)
         # check that Fermat factorization works
         p = r['fermat']['p']
@@ -54,7 +54,7 @@ class TestFermat(unittest.TestCase):
 
         with open(f"{TDPATH}rsa-ok.key") as f:
             key = f.read()
-        r = badkeys.checkpkey(key, ["fermat"])
+        r = badkeys.checkpkey(key, checks=["fermat"])
         self.assertFalse(r)
 
 
