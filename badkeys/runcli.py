@@ -34,14 +34,14 @@ def runcli():
         if args.moduli:
             for line in f:
                 n = int(line, 16)
-                r = checkrsa(userchecks, n)
+                r = checkrsa(n, checks=userchecks)
                 for check, result in r.items():
                     print(f"{check} vulnerability found, modulus {n:02x}")
                     if args.debug and "debug" in result:
                         print(result["debug"])
         else:
             fcontent = f.read(MAXINPUTSIZE)
-            r = detectandcheck(fcontent, userchecks)
+            r = detectandcheck(fcontent, checks=userchecks)
             for check, result in r.items():
                 print(f"{check} vulnerability found in {fn}")
                 if args.debug and "debug" in result:
