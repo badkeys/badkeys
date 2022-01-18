@@ -34,7 +34,7 @@ def runcli():
         if args.moduli:
             for line in f:
                 if line.startswith("Modulus="):
-                    line=line[8:]
+                    line = line[8:]
                 n = int(line, 16)
                 r = checkrsa(n, checks=userchecks)
                 for check, result in r.items():
