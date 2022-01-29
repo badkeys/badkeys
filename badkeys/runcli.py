@@ -15,7 +15,7 @@ def runcli():
     ap.add_argument("-m", "--moduli", action="store_true",
                     help="Input file is list of RSA hex moduli")
     ap.add_argument("-d", "--debug", action="store_true",
-                    help="Output debug messages	")
+                    help="Output debug messages")
     args = ap.parse_args()
 
     if args.checks:
