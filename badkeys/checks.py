@@ -40,29 +40,45 @@ def checkrsa(n, e=65537, checks=allchecks.keys()):
 
 def checkpkey(rawkey, checks=allchecks.keys()):
     key = load_pem_public_key(rawkey.encode())
+    r = {}
     if isinstance(key, rsa.RSAPublicKey):
-        n = key.public_numbers().n
-        e = key.public_numbers().e
-        return checkrsa(n, e=e, checks=checks)
-    print("non-RSA keys not implemented yet")
+        r["type"] = "rsa"
+        r["n"] = key.public_numbers().n
+        r["e"] = key.public_numbers().e
+        r["bits"] = r["n"].bit_length()
+        r["results"] = checkrsa(r["n"], e=r["e"], checks=checks)
+        return r
+    else:
+        r["type"] = "unsupported"
+    return r
 
 
 def checkcrt(rawcert, checks=allchecks.keys()):
     crt = x509.load_pem_x509_certificate(rawcert.encode())
+    r = {}
     if isinstance(crt.public_key(), rsa.RSAPublicKey):
-        n = crt.public_key().public_numbers().n
-        e = crt.public_key().public_numbers().e
-        return checkrsa(n, e=e, checks=checks)
-    print("non-RSA keys not implemented yet")
+        r["type"] = "rsa"
+        r["n"] = crt.public_key().public_numbers().n
+        r["e"] = crt.public_key().public_numbers().e
+        r["bits"] = r["n"].bit_length()
+        r["results"] = checkrsa(r["n"], e=r["e"], checks=checks)
+    else:
+        r["type"] = "unsupported"
+    return r
 
 
 def checkcsr(rawcsr, checks=allchecks.keys()):
     csr = x509.load_pem_x509_csr(rawcsr.encode())
+    r = {}
     if isinstance(csr.public_key(), rsa.RSAPublicKey):
-        n = csr.public_key().public_numbers().n
-        e = csr.public_key().public_numbers().e
-        return checkrsa(n, e=e, checks=checks)
-    print("non-RSA keys not implemented yet")
+        r["type"] = "rsa"
+        r["n"] = csr.public_key().public_numbers().n
+        r["e"] = csr.public_key().public_numbers().e
+        r["bits"] = r["n"].bit_length()
+        r["results"] = checkrsa(r["n"], e=r["e"], checks=checks)
+    else:
+        r["type"] = "unsupported"
+    return r
 
 
 def detectandcheck(inkey, checks=allchecks.keys()):

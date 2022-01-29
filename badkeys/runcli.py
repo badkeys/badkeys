@@ -44,7 +44,7 @@ def runcli():
         else:
             fcontent = f.read(MAXINPUTSIZE)
             r = detectandcheck(fcontent, checks=userchecks)
-            for check, result in r.items():
+            for check, result in r['results'].items():
                 print(f"{check} vulnerability found in {fn}")
                 if args.debug and "debug" in result:
                     print(result["debug"])
