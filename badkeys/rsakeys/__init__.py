@@ -1,4 +1,4 @@
-__all__ = ["fermat", "smallfactors", "roca"]
+__all__ = ["fermat", "roca", "smallfactors"]
 from .fermat import fermat
-from .smallfactors import smallfactors
 from .roca import roca
+from .smallfactors import smallfactors

@@ -3,20 +3,20 @@ from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.primitives.serialization import load_pem_public_key
 
 from .rsakeys import fermat
-from .rsakeys import smallfactors
 from .rsakeys import roca
+from .rsakeys import smallfactors
 
 # List of available checks
 allchecks = {
-    "roca": {
-        "type": "rsa",
-        "function": roca,
-        "desc": "Return of the Coopersmith Attack (ROCA) vulnerability",
-    },
     "fermat": {
         "type": "rsa",
         "function": fermat,
         "desc": "Fermat factorization / close prime vulnerability",
+    },
+    "roca": {
+        "type": "rsa",
+        "function": roca,
+        "desc": "Return of the Coopersmith Attack (ROCA) vulnerability",
     },
     "smallfactors": {
         "type": "rsa",
