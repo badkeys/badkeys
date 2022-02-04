@@ -1,12 +1,22 @@
 import sys
 import argparse
+import signal
 
 from .checks import detectandcheck, allchecks, checkrsa
 
 MAXINPUTSIZE = 10000
 
+count = 0
+
+
+def _sighandler(_signum, _handler):
+    print(f"{count} keys processed")
+
 
 def runcli():
+    global count
+    signal.signal(signal.SIGHUP, _sighandler)
+
     ap = argparse.ArgumentParser()
     ap.add_argument("infiles", nargs='+',
                     help="Input file (certificate, csr or public key)")
@@ -33,6 +43,7 @@ def runcli():
             f = open(fn)
         if args.moduli:
             for line in f:
+                count += 1
                 if line.startswith("Modulus="):
                     line = line[8:]
                 n = int(line, 16)
