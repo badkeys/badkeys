@@ -5,6 +5,7 @@ from cryptography.hazmat.primitives.serialization import load_pem_public_key
 from .rsakeys import fermat
 from .rsakeys import pattern
 from .rsakeys import roca
+from .rsakeys import rsabl
 from .rsakeys import smallfactors
 
 # List of available checks
@@ -23,6 +24,11 @@ allchecks = {
         "type": "rsa",
         "function": roca,
         "desc": "Return of the Coopersmith Attack (ROCA) vulnerability",
+    },
+    "rsabl": {
+        "type": "rsa",
+        "function": rsabl,
+        "desc": "RSA moduli blocklists",
     },
     "smallfactors": {
         "type": "rsa",
