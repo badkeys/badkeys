@@ -6,7 +6,7 @@ import badkeys
 TDPATH = f"{os.path.dirname(__file__)}/data/"
 
 
-class TestRoca(unittest.TestCase):
+class TestPattern(unittest.TestCase):
 
     def test_roca(self):
         with open(f"{TDPATH}rsa-pattern.key") as f:
