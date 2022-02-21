@@ -6,6 +6,7 @@ from .rsakeys import fermat
 from .rsakeys import pattern
 from .rsakeys import roca
 from .rsakeys import rsabl
+from .rsakeys import sharedprimes
 from .rsakeys import smallfactors
 
 # List of available checks
@@ -29,6 +30,11 @@ allchecks = {
         "type": "rsa",
         "function": rsabl,
         "desc": "RSA moduli blocklists",
+    },
+    "sharedprimes": {
+        "type": "rsa",
+        "function": sharedprimes,
+        "desc": "Shared prime factors (batchgcd)",
     },
     "smallfactors": {
         "type": "rsa",
