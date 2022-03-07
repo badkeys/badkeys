@@ -58,6 +58,8 @@ def runcli():
         else:
             fcontent = f.read(MAXINPUTSIZE)
             r = detectandcheck(fcontent, checks=userchecks)
+            if r['type'] == "unsupported":
+                print("Warning: Unsupported key type", file=sys.stderr)
             for check, result in r['results'].items():
                 sub = ""
                 if 'subtest' in result:
