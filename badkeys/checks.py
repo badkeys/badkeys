@@ -55,6 +55,7 @@ def _checkkey(key, checks):
         return r
     else:
         r["type"] = "unsupported"
+        r["results"] = {}
     return r
 
 
