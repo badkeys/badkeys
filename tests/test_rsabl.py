@@ -11,11 +11,11 @@ class TestRsabl(unittest.TestCase):
     def test_rsabl(self):
         with open(f"{TDPATH}rsa-debianweak.key") as f:
             key = f.read()
-        r = badkeys.checkpkey(key, checks=["rsabl"])
+        r = badkeys.checkpubkey(key, checks=["rsabl"])
         self.assertTrue("rsabl" in r["results"])
         with open(f"{TDPATH}rsa-ok.key") as f:
             key = f.read()
-        r = badkeys.checkpkey(key, checks=["rsabl"])
+        r = badkeys.checkpubkey(key, checks=["rsabl"])
         self.assertFalse(r["results"])
 
 

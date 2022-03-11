@@ -71,7 +71,7 @@ def checkrsa(n, e=65537, checks=allchecks.keys()):
     return results
 
 
-def checkpkey(rawkey, checks=allchecks.keys()):
+def checkpubkey(rawkey, checks=allchecks.keys()):
     key = serialization.load_pem_public_key(rawkey.encode())
     return _checkkey(key, checks)
 
@@ -97,9 +97,9 @@ def detectandcheck(inkey, checks=allchecks.keys()):
     elif "-----BEGIN CERTIFICATE REQUEST-----" in inkey:
         return checkcsr(inkey, checks)
     elif "-----BEGIN PUBLIC KEY-----" in inkey:
-        return checkpkey(inkey, checks)
+        return checkpubkey(inkey, checks)
     elif "-----BEGIN RSA PUBLIC KEY-----" in inkey:
-        return checkpkey(inkey, checks)
+        return checkpubkey(inkey, checks)
     elif "-----BEGIN PRIVATE KEY-----" in inkey:
         return checkprivkey(inkey, checks)
     elif "-----BEGIN RSA PRIVATE KEY-----" in inkey:

@@ -30,14 +30,14 @@ class TestFermat(unittest.TestCase):
 
         with open(f"{TDPATH}rsa-fermat-pkcs1.key") as f:
             inp = f.read()
-        r = badkeys.checkpkey(inp, ["fermat"])
+        r = badkeys.checkpubkey(inp, ["fermat"])
         self.assertTrue("fermat" in r["results"])
         r = badkeys.detectandcheck(inp, checks=["fermat"])
         self.assertTrue("fermat" in r["results"])
 
         with open(f"{TDPATH}rsa-fermat-pkcs8.key") as f:
             inp = f.read()
-        r = badkeys.checkpkey(inp, checks=["fermat"])
+        r = badkeys.checkpubkey(inp, checks=["fermat"])
         self.assertTrue("fermat" in r["results"])
         r = badkeys.detectandcheck(inp, checks=["fermat"])
         self.assertTrue("fermat" in r["results"])
@@ -54,7 +54,7 @@ class TestFermat(unittest.TestCase):
 
         with open(f"{TDPATH}rsa-ok.key") as f:
             key = f.read()
-        r = badkeys.checkpkey(key, checks=["fermat"])
+        r = badkeys.checkpubkey(key, checks=["fermat"])
         self.assertFalse(r["results"])
 
 

@@ -11,11 +11,11 @@ class TestSmallprimes(unittest.TestCase):
     def test_smallprimes(self):
         with open(f"{TDPATH}rsa-smallfactors.key") as f:
             key = f.read()
-        r = badkeys.checkpkey(key, checks=["smallfactors"])
+        r = badkeys.checkpubkey(key, checks=["smallfactors"])
         self.assertTrue("smallfactors" in r["results"])
         with open(f"{TDPATH}rsa-ok.key") as f:
             key = f.read()
-        r = badkeys.checkpkey(key, checks=["smallfactors"])
+        r = badkeys.checkpubkey(key, checks=["smallfactors"])
         self.assertFalse(r["results"])
 
 
