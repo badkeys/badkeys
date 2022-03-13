@@ -91,6 +91,11 @@ def checkcsr(rawcsr, checks=allchecks.keys()):
     return _checkkey(csr.public_key(), checks)
 
 
+def checksshpubkey(sshkey, checks=allchecks.keys()):
+    pkey = serialization.load_ssh_public_key(sshkey.encode())
+    return _checkkey(pkey, checks)
+
+
 def detectandcheck(inkey, checks=allchecks.keys()):
     if "-----BEGIN CERTIFICATE-----" in inkey:
         return checkcrt(inkey, checks)
@@ -104,3 +109,5 @@ def detectandcheck(inkey, checks=allchecks.keys()):
         return checkprivkey(inkey, checks)
     elif "-----BEGIN RSA PRIVATE KEY-----" in inkey:
         return checkprivkey(inkey, checks)
+    elif inkey.startswith("ssh-") or inkey.startswith("ecdsa-"):
+        return checksshpubkey(inkey, checks)
