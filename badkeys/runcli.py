@@ -14,6 +14,20 @@ def _sighandler(_signum, _handler):
     print(f"{count} keys processed")
 
 
+def _printresults(key, where, debug):
+    if key['type'] == "unsupported":
+        print(f"Warning: Unsupported key type, {where}", file=sys.stderr)
+    elif debug:
+        print(f"{key['type']} key checked, {where}")
+    for check, result in key['results'].items():
+        sub = ""
+        if 'subtest' in result:
+            sub = f"/{result['subtest']}"
+        print(f"{check}{sub} vulnerability found, {where}")
+        if debug and "debug" in result:
+            print(result["debug"])
+
+
 def runcli():
     global count
     signal.signal(signal.SIGHUP, _sighandler)
@@ -57,15 +71,7 @@ def runcli():
                 except ConnectionRefusedError:
                     continue
                 r = checkcrt(cert, checks=userchecks)
-                if r['type'] == "unsupported":
-                    print("Warning: Unsupported key type", file=sys.stderr)
-                for check, result in r['results'].items():
-                    sub = ""
-                    if 'subtest' in result:
-                        sub = f"/{result['subtest']}"
-                    print(f"{check}{sub} vulnerability found {host}:{port}")
-                    if args.debug and "debug" in result:
-                        print(result["debug"])
+                _printresults(r, f"{host}:{port}", args.debug)
 
         sys.exit(1)
 
@@ -80,26 +86,13 @@ def runcli():
                 if line.startswith("Modulus="):
                     line = line[8:]
                 n = int(line, 16)
-                r = checkrsa(n, checks=userchecks)
-                for check, result in r.items():
-                    sub = ""
-                    if 'subtest' in result:
-                        sub = f"/{result['subtest']}"
-                    print(f"{check}{sub} vulnerability found, modulus {n:02x}")
-                    if args.debug and "debug" in result:
-                        print(result["debug"])
+                r = {"type": "rsa"}
+                r['results'] = checkrsa(n, checks=userchecks)
+                _printresults(r, f"modulus {n:02x}", args.debug)
         else:
             fcontent = f.read(MAXINPUTSIZE)
             r = detectandcheck(fcontent, checks=userchecks)
-            if r['type'] == "unsupported":
-                print("Warning: Unsupported key type", file=sys.stderr)
-            for check, result in r['results'].items():
-                sub = ""
-                if 'subtest' in result:
-                    sub = f"/{result['subtest']}"
-                print(f"{check}{sub} vulnerability found in {fn}")
-                if args.debug and "debug" in result:
-                    print(result["debug"])
+            _printresults(r, fn, args.debug)
 
         if fn != "-":
             f.close()
