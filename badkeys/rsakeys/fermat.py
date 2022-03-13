@@ -17,4 +17,5 @@ def fermat(n, e=65535):
     p = a + b
     q = a - b
     debugmsg = f"Fermat factorization after {c} rounds, b={b}"
-    return {"p": p, "q": q, "debug": debugmsg}
+    return {"p": int(p), "q": int(q), "a": int(a), "b": int(b),
+            "debug": debugmsg}
