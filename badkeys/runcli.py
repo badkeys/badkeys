@@ -4,6 +4,7 @@ import signal
 import ssl
 
 from .checks import detectandcheck, allchecks, checkrsa, checkcrt
+from .scanssh import scanssh
 
 MAXINPUTSIZE = 10000
 
@@ -45,6 +46,10 @@ def runcli():
                     help="Scan TLS (pass hostnames or IPs instead of files)")
     ap.add_argument("-p", "--ports",
                     help="Ports to scan (TLS mode)")
+    ap.add_argument("-s", "--ssh", action="store_true",
+                    help="Scan SSH (pass hostnames or IPs instead of files)")
+    ap.add_argument("--ssh-ports", default="22",
+                    help="SSH ports (comma-separated)")
     args = ap.parse_args()
 
     if args.checks:
@@ -73,6 +78,15 @@ def runcli():
                 r = checkcrt(cert, checks=userchecks)
                 _printresults(r, f"{host}:{port}", args.debug)
 
+    if args.ssh:
+        ports = [int(p) for p in args.ssh_ports.split(',')]
+        for host in args.infiles:
+            for port in ports:
+                keys = scanssh(host, port)
+                for k in keys:
+                    _printresults(k, f"ssh:{host}:{port}", args.debug)
+
+    if args.ssh or args.tls:
         sys.exit(1)
 
     for fn in args.infiles:
