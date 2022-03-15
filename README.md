@@ -5,6 +5,7 @@ Tool and library to check cryptographic public keys for known vulnerabilities
 # what?
 
 badkeys checks public keys in a variety of formats for known vulnerabilities.
+A web version can be found at [badkeys.info](https://badkeys.info/).
 
 # install
 
