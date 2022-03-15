@@ -15,17 +15,17 @@ def _sighandler(_signum, _handler):
     print(f"{count} keys processed")
 
 
-def _printresults(key, where, debug):
+def _printresults(key, where, verbose):
     if key['type'] == "unsupported":
         print(f"Warning: Unsupported key type, {where}", file=sys.stderr)
-    elif debug:
+    elif verbose:
         print(f"{key['type']} key checked, {where}")
     for check, result in key['results'].items():
         sub = ""
         if 'subtest' in result:
             sub = f"/{result['subtest']}"
         print(f"{check}{sub} vulnerability found, {where}")
-        if debug and "debug" in result:
+        if verbose and "debug" in result:
             print(result["debug"])
 
 
@@ -40,8 +40,8 @@ def runcli():
                     help="Comma-separated list of checks (default: all)")
     ap.add_argument("-m", "--moduli", action="store_true",
                     help="Input file is list of RSA hex moduli")
-    ap.add_argument("-d", "--debug", action="store_true",
-                    help="Output debug messages")
+    ap.add_argument("-v", "--verbose", action="store_true",
+                    help="Verbose output")
     ap.add_argument("-t", "--tls", action="store_true",
                     help="Scan TLS (pass hostnames or IPs instead of files)")
     # default ports for https, smtps, imaps, pop3s, ldaps, ftps
@@ -68,7 +68,7 @@ def runcli():
             for port in ports:
                 keys = scantls(host, port, userchecks)
                 for k in keys:
-                    _printresults(k, f"tls:{host}:{port}", args.debug)
+                    _printresults(k, f"tls:{host}:{port}", args.verbose)
 
     if args.ssh:
         ports = [int(p) for p in args.ssh_ports.split(',')]
@@ -76,7 +76,7 @@ def runcli():
             for port in ports:
                 keys = scanssh(host, port)
                 for k in keys:
-                    _printresults(k, f"ssh:{host}:{port}", args.debug)
+                    _printresults(k, f"ssh:{host}:{port}", args.verbose)
 
     if args.ssh or args.tls:
         sys.exit(1)
@@ -94,11 +94,11 @@ def runcli():
                 n = int(line, 16)
                 r = {"type": "rsa"}
                 r['results'] = checkrsa(n, checks=userchecks)
-                _printresults(r, f"modulus {n:02x}", args.debug)
+                _printresults(r, f"modulus {n:02x}", args.verbose)
         else:
             fcontent = f.read(MAXINPUTSIZE)
             r = detectandcheck(fcontent, checks=userchecks)
-            _printresults(r, fn, args.debug)
+            _printresults(r, fn, args.verbose)
 
         if fn != "-":
             f.close()
