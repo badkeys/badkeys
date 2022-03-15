@@ -57,5 +57,5 @@ badkeys was written by [Hanno Böck](https://hboeck.de).
 
 This work was funded in part by Industriens Fond through the CIDI project
 (Cybersecure IOT in Danish Industry) and in part by the
-(Center for Information Security and Trust)[https://cist.dk/] (CISAT)</a>
+[Center for Information Security and Trust (CISAT)](https://cist.dk/)
 at the IT University of Copenhagen, Denmark.
