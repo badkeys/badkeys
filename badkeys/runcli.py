@@ -1,10 +1,10 @@
 import sys
 import argparse
 import signal
-import ssl
 
-from .checks import detectandcheck, allchecks, checkrsa, checkcrt
+from .checks import detectandcheck, allchecks, checkrsa
 from .scanssh import scanssh
+from .scantls import scantls
 
 MAXINPUTSIZE = 10000
 
@@ -44,8 +44,10 @@ def runcli():
                     help="Output debug messages")
     ap.add_argument("-t", "--tls", action="store_true",
                     help="Scan TLS (pass hostnames or IPs instead of files)")
-    ap.add_argument("-p", "--ports",
-                    help="Ports to scan (TLS mode)")
+    # default ports for https, smtps, imaps, pop3s, ldaps, ftps
+    # and 8443 as a common non-default https port
+    ap.add_argument("--tls-ports", default="443,465,636,990,993,995,8443",
+                    help="TLS ports (comma-separated)")
     ap.add_argument("-s", "--ssh", action="store_true",
                     help="Scan SSH (pass hostnames or IPs instead of files)")
     ap.add_argument("--ssh-ports", default="22",
@@ -61,22 +63,12 @@ def runcli():
         userchecks = allchecks.keys()
 
     if args.tls:
-        if args.ports:
-            ports = []
-            for p in args.ports.split(','):
-                ports += int(p)
-        else:
-            # ports for https, smtps, imaps, pop3s, ldaps, ftps
-            # and 8443 as most common non-default https port
-            ports = [443, 465, 993, 995, 465, 636, 990, 8443]
+        ports = [int(p) for p in args.tls_ports.split(',')]
         for host in args.infiles:
             for port in ports:
-                try:
-                    cert = ssl.get_server_certificate((host, port))
-                except ConnectionRefusedError:
-                    continue
-                r = checkcrt(cert, checks=userchecks)
-                _printresults(r, f"{host}:{port}", args.debug)
+                keys = scantls(host, port, userchecks)
+                for k in keys:
+                    _printresults(k, f"tls:{host}:{port}", args.debug)
 
     if args.ssh:
         ports = [int(p) for p in args.ssh_ports.split(',')]

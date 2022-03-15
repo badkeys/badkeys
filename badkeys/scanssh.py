@@ -1,10 +1,10 @@
 import contextlib
 import io
 
-from .checks import checksshpubkey
+from .checks import checksshpubkey, allchecks
 
 
-def scanssh(host, port=22):
+def scanssh(host, port=22, checks=allchecks.keys()):
     import paramiko
     allkeytypes = paramiko.Transport._preferred_keys
 
@@ -22,7 +22,7 @@ def scanssh(host, port=22):
             transp.close()
 
             pubsshkey = f"{key.get_name()} {key.get_base64()}"
-            keys.append(checksshpubkey(pubsshkey))
+            keys.append(checksshpubkey(pubsshkey, checks=checks))
         except paramiko.ssh_exception.IncompatiblePeer:
             # if we can't connect with this key type
             # we try the next
