@@ -1,13 +1,15 @@
 from cryptography import x509
-from cryptography.hazmat.primitives.asymmetric import rsa
+from cryptography.hazmat.primitives.asymmetric import rsa, ec
+from cryptography.hazmat.primitives.asymmetric import ed25519, x25519, x448
 from cryptography.hazmat.primitives import serialization
 
 from .rsakeys import fermat
 from .rsakeys import pattern
 from .rsakeys import roca
-from .rsakeys import rsabl
 from .rsakeys import sharedprimes
 from .rsakeys import smallfactors
+from .allkeys import ecbl
+from .allkeys import rsabl
 
 # List of available checks
 allchecks = {
@@ -41,6 +43,11 @@ allchecks = {
         "function": smallfactors,
         "desc": "Small prime factors (<=65537, usually corrupt)",
     },
+    "ecbl": {
+        "type": "ec",
+        "function": ecbl,
+        "desc": "Elliptic curve x value blocklist",
+    },
 }
 
 
@@ -53,6 +60,24 @@ def _checkkey(key, checks):
         r["bits"] = r["n"].bit_length()
         r["results"] = checkrsa(r["n"], e=r["e"], checks=checks)
         return r
+    elif isinstance(key, ec.EllipticCurvePublicKey):
+        r["type"] = "ec"
+        r["x"] = key.public_numbers().x
+        r["y"] = key.public_numbers().y
+        r["results"] = checkec(r["x"], y=r["y"], checks=checks)
+    elif (
+        isinstance(key, ed25519.Ed25519PublicKey)
+        or isinstance(key, x25519.X25519PublicKey)
+        or isinstance(key, x448.X448PublicKey)
+    ):
+        r["type"] = "ec"
+        # For Ed25519 the raw key is the x coordinate
+        r["x"] = key.public_bytes(
+            encoding=serialization.Encoding.Raw,
+            format=serialization.PublicFormat.Raw,
+        )
+        # we don't need the y coordinate
+        r["results"] = checkec(r["x"], y=False, checks=checks)
     else:
         r["type"] = "unsupported"
         r["results"] = {}
@@ -66,6 +91,18 @@ def checkrsa(n, e=65537, checks=allchecks.keys()):
             continue
         callcheck = allchecks[check]["function"]
         r = callcheck(n, e=e)
+        if r is not False:
+            results[check] = r
+    return results
+
+
+def checkec(x, y=0, checks=allchecks.keys()):
+    results = {}
+    for check in checks:
+        if allchecks[check]["type"] != "ec":
+            continue
+        callcheck = allchecks[check]["function"]
+        r = callcheck(x, y=y)
         if r is not False:
             results[check] = r
     return results
