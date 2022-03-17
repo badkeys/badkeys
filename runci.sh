@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # linters etc.
-pycodestyle --select=E,W badkeys-cli .
+pycodestyle --ignore=W503 badkeys-cli .
 pyflakes .
 pyupgrade --py311-plus badkeys-cli $(find -name \*.py)
 
