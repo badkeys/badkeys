@@ -59,7 +59,6 @@ def _checkkey(key, checks):
         r["e"] = key.public_numbers().e
         r["bits"] = r["n"].bit_length()
         r["results"] = checkrsa(r["n"], e=r["e"], checks=checks)
-        return r
     elif isinstance(key, ec.EllipticCurvePublicKey):
         r["type"] = "ec"
         r["x"] = key.public_numbers().x
