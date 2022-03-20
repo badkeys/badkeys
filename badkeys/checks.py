@@ -8,8 +8,7 @@ from .rsakeys import pattern
 from .rsakeys import roca
 from .rsakeys import sharedprimes
 from .rsakeys import smallfactors
-from .allkeys import ecbl
-from .allkeys import rsabl
+from .allkeys import ecbl, rsabl, dsabl
 
 # List of available checks
 allchecks = {
@@ -47,6 +46,11 @@ allchecks = {
         "type": "ec",
         "function": ecbl,
         "desc": "Elliptic curve x value blocklist",
+    },
+    "dsabl": {
+        "type": "dsa",
+        "function": dsabl,
+        "desc": "DSA y value blocklist",
     },
 }
 

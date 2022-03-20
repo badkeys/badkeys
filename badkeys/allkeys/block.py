@@ -3,6 +3,7 @@ from importlib.resources import open_binary
 
 _rsabl = False
 _ecbl = False
+_dsabl = False
 
 
 def _checkbl(val, bl):
@@ -57,3 +58,13 @@ def ecbl(x, y=0):
             _ecbl = f.read()
 
     return _checkbl(x, _ecbl)
+
+
+def dsabl(y, e=0):
+    global _dsabl
+
+    if not _dsabl:
+        with open_binary("badkeys.keydata", "dsabl.dat") as f:
+            _dsabl = f.read()
+
+    return _checkbl(y, _dsabl)
