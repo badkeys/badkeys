@@ -1,6 +1,7 @@
 from cryptography import x509
 from cryptography.hazmat.primitives.asymmetric import rsa, dsa, ec
-from cryptography.hazmat.primitives.asymmetric import ed25519, x25519, x448
+from cryptography.hazmat.primitives.asymmetric import ed25519, x25519
+from cryptography.hazmat.primitives.asymmetric import x448, ed448
 from cryptography.hazmat.primitives import serialization
 
 from .rsakeys import fermat
@@ -76,6 +77,7 @@ def _checkkey(key, checks):
         isinstance(key, ed25519.Ed25519PublicKey)
         or isinstance(key, x25519.X25519PublicKey)
         or isinstance(key, x448.X448PublicKey)
+        or isinstance(key, ed448.Ed448PublicKey)
     ):
         r["type"] = "ec"
         # For Ed25519 the raw key is the x coordinate
