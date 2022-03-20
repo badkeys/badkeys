@@ -1,5 +1,5 @@
 from cryptography import x509
-from cryptography.hazmat.primitives.asymmetric import rsa, ec
+from cryptography.hazmat.primitives.asymmetric import rsa, dsa, ec
 from cryptography.hazmat.primitives.asymmetric import ed25519, x25519, x448
 from cryptography.hazmat.primitives import serialization
 
@@ -64,6 +64,10 @@ def _checkkey(key, checks):
         r["x"] = key.public_numbers().x
         r["y"] = key.public_numbers().y
         r["results"] = checkec(r["x"], y=r["y"], checks=checks)
+    elif isinstance(key, dsa.DSAPublicKey):
+        r["type"] = "dsa"
+        r["y"] = key.public_numbers().y
+        r["results"] = checkdsa(r["y"], checks=checks)
     elif (
         isinstance(key, ed25519.Ed25519PublicKey)
         or isinstance(key, x25519.X25519PublicKey)
@@ -102,6 +106,18 @@ def checkec(x, y=0, checks=allchecks.keys()):
             continue
         callcheck = allchecks[check]["function"]
         r = callcheck(x, y=y)
+        if r is not False:
+            results[check] = r
+    return results
+
+
+def checkdsa(y, checks=allchecks.keys()):
+    results = {}
+    for check in checks:
+        if allchecks[check]["type"] != "dsa":
+            continue
+        callcheck = allchecks[check]["function"]
+        r = callcheck(y)
         if r is not False:
             results[check] = r
     return results
