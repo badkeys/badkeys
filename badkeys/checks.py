@@ -1,5 +1,5 @@
 from cryptography import x509
-from cryptography.hazmat.primitives.asymmetric import rsa, dsa, ec
+from cryptography.hazmat.primitives.asymmetric import rsa, dsa, ec, dh
 from cryptography.hazmat.primitives.asymmetric import ed25519, x25519
 from cryptography.hazmat.primitives.asymmetric import x448, ed448
 from cryptography.hazmat.primitives import serialization
@@ -9,7 +9,7 @@ from .rsakeys import pattern
 from .rsakeys import roca
 from .rsakeys import sharedprimes
 from .rsakeys import smallfactors
-from .allkeys import ecbl, rsabl, dsabl
+from .allkeys import ecbl, rsabl, dsabl, dhbl
 
 # List of available checks
 allchecks = {
@@ -53,6 +53,11 @@ allchecks = {
         "function": dsabl,
         "desc": "DSA y value blocklist",
     },
+    "dhbl": {
+        "type": "dh",
+        "function": dhbl,
+        "desc": "DH y value blocklist",
+    },
 }
 
 
@@ -87,6 +92,10 @@ def _checkkey(key, checks):
         )
         # we don't need the y coordinate
         r["results"] = checkec(r["x"], y=False, checks=checks)
+    elif isinstance(key, dh.DHPublicKey):
+        r["type"] = "dh"
+        r["y"] = key.public_numbers().y
+        r["results"] = checkdh(r["y"], checks=checks)
     else:
         r["type"] = "unsupported"
         r["results"] = {}
@@ -121,6 +130,18 @@ def checkdsa(y, checks=allchecks.keys()):
     results = {}
     for check in checks:
         if allchecks[check]["type"] != "dsa":
+            continue
+        callcheck = allchecks[check]["function"]
+        r = callcheck(y)
+        if r is not False:
+            results[check] = r
+    return results
+
+
+def checkdh(y, checks=allchecks.keys()):
+    results = {}
+    for check in checks:
+        if allchecks[check]["type"] != "dh":
             continue
         callcheck = allchecks[check]["function"]
         r = callcheck(y)
