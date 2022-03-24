@@ -86,10 +86,11 @@ def _checkkey(key, checks):
     ):
         r["type"] = "ec"
         # For Ed25519 the raw key is the x coordinate
-        r["x"] = key.public_bytes(
+        x_b = key.public_bytes(
             encoding=serialization.Encoding.Raw,
             format=serialization.PublicFormat.Raw,
         )
+        r["x"] = int.from_bytes(x_b, byteorder="big")
         # we don't need the y coordinate
         r["results"] = checkec(r["x"], y=False, checks=checks)
     elif isinstance(key, dh.DHPublicKey):

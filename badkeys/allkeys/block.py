@@ -8,11 +8,7 @@ _dhbl = False
 
 
 def _checkbl(val, bl):
-    # we accept input as bytes or int
-    if isinstance(val, int):
-        bb = val.to_bytes((val.bit_length() + 7) // 8, byteorder='big')
-    else:
-        bb = val
+    bb = val.to_bytes((val.bit_length() + 7) // 8, byteorder='big')
 
     s256trunc = hashlib.sha256(bb).digest()[:15]
 
