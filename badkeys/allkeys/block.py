@@ -27,7 +27,11 @@ def _checkbl(val, bl):
         val = bl[fmiddle * 16:fmiddle * 16 + 15]
         if s256trunc == val:
             bl_id = int(bl[fmiddle * 16 + 15])
-            return {"detected": True, "subtest": mlists[bl_id],
+            if bl_id in mlists:
+                subtest = mlists[bl_id]
+            else:
+                subtest = f"id{bl_id}"
+            return {"detected": True, "subtest": subtest,
                     "debug": "Truncated Hash: %s" % s256trunc.hex()}
         if s256trunc > val:
             fbegin = fmiddle + 1
