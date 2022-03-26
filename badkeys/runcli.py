@@ -23,7 +23,8 @@ def _printresults(key, where, verbose):
     if key['type'] == "unsupported":
         print(f"Warning: Unsupported key type, {where}", file=sys.stderr)
     elif verbose:
-        print(f"{key['type']} key checked, {where}")
+        if key['results'] == {}:
+            print(f"{key['type']} key ok, {where}")
     for check, result in key['results'].items():
         sub = ""
         if 'subtest' in result:
