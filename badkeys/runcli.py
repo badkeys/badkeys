@@ -1,14 +1,18 @@
 import sys
 import argparse
 import signal
+import re
 
-from .checks import detectandcheck, allchecks, checkrsa
+from .checks import detectandcheck, allchecks, checkrsa, checkcrt
 from .scanssh import scanssh
 from .scantls import scantls
 
 MAXINPUTSIZE = 10000
 
 count = 0
+
+PRECRT = "-----BEGIN CERTIFICATE-----\n"
+POSTCRT = "\n-----END CERTIFICATE-----\n"
 
 
 def _sighandler(_signum, _handler):
@@ -40,6 +44,8 @@ def runcli():
                     help="Comma-separated list of checks (default: all)")
     ap.add_argument("-m", "--moduli", action="store_true",
                     help="Input file is list of RSA hex moduli")
+    ap.add_argument("--crt-lines", action="store_true",
+                    help="Input file is list of base64 certs")
     ap.add_argument("-v", "--verbose", action="store_true",
                     help="Verbose output")
     ap.add_argument("-t", "--tls", action="store_true",
@@ -95,6 +101,17 @@ def runcli():
                 r = {"type": "rsa"}
                 r['results'] = checkrsa(n, checks=userchecks)
                 _printresults(r, f"modulus {n:02x}", args.verbose)
+        elif args.crt_lines:
+            for line in f:
+                count += 1
+                ll = re.split("[,; ]", line.rstrip(), maxsplit=1)
+                if len(ll) == 2:
+                    desc = f"{fn}, {ll[1]}"
+                else:
+                    desc = f"{fn}, line {count}"
+                crt = PRECRT + ll[0] + POSTCRT
+                r = checkcrt(crt, checks=userchecks)
+                _printresults(r, desc, args.verbose)
         else:
             fcontent = f.read(MAXINPUTSIZE)
             r = detectandcheck(fcontent, checks=userchecks)
