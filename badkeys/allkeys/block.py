@@ -72,9 +72,9 @@ def dsabl(y):
 
 
 def dhbl(y):
-    global _dsabl
+    global _dhbl
 
-    if not _dsabl:
+    if not _dhbl:
         with open_binary("badkeys.keydata", "dhbl.dat") as f:
             _dhbl = f.read()
 
