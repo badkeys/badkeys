@@ -32,6 +32,10 @@ def _printresults(key, where, verbose):
         print(f"{check}{sub} vulnerability found, {where}")
         if verbose and "debug" in result:
             print(result["debug"])
+        if verbose and "p" in result:
+            print(f"RSA p {result['p']:02x}")
+        if verbose and "q" in result:
+            print(f"RSA q {result['q']:02x}")
 
 
 def runcli():
