@@ -19,5 +19,10 @@ def sharedprimes(n, e=0):
     breakme = gmpy2.gcd(n, _moduli[bits])
     if breakme == 1:
         return False
-    # FIXME: Try to factor
+    if gmpy2.is_prime(breakme):
+        p = breakme
+        q = n // p
+        if n == (p * q):
+            return {"detected": True, "p": p, "q": q}
+    # Factoring failed
     return {"detected": True}
