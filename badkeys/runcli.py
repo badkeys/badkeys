@@ -110,16 +110,17 @@ def runcli():
                 r['results'] = checkrsa(n, checks=userchecks)
                 _printresults(r, f"modulus {n:02x}", args.verbose)
         elif args.crt_lines:
+            lno = 0
             for line in f:
-                count += 1
+                desc = f"{fn}[{lno}]"
                 ll = re.split("[,; ]", line.rstrip(), maxsplit=1)
                 if len(ll) == 2:
-                    desc = f"{fn}, {ll[1]}"
-                else:
-                    desc = f"{fn}, line {count}"
+                    desc += f" {ll[1]}"
                 crt = PRECRT + ll[0] + POSTCRT
                 r = checkcrt(crt, checks=userchecks)
                 _printresults(r, desc, args.verbose)
+                lno += 1
+                count += 1
         elif args.ssh_lines:
             lno = 0
             for line in f:
