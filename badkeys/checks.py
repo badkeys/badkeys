@@ -189,6 +189,8 @@ def detectandcheck(inkey, checks=allchecks.keys()):
         return checkprivkey(inkey, checks)
     elif "-----BEGIN RSA PRIVATE KEY-----" in inkey:
         return checkprivkey(inkey, checks)
+    elif "-----BEGIN DSA PRIVATE KEY-----" in inkey:
+        return checkprivkey(inkey, checks)
     elif "-----BEGIN EC PRIVATE KEY-----" in inkey:
         return checkprivkey(inkey, checks)
     elif inkey.startswith("ssh-") or inkey.startswith("ecdsa-"):
