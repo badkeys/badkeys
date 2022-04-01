@@ -3,7 +3,8 @@ import argparse
 import signal
 import re
 
-from .checks import detectandcheck, allchecks, checkrsa, checkcrt
+from .checks import detectandcheck, allchecks
+from .checks import checkrsa, checkcrt, checksshpubkey
 from .scanssh import scanssh
 from .scantls import scantls
 
@@ -51,6 +52,8 @@ def runcli():
                     help="Input file is list of RSA hex moduli")
     ap.add_argument("--crt-lines", action="store_true",
                     help="Input file is list of base64 certs")
+    ap.add_argument("--ssh-lines", action="store_true",
+                    help="Input file is list of ssh public keys")
     ap.add_argument("-v", "--verbose", action="store_true",
                     help="Verbose output")
     ap.add_argument("-t", "--tls", action="store_true",
@@ -117,6 +120,17 @@ def runcli():
                 crt = PRECRT + ll[0] + POSTCRT
                 r = checkcrt(crt, checks=userchecks)
                 _printresults(r, desc, args.verbose)
+        elif args.ssh_lines:
+            lno = 0
+            for line in f:
+                desc = f"{fn}[{lno}]"
+                ll = line.rstrip().split(" ", 2)
+                if len(ll) == 3:
+                    desc += f" {ll[2]}"
+                r = checksshpubkey(line, checks=userchecks)
+                _printresults(r, desc, args.verbose)
+                lno += 1
+                count += 1
         else:
             fcontent = f.read(MAXINPUTSIZE)
             r = detectandcheck(fcontent, checks=userchecks)
