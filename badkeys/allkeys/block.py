@@ -1,16 +1,19 @@
 import hashlib
 from importlib.resources import open_binary
 
-_rsabl = False
-_ecbl = False
-_dsabl = False
-_dhbl = False
+_bldata = False
 
 
-def _checkbl(val, bl):
-    bb = val.to_bytes((val.bit_length() + 7) // 8, byteorder='big')
+def blocklist(inval):
+    global _bldata
 
-    s256trunc = hashlib.sha256(bb).digest()[:15]
+    if not _bldata:
+        with open_binary("badkeys.keydata", "blocklist.dat") as f:
+            _bldata = f.read()
+
+    inval_b = inval.to_bytes((inval.bit_length() + 7) // 8, byteorder='big')
+
+    s256trunc = hashlib.sha256(inval_b).digest()[:15]
 
     mlists = {1: 'kompromat',
               2: 'houseofkeys',
@@ -21,12 +24,12 @@ def _checkbl(val, bl):
               }
 
     fbegin = 0
-    fend = (len(bl) // 16) - 1
+    fend = (len(_bldata) // 16) - 1
     while fbegin <= fend:
         fmiddle = (fbegin + fend) // 2
-        val = bl[fmiddle * 16:fmiddle * 16 + 15]
+        val = _bldata[fmiddle * 16:fmiddle * 16 + 15]
         if s256trunc == val:
-            bl_id = int(bl[fmiddle * 16 + 15])
+            bl_id = int(_bldata[fmiddle * 16 + 15])
             if bl_id in mlists:
                 subtest = mlists[bl_id]
             else:
@@ -39,43 +42,3 @@ def _checkbl(val, bl):
             fend = fmiddle - 1
 
     return False
-
-
-def rsabl(n, e=0):
-    global _rsabl
-
-    if not _rsabl:
-        with open_binary("badkeys.keydata", "rsabl.dat") as f:
-            _rsabl = f.read()
-
-    return _checkbl(n, _rsabl)
-
-
-def ecbl(x, y=0):
-    global _ecbl
-
-    if not _ecbl:
-        with open_binary("badkeys.keydata", "ecbl.dat") as f:
-            _ecbl = f.read()
-
-    return _checkbl(x, _ecbl)
-
-
-def dsabl(y):
-    global _dsabl
-
-    if not _dsabl:
-        with open_binary("badkeys.keydata", "dsabl.dat") as f:
-            _dsabl = f.read()
-
-    return _checkbl(y, _dsabl)
-
-
-def dhbl(y):
-    global _dhbl
-
-    if not _dhbl:
-        with open_binary("badkeys.keydata", "dhbl.dat") as f:
-            _dhbl = f.read()
-
-    return _checkbl(y, _dhbl)

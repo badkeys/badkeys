@@ -9,7 +9,7 @@ from .rsakeys import pattern
 from .rsakeys import roca
 from .rsakeys import sharedprimes
 from .rsakeys import smallfactors
-from .allkeys import ecbl, rsabl, dsabl, dhbl
+from .allkeys import blocklist
 
 # List of available checks
 allchecks = {
@@ -28,11 +28,6 @@ allchecks = {
         "function": roca,
         "desc": "Return of the Coopersmith Attack (ROCA) vulnerability",
     },
-    "rsabl": {
-        "type": "rsa",
-        "function": rsabl,
-        "desc": "RSA moduli blocklists",
-    },
     "sharedprimes": {
         "type": "rsa",
         "function": sharedprimes,
@@ -43,20 +38,10 @@ allchecks = {
         "function": smallfactors,
         "desc": "Small prime factors (<=65537, usually corrupt)",
     },
-    "ecbl": {
-        "type": "ec",
-        "function": ecbl,
-        "desc": "Elliptic curve x value blocklist",
-    },
-    "dsabl": {
-        "type": "dsa",
-        "function": dsabl,
-        "desc": "DSA y value blocklist",
-    },
-    "dhbl": {
-        "type": "dh",
-        "function": dhbl,
-        "desc": "DH y value blocklist",
+    "blocklist": {
+        "type": "all",
+        "function": blocklist,
+        "desc": "Blocklists of compromised keys",
     },
 }
 
@@ -73,11 +58,11 @@ def _checkkey(key, checks):
         r["type"] = "ec"
         r["x"] = key.public_numbers().x
         r["y"] = key.public_numbers().y
-        r["results"] = checkec(r["x"], y=r["y"], checks=checks)
+        r["results"] = checkall(r["x"], checks=checks)
     elif isinstance(key, dsa.DSAPublicKey):
         r["type"] = "dsa"
         r["y"] = key.public_numbers().y
-        r["results"] = checkdsa(r["y"], checks=checks)
+        r["results"] = checkall(r["y"], checks=checks)
     elif (
         isinstance(key, ed25519.Ed25519PublicKey)
         or isinstance(key, x25519.X25519PublicKey)
@@ -92,11 +77,11 @@ def _checkkey(key, checks):
         )
         r["x"] = int.from_bytes(x_b, byteorder="big")
         # we don't need the y coordinate
-        r["results"] = checkec(r["x"], y=False, checks=checks)
+        r["results"] = checkall(r["x"], checks=checks)
     elif isinstance(key, dh.DHPublicKey):
         r["type"] = "dh"
         r["y"] = key.public_numbers().y
-        r["results"] = checkdh(r["y"], checks=checks)
+        r["results"] = checkall(r["y"], checks=checks)
     else:
         r["type"] = "unsupported"
         r["results"] = {}
@@ -106,46 +91,25 @@ def _checkkey(key, checks):
 def checkrsa(n, e=65537, checks=allchecks.keys()):
     results = {}
     for check in checks:
-        if allchecks[check]["type"] != "rsa":
-            continue
         callcheck = allchecks[check]["function"]
-        r = callcheck(n, e=e)
+        if allchecks[check]["type"] == "rsa":
+            r = callcheck(n, e=e)
+        elif allchecks[check]["type"] == "all":
+            r = callcheck(n)
+        else:
+            continue
         if r is not False:
             results[check] = r
     return results
 
 
-def checkec(x, y=0, checks=allchecks.keys()):
+def checkall(x, checks=allchecks.keys()):
     results = {}
     for check in checks:
-        if allchecks[check]["type"] != "ec":
+        if allchecks[check]["type"] != "all":
             continue
         callcheck = allchecks[check]["function"]
-        r = callcheck(x, y=y)
-        if r is not False:
-            results[check] = r
-    return results
-
-
-def checkdsa(y, checks=allchecks.keys()):
-    results = {}
-    for check in checks:
-        if allchecks[check]["type"] != "dsa":
-            continue
-        callcheck = allchecks[check]["function"]
-        r = callcheck(y)
-        if r is not False:
-            results[check] = r
-    return results
-
-
-def checkdh(y, checks=allchecks.keys()):
-    results = {}
-    for check in checks:
-        if allchecks[check]["type"] != "dh":
-            continue
-        callcheck = allchecks[check]["function"]
-        r = callcheck(y)
+        r = callcheck(x)
         if r is not False:
             results[check] = r
     return results
