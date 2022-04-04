@@ -1,6 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 
+[ -e badkeys/keydata/blocklist.dat ] || ./getbl.sh
+
 # linters etc.
 pycodestyle --ignore=W503 badkeys-cli .
 pyflakes .
