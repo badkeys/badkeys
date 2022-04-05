@@ -129,7 +129,7 @@ def checkprivkey(rawkey, checks=allchecks.keys()):
 def checkcrt(rawcert, checks=allchecks.keys()):
     try:
         crt = x509.load_pem_x509_certificate(rawcert.encode())
-    except ValueError:
+    except (ValueError, cryptography.x509.base.InvalidVersion):
         return {"type": "unparseable", "results": {}}
     try:
         return _checkkey(crt.public_key(), checks)
