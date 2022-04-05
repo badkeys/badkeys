@@ -68,6 +68,14 @@ def runcli():
                     help="SSH ports (comma-separated)")
     args = ap.parse_args()
 
+    if ((args.moduli and args.crt_lines) or (args.moduli and args.ssh_lines)
+       or (args.ssh_lines and args.crt_lines)):
+        sys.exit("Multiple input format parameters cannot be combined.")
+
+    if ((args.moduli or args.crt_lines or args.ssh_lines)
+       and (args.tls or args.ssh)):
+        sys.exit("Scan modes and input file modes cannot be combined.")
+
     if args.checks:
         userchecks = args.checks.split(",")
         for c in userchecks:
