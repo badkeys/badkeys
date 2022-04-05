@@ -21,18 +21,21 @@ def _sighandler(_signum, _handler):
 
 
 def _printresults(key, where, verbose):
+    kn = key['type']
+    if 'bits' in key:
+        kn += f"[{key['bits']}]"
     if key['type'] == "unsupported":
         print(f"Warning: Unsupported key type, {where}", file=sys.stderr)
     if key['type'] == "unparseable":
         print(f"Warning: Unparseable input, {where}", file=sys.stderr)
     elif verbose:
         if key['results'] == {}:
-            print(f"{key['type']} key ok, {where}")
+            print(f"{kn} key ok, {where}")
     for check, result in key['results'].items():
         sub = ""
         if 'subtest' in result:
             sub = f"/{result['subtest']}"
-        print(f"{check}{sub} vulnerability found, {where}")
+        print(f"{check}{sub} vulnerability, {kn}, {where}")
         if verbose and "debug" in result:
             print(result["debug"])
         if verbose and "p" in result:
