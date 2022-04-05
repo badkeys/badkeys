@@ -140,6 +140,7 @@ def checkcrt(rawcert, checks=allchecks.keys()):
         # happens e.g. with ECDSA custom curves
         return {"type": "unsupported", "results": {}}
 
+
 def checkcsr(rawcsr, checks=allchecks.keys()):
     csr = x509.load_pem_x509_csr(rawcsr.encode())
     return _checkkey(csr.public_key(), checks)
