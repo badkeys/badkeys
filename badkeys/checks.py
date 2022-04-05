@@ -136,7 +136,7 @@ def checkcrt(rawcert, checks=allchecks.keys()):
     except cryptography.exceptions.UnsupportedAlgorithm:
         # happens e.g. with PSS keys
         return {"type": "unsupported", "results": {}}
-    except ValueError:
+    except (ValueError, NotImplementedError):
         # happens e.g. with ECDSA custom curves
         return {"type": "unsupported", "results": {}}
 
