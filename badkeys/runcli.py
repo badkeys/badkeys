@@ -23,6 +23,8 @@ def _sighandler(_signum, _handler):
 def _printresults(key, where, verbose):
     if key['type'] == "unsupported":
         print(f"Warning: Unsupported key type, {where}", file=sys.stderr)
+    if key['type'] == "unparseable":
+        print(f"Warning: Unparseable input, {where}", file=sys.stderr)
     elif verbose:
         if key['results'] == {}:
             print(f"{key['type']} key ok, {where}")

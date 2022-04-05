@@ -1,3 +1,4 @@
+import cryptography
 from cryptography import x509
 from cryptography.hazmat.primitives.asymmetric import rsa, dsa, ec, dh
 from cryptography.hazmat.primitives.asymmetric import ed25519, x25519
@@ -126,9 +127,18 @@ def checkprivkey(rawkey, checks=allchecks.keys()):
 
 
 def checkcrt(rawcert, checks=allchecks.keys()):
-    crt = x509.load_pem_x509_certificate(rawcert.encode())
-    return _checkkey(crt.public_key(), checks)
-
+    try:
+        crt = x509.load_pem_x509_certificate(rawcert.encode())
+    except ValueError:
+        return {"type": "unparseable", "results": {}}
+    try:
+        return _checkkey(crt.public_key(), checks)
+    except cryptography.exceptions.UnsupportedAlgorithm:
+        # happens e.g. with PSS keys
+        return {"type": "unsupported", "results": {}}
+    except ValueError:
+        # happens e.g. with ECDSA custom curves
+        return {"type": "unsupported", "results": {}}
 
 def checkcsr(rawcsr, checks=allchecks.keys()):
     csr = x509.load_pem_x509_csr(rawcsr.encode())
