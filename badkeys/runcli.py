@@ -17,7 +17,7 @@ POSTCRT = "\n-----END CERTIFICATE-----\n"
 
 
 def _sighandler(_signum, _handler):
-    print(f"{count} keys processed")
+    print(f"{count} keys processed", file=sys.stderr)
 
 
 def _printresults(key, where, verbose):
