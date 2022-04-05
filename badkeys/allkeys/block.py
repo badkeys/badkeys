@@ -1,4 +1,5 @@
 import hashlib
+import mmap
 from importlib.resources import open_binary
 
 _bldata = False
@@ -9,7 +10,7 @@ def blocklist(inval):
 
     if not _bldata:
         with open_binary("badkeys.keydata", "blocklist.dat") as f:
-            _bldata = f.read()
+            _bldata = mmap.mmap(f.fileno(), 0, prot=mmap.PROT_READ)
 
     inval_b = inval.to_bytes((inval.bit_length() + 7) // 8, byteorder='big')
 
