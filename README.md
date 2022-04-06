@@ -18,9 +18,19 @@ Alternatively you can call _badkeys-cli_ directly from the git repository.
 
 # usage
 
-Just call badkeys and pass files with cryptographic public keys as the parameter:
+It is currently recommended to run badkeys directly from the repository. A
+[pip package](https://pypi.org/project/badkeys/) is available, but currently
+does not contain the latest code.
+
+Before using badkeys you need to download the blocklist data:
 ```
-badkeys test.crt my.key
+./getbl.sh
+```
+
+After that you can call _badkeys-cli_ and pass files with cryptographic
+public keys as the parameter:
+```
+./badkeys-cli test.crt my.key
 ```
 
 It will automatically try to detect the file format. Supported are public and
