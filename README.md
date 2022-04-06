@@ -7,15 +7,6 @@ Tool and library to check cryptographic public keys for known vulnerabilities
 badkeys checks public keys in a variety of formats for known vulnerabilities.
 A web version can be found at [badkeys.info](https://badkeys.info/).
 
-# install
-
-badkeys can be installed via pip:
-```
-pip3 install badkeys
-```
-
-Alternatively you can call _badkeys-cli_ directly from the git repository.
-
 # usage
 
 It is currently recommended to run badkeys directly from the repository. A
