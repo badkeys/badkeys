@@ -16,13 +16,20 @@ def blocklist(inval):
 
     s256trunc = hashlib.sha256(inval_b).digest()[:15]
 
-    mlists = {1: 'kompromat',
-              2: 'houseofkeys',
-              3: 'debian-ssl',
-              4: 'debian-ssh',
-              5: 'keypair',
-              6: 'misc'
-              }
+    mlists = {
+        1: "debianssl",
+        2: "debianssh-x86",
+        3: "debianssh-x64",
+        5: "keypair",
+        21: "documentation",
+        22: "firmware",
+        23: "localhostcert",
+        24: "localroot",
+        25: "misc",
+        26: "rfc",
+        27: "softwaretests",
+        28: "testvectors",
+    }
 
     fbegin = 0
     fend = (len(_bldata) // 16) - 1
