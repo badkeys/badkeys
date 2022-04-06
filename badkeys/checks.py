@@ -158,6 +158,9 @@ def checksshpubkey(sshkey, checks=allchecks.keys()):
     except ValueError:
         # happens e.g. on non-standard DSA keys (!=1024 bit)
         return {"type": "unsupported", "results": {}}
+    except cryptography.exceptions.UnsupportedAlgorithm:
+        # happens e.g. on pre-standard sk-ssh-ed25519@openssh.com keys
+        return {"type": "unsupported", "results": {}}
     return _checkkey(pkey, checks)
 
 
