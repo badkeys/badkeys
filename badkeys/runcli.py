@@ -26,8 +26,10 @@ def _printresults(key, where, verbose):
         kn += f"[{key['bits']}]"
     if key['type'] == "unsupported":
         print(f"Warning: Unsupported key type, {where}", file=sys.stderr)
-    if key['type'] == "unparseable":
+    elif key['type'] == "unparseable":
         print(f"Warning: Unparseable input, {where}", file=sys.stderr)
+    elif key['type'] == "notfound":
+        print(f"Warning: No key found, {where}", file=sys.stderr)
     elif verbose:
         if key['results'] == {}:
             print(f"{kn} key ok, {where}")
