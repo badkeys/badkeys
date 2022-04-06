@@ -147,7 +147,11 @@ def checkcsr(rawcsr, checks=allchecks.keys()):
 
 
 def checksshpubkey(sshkey, checks=allchecks.keys()):
-    pkey = serialization.load_ssh_public_key(sshkey.encode())
+    try:
+        pkey = serialization.load_ssh_public_key(sshkey.encode())
+    except ValueError:
+        # happens e.g. on non-standard DSA keys (!=1024 bit)
+        return {"type": "unsupported", "results": {}}
     return _checkkey(pkey, checks)
 
 
