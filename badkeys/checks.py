@@ -1,3 +1,4 @@
+import hashlib
 import cryptography
 from cryptography import x509
 from cryptography.hazmat.primitives.asymmetric import rsa, dsa, ec, dh
@@ -86,6 +87,11 @@ def _checkkey(key, checks):
     else:
         r["type"] = "unsupported"
         r["results"] = {}
+    spki = key.public_bytes(
+        serialization.Encoding.DER,
+        serialization.PublicFormat.SubjectPublicKeyInfo
+    )
+    r["spkisha256"] = hashlib.sha256(spki).hexdigest()
     return r
 
 
