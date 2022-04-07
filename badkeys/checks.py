@@ -183,3 +183,5 @@ def detectandcheck(inkey, checks=allchecks.keys()):
         return checkprivkey(inkey, checks)
     elif inkey.startswith("ssh-") or inkey.startswith("ecdsa-"):
         return checksshpubkey(inkey, checks)
+    else:
+        return {"type": "notfound", "results": {}}
