@@ -82,8 +82,12 @@ def _checkkey(key, checks):
         r["results"] = checkall(r["x"], checks=checks)
     elif isinstance(key, dh.DHPublicKey):
         r["type"] = "dh"
-        r["y"] = key.public_numbers().y
-        r["results"] = checkall(r["y"], checks=checks)
+        try:
+            r["y"] = key.public_numbers().y
+        except ValueError:
+            # happens with e.g. very small (<512) DH keys
+            return {"type": "unparseable", "results": {}}
+            r["results"] = checkall(r["y"], checks=checks)
     else:
         r["type"] = "unsupported"
         r["results"] = {}
