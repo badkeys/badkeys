@@ -132,7 +132,11 @@ def checkpubkey(rawkey, checks=allchecks.keys()):
 
 
 def checkprivkey(rawkey, checks=allchecks.keys()):
-    priv = serialization.load_pem_private_key(rawkey.encode(), password=None)
+    try:
+        priv = serialization.load_pem_private_key(rawkey.encode(), password=None)
+    except ValueError:
+        # happens on invalid values, e.g. p=q
+        return {"type": "unparseable", "results": {}}
     return _checkkey(priv.public_key(), checks)
 
 
