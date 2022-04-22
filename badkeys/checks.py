@@ -93,7 +93,7 @@ def _checkkey(key, checks):
         r["results"] = {}
     spki = key.public_bytes(
         serialization.Encoding.DER,
-        serialization.PublicFormat.SubjectPublicKeyInfo
+        serialization.PublicFormat.SubjectPublicKeyInfo,
     )
     r["spkisha256"] = hashlib.sha256(spki).hexdigest()
     return r
@@ -133,7 +133,9 @@ def checkpubkey(rawkey, checks=allchecks.keys()):
 
 def checkprivkey(rawkey, checks=allchecks.keys()):
     try:
-        priv = serialization.load_pem_private_key(rawkey.encode(), password=None)
+        priv = serialization.load_pem_private_key(
+            rawkey.encode(), password=None
+        )
     except ValueError:
         # happens on invalid values, e.g. p=q
         return {"type": "unparseable", "results": {}}
