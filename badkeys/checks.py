@@ -139,6 +139,9 @@ def checkprivkey(rawkey, checks=allchecks.keys()):
     except ValueError:
         # happens on invalid values, e.g. p=q
         return {"type": "unparseable", "results": {}}
+    except cryptography.exceptions.UnsupportedAlgorithm:
+        # happens e.g. with unsupported curves
+        return {"type": "unparseable", "results": {}}
     return _checkkey(priv.public_key(), checks)
 
 
