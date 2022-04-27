@@ -7,7 +7,6 @@ TDPATH = f"{os.path.dirname(__file__)}/data/"
 
 
 class TestFermat(unittest.TestCase):
-
     def test_fermat(self):
         # For this test only we are testing several
         # input formats. Also the test keys differ in
@@ -48,8 +47,8 @@ class TestFermat(unittest.TestCase):
         r = badkeys.checkrsa(n=n, checks=["fermat"])
         self.assertTrue("fermat" in r)
         # check that Fermat factorization works
-        p = r['fermat']['p']
-        q = r['fermat']['q']
+        p = r["fermat"]["p"]
+        q = r["fermat"]["q"]
         self.assertEqual(p * q, n)
 
         with open(f"{TDPATH}rsa-ok.key") as f:
@@ -58,5 +57,5 @@ class TestFermat(unittest.TestCase):
         self.assertFalse(r["results"])
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

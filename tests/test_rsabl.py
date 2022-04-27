@@ -7,7 +7,6 @@ TDPATH = f"{os.path.dirname(__file__)}/data/"
 
 
 class TestRsabl(unittest.TestCase):
-
     def test_rsabl(self):
         with open(f"{TDPATH}rsa-debianweak.key") as f:
             key = f.read()
@@ -19,5 +18,5 @@ class TestRsabl(unittest.TestCase):
         self.assertFalse(r["results"])
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

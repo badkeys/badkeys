@@ -6,6 +6,7 @@ from .checks import checksshpubkey, allchecks
 
 def scanssh(host, port=22, checks=allchecks.keys()):
     import paramiko
+
     allkeytypes = paramiko.Transport._preferred_keys
 
     keys = []
@@ -13,8 +14,9 @@ def scanssh(host, port=22, checks=allchecks.keys()):
         try:
             xnot = [x for x in allkeytypes if keytype not in x]
 
-            transp = paramiko.Transport(f"{host}:{port}",
-                                        disabled_algorithms={"keys": xnot})
+            transp = paramiko.Transport(
+                f"{host}:{port}", disabled_algorithms={"keys": xnot}
+            )
 
             with contextlib.redirect_stderr(io.StringIO()):
                 transp.connect()

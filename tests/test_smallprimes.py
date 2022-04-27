@@ -7,7 +7,6 @@ TDPATH = f"{os.path.dirname(__file__)}/data/"
 
 
 class TestSmallprimes(unittest.TestCase):
-
     def test_smallprimes(self):
         with open(f"{TDPATH}rsa-smallfactors.key") as f:
             key = f.read()
@@ -19,5 +18,5 @@ class TestSmallprimes(unittest.TestCase):
         self.assertFalse(r["results"])
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

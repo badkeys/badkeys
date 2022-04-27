@@ -12,7 +12,7 @@ def roca(element, e=0):
     generator = 65537
     generator_order = 2454106387091158800
     pp = [16, 81, 25, 7, 11, 13, 17, 23, 29, 37, 41, 53, 83]
-    modulus = 0x924cba6ae99dfa084537facc54948df0c23da044d8cabe0edd75bc6
+    modulus = 0x924CBA6AE99DFA084537FACC54948DF0C23DA044D8CABE0EDD75BC6
     if element <= 2:
         return False
     if gmpy2.powmod(element, generator_order, modulus) != 1:

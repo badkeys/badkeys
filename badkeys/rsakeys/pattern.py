@@ -1,7 +1,7 @@
 import re
 
 # Find suspicious patterns of 16 repeating bytes
-_prex = re.compile(r'(..)\1{15}')
+_prex = re.compile(r"(..)\1{15}")
 
 
 def pattern(n, e=0):

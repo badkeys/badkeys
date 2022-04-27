@@ -4,7 +4,7 @@ set -euo pipefail
 [ -e badkeys/keydata/blocklist.dat ] || ./getbl.sh
 
 # linters etc.
-pycodestyle --ignore=W503 badkeys-cli .
+pycodestyle --max-line-length=88 --ignore=W503,E203 badkeys-cli .
 pyflakes .
 pyupgrade --py311-plus badkeys-cli $(find -name \*.py)
 

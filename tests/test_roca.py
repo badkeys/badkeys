@@ -7,7 +7,6 @@ TDPATH = f"{os.path.dirname(__file__)}/data/"
 
 
 class TestRoca(unittest.TestCase):
-
     def test_roca(self):
         with open(f"{TDPATH}rsa-roca.key") as f:
             key = f.read()
@@ -19,5 +18,5 @@ class TestRoca(unittest.TestCase):
         self.assertFalse(r["results"])
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
