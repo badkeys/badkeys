@@ -20,7 +20,7 @@ def _sighandler(_signum, _handler):
     print(f"{count} keys processed", file=sys.stderr)
 
 
-def _printresults(key, where, verbose):
+def _printresults(key, where, args):
     kn = key["type"]
     if "bits" in key:
         kn += f"[{key['bits']}]"
@@ -30,7 +30,7 @@ def _printresults(key, where, verbose):
         print(f"Warning: Unparseable input, {where}", file=sys.stderr)
     elif key["type"] == "notfound":
         print(f"Warning: No key found, {where}", file=sys.stderr)
-    elif verbose:
+    elif args.verbose or args.all:
         if key["results"] == {}:
             print(f"{kn} key ok, {where}")
     for check, result in key["results"].items():
@@ -38,11 +38,11 @@ def _printresults(key, where, verbose):
         if "subtest" in result:
             sub = f"/{result['subtest']}"
         print(f"{check}{sub} vulnerability, {kn}, {where}")
-        if verbose and "debug" in result:
+        if args.verbose and "debug" in result:
             print(result["debug"])
-        if verbose and "p" in result:
+        if args.verbose and "p" in result:
             print(f"RSA p {result['p']:02x}")
-        if verbose and "q" in result:
+        if args.verbose and "q" in result:
             print(f"RSA q {result['q']:02x}")
 
 
@@ -69,6 +69,7 @@ def runcli():
     ap.add_argument(
         "--ssh-lines", action="store_true", help="Input file is list of ssh public keys"
     )
+    ap.add_argument("-a", "--all", action="store_true", help="Show all keys")
     ap.add_argument("-v", "--verbose", action="store_true", help="Verbose output")
     ap.add_argument(
         "-t",
@@ -116,7 +117,7 @@ def runcli():
             for port in ports:
                 keys = scantls(host, port, userchecks)
                 for k in keys:
-                    _printresults(k, f"tls:{host}:{port}", args.verbose)
+                    _printresults(k, f"tls:{host}:{port}", args)
 
     if args.ssh:
         ports = [int(p) for p in args.ssh_ports.split(",")]
@@ -124,7 +125,7 @@ def runcli():
             for port in ports:
                 keys = scanssh(host, port)
                 for k in keys:
-                    _printresults(k, f"ssh:{host}:{port}", args.verbose)
+                    _printresults(k, f"ssh:{host}:{port}", args)
 
     if args.ssh or args.tls:
         sys.exit(1)
@@ -142,7 +143,7 @@ def runcli():
                 n = int(line, 16)
                 r = {"type": "rsa"}
                 r["results"] = checkrsa(n, checks=userchecks)
-                _printresults(r, f"modulus {n:02x}", args.verbose)
+                _printresults(r, f"modulus {n:02x}", args)
         elif args.crt_lines:
             lno = 0
             for line in f:
@@ -152,7 +153,7 @@ def runcli():
                     desc += f" {ll[1]}"
                 crt = PRECRT + ll[0] + POSTCRT
                 r = checkcrt(crt, checks=userchecks)
-                _printresults(r, desc, args.verbose)
+                _printresults(r, desc, args)
                 lno += 1
                 count += 1
         elif args.ssh_lines:
@@ -163,13 +164,13 @@ def runcli():
                 if len(ll) == 3:
                     desc += f" {ll[2]}"
                 r = checksshpubkey(line, checks=userchecks)
-                _printresults(r, desc, args.verbose)
+                _printresults(r, desc, args)
                 lno += 1
                 count += 1
         else:
             fcontent = f.read(MAXINPUTSIZE)
             r = detectandcheck(fcontent, checks=userchecks)
-            _printresults(r, fn, args.verbose)
+            _printresults(r, fn, args)
 
         if fn != "-":
             f.close()
