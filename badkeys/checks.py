@@ -127,7 +127,11 @@ def checkall(x, checks=allchecks.keys()):
 
 
 def checkpubkey(rawkey, checks=allchecks.keys()):
-    key = serialization.load_pem_public_key(rawkey.encode())
+    try:
+        key = serialization.load_pem_public_key(rawkey.encode())
+    except ValueError:
+        # happens e.g. on partial inputs
+        return {"type": "unparseable", "results": {}}
     return _checkkey(key, checks)
 
 
