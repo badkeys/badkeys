@@ -64,6 +64,7 @@ def _checkkey(key, checks):
     elif isinstance(key, dsa.DSAPublicKey):
         r["type"] = "dsa"
         r["y"] = key.public_numbers().y
+        r["bits"] = key.key_size
         r["results"] = checkall(r["y"], checks=checks)
     elif (
         isinstance(key, ed25519.Ed25519PublicKey)
