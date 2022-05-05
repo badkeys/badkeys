@@ -9,6 +9,7 @@ from cryptography.hazmat.primitives import serialization
 from .rsakeys import fermat
 from .rsakeys import pattern
 from .rsakeys import roca
+from .rsakeys import rsainvalid
 from .rsakeys import sharedprimes
 from .rsakeys import smallfactors
 from .allkeys import blocklist
@@ -29,6 +30,11 @@ allchecks = {
         "type": "rsa",
         "function": roca,
         "desc": "Return of the Coopersmith Attack (ROCA) vulnerability",
+    },
+    "rsainvalid": {
+        "type": "rsa",
+        "function": rsainvalid,
+        "desc": "RSA keys with invalid values",
     },
     "sharedprimes": {
         "type": "rsa",
