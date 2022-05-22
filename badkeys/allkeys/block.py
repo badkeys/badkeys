@@ -86,7 +86,7 @@ def urllookup(blid, lhash, type="show"):
         return False
     d = _blmeta[blid]
     showurl = f"https://github.com/{d['repo']}/blob/{d['path']}/{x[0][1]}"
-    rawurl = f"https://raw.githubusercontent.com/{d['repo']}/blob/{d['path']}/{x[0][1]}"
+    rawurl = f"https://raw.githubusercontent.com/{d['repo']}/{d['path']}/{x[0][1]}"
     if type == "show":
         return showurl
     if type == "raw":
