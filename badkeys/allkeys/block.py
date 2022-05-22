@@ -23,7 +23,6 @@ def blocklist(inval):
 
     if not _bldata:
         cachedir = str(pathlib.Path.home()) + "/.cache/badkeys/"
-        print(cachedir)
         with open(f"{cachedir}blocklist.dat", "rb") as f:
             _bldata = mmap.mmap(f.fileno(), 0, prot=mmap.PROT_READ)
 
