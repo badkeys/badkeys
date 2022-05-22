@@ -33,10 +33,10 @@ def update_bl(lookup=False):
         with open(f"{cachedir}badkeysdata.json", "w") as f:
             f.write(bkdata)
 
-    # starting with badkeys.dat
+    # starting with blocklist.dat
     oldbl_sha256 = ""
-    if os.path.exists(f"{cachedir}badkeys.dat"):
-        with open(f"{cachedir}badkeys.dat", "rb") as f:
+    if os.path.exists(f"{cachedir}blocklist.dat"):
+        with open(f"{cachedir}blocklist.dat", "rb") as f:
             oldbl_sha256 = hashlib.sha256(f.read()).hexdigest()
 
     if oldbl_sha256 != data["blocklist_sha256"]:
@@ -46,7 +46,7 @@ def update_bl(lookup=False):
         newbl_sha256 = hashlib.sha256(blocklist).hexdigest()
         if newbl_sha256 != data["blocklist_sha256"]:
             sys.exit("ERROR: SHA256 hash of downloaded blocklist.dat does not match")
-        with open(f"{cachedir}badkeys.dat", "wb") as f:
+        with open(f"{cachedir}blocklist.dat", "wb") as f:
             f.write(blocklist)
 
     # starting with lookup.txt
