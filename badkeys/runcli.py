@@ -53,7 +53,7 @@ def runcli():
 
     ap = argparse.ArgumentParser()
     ap.add_argument(
-        "infiles", nargs="?", help="Input file (certificate, csr or public key)"
+        "infiles", nargs="*", help="Input file (certificate, csr or public key)"
     )
     ap.add_argument(
         "-c", "--checks", help="Comma-separated list of checks (default: all)"
