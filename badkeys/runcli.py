@@ -7,6 +7,7 @@ from .checks import detectandcheck, allchecks
 from .checks import checkrsa, checkcrt, checksshpubkey
 from .scanssh import scanssh
 from .scantls import scantls
+from .update import update_bl
 
 MAXINPUTSIZE = 10000
 
@@ -52,7 +53,7 @@ def runcli():
 
     ap = argparse.ArgumentParser()
     ap.add_argument(
-        "infiles", nargs="+", help="Input file (certificate, csr or public key)"
+        "infiles", nargs="?", help="Input file (certificate, csr or public key)"
     )
     ap.add_argument(
         "-c", "--checks", help="Comma-separated list of checks (default: all)"
@@ -71,6 +72,12 @@ def runcli():
     )
     ap.add_argument("-a", "--all", action="store_true", help="Show all keys")
     ap.add_argument("-v", "--verbose", action="store_true", help="Verbose output")
+    ap.add_argument("--update-bl", action="store_true", help="Update blocklist")
+    ap.add_argument(
+        "--update-bl-and-urls",
+        action="store_true",
+        help="Update blocklist and optional URL lookup list",
+    )
     ap.add_argument(
         "-t",
         "--tls",
@@ -102,6 +109,17 @@ def runcli():
 
     if (args.moduli or args.crt_lines or args.ssh_lines) and (args.tls or args.ssh):
         sys.exit("Scan modes and input file modes cannot be combined.")
+
+    if args.update_bl_and_urls:
+        update_bl(lookup=True)
+        sys.exit()
+    if args.update_bl:
+        update_bl()
+        sys.exit()
+
+    if not args.infiles:
+        ap.print_help()
+        sys.exit()
 
     if args.checks:
         userchecks = args.checks.split(",")
