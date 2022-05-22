@@ -15,7 +15,7 @@ does not contain the latest code.
 
 Before using badkeys you need to download the blocklist data:
 ```
-./getbl.sh
+./badkeys-cli --update-bl
 ```
 
 After that you can call _badkeys-cli_ and pass files with cryptographic
