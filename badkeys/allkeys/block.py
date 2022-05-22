@@ -10,6 +10,8 @@ _bldata = False
 def blocklist(inval):
     global _blmeta, _bldata
 
+    cachedir = str(pathlib.Path.home()) + "/.cache/badkeys/"
+
     mlist = {}
     if not _blmeta:
         with open(f"{cachedir}badkeysdata.json") as f:
