@@ -2,24 +2,29 @@ import hashlib
 import mmap
 import pathlib
 import json
+import sys
 
 _blmeta = False
 _bldata = False
 
 
+def _loadblmeta():
+    global _blmeta
+    mlist = {}
+    cachedir = str(pathlib.Path.home()) + "/.cache/badkeys/"
+    with open(f"{cachedir}badkeysdata.json") as f:
+        jdata = json.loads(f.read())
+    for bl in jdata["blocklists"]:
+        blid = int(bl["id"])
+        mlist[blid] = bl
+    _blmeta = mlist
+
+
 def blocklist(inval):
     global _blmeta, _bldata
 
-    cachedir = str(pathlib.Path.home()) + "/.cache/badkeys/"
-
-    mlist = {}
     if not _blmeta:
-        with open(f"{cachedir}badkeysdata.json") as f:
-            jdata = json.loads(f.read())
-        for bl in jdata["blocklists"]:
-            blid = int(bl["id"])
-            mlist[blid] = {"name": bl["name"]}
-        _blmeta = mlist
+        _loadblmeta()
 
     if not _bldata:
         cachedir = str(pathlib.Path.home()) + "/.cache/badkeys/"
@@ -41,9 +46,12 @@ def blocklist(inval):
                 subtest = _blmeta[bl_id]["name"]
             else:
                 subtest = f"id{bl_id}"
+            lhash = s256trunc[0:8].hex()
             return {
                 "detected": True,
                 "subtest": subtest,
+                "blid": bl_id,
+                "lookup": lhash,
                 "debug": "Truncated Hash: %s" % s256trunc.hex(),
             }
         if s256trunc > val:
@@ -52,3 +60,36 @@ def blocklist(inval):
             fend = fmiddle - 1
 
     return False
+
+
+def urllookup(blid, lhash, type="show"):
+    global _blmeta
+    try:
+        from binary_file_search.BinaryFileSearch import BinaryFileSearch
+    except ModuleNotFoundError:
+        sys.stderr.write("ERROR: URL lookup failed, needs binary_file_search module\n")
+        return False
+
+    if not _blmeta:
+        _loadblmeta()
+
+    lfile = str(pathlib.Path.home()) + "/.cache/badkeys/lookup.txt"
+
+    try:
+        with BinaryFileSearch(lfile, sep=";", string_mode=True) as bfs:
+            x = bfs.search(lhash)
+    except FileNotFoundError:
+        sys.stderr.write("ERROR: lookup.txt not found, run --update-bl-and-urls\n")
+        return False
+    except KeyError:
+        sys.stderr.write("ERROR: URL lookup failed, not found\n")
+        return False
+    d = _blmeta[blid]
+    showurl = f"https://github.com/{d['repo']}/blob/{d['path']}/{x[0][1]}"
+    rawurl = f"https://raw.githubusercontent.com/{d['repo']}/blob/{d['path']}/{x[0][1]}"
+    if type == "show":
+        return showurl
+    if type == "raw":
+        return rawurl
+    if type == "both":
+        return [showurl, rawurl]

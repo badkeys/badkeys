@@ -1,2 +1,2 @@
 __all__ = ["blocklist"]
-from .block import blocklist
+from .block import blocklist, urllookup

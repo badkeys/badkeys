@@ -5,6 +5,7 @@ import re
 
 from .checks import detectandcheck, allchecks
 from .checks import checkrsa, checkcrt, checksshpubkey
+from .allkeys import urllookup
 from .scanssh import scanssh
 from .scantls import scantls
 from .update import update_bl
@@ -39,6 +40,10 @@ def _printresults(key, where, args):
         if "subtest" in result:
             sub = f"/{result['subtest']}"
         print(f"{check}{sub} vulnerability, {kn}, {where}")
+        if args.url and "lookup" in result:
+            url = urllookup(result["blid"], result["lookup"])
+            if url:
+                print(url)
         if args.verbose and "debug" in result:
             print(result["debug"])
         if args.verbose and "p" in result:
@@ -72,6 +77,9 @@ def runcli():
     )
     ap.add_argument("-a", "--all", action="store_true", help="Show all keys")
     ap.add_argument("-v", "--verbose", action="store_true", help="Verbose output")
+    ap.add_argument(
+        "-u", "--url", action="store_true", help="Show private key URL if possible"
+    )
     ap.add_argument("--update-bl", action="store_true", help="Update blocklist")
     ap.add_argument(
         "--update-bl-and-urls",
