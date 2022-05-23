@@ -173,7 +173,7 @@ def runcli():
                 if line.startswith("Modulus="):
                     line = line[8:]
                 n = int(line, 16)
-                r = {"type": "rsa"}
+                r = {"type": "rsa", "bits": n.bit_length()}
                 r["results"] = checkrsa(n, checks=userchecks)
                 _printresults(r, f"modulus {n:02x}", args)
         elif args.crt_lines:
