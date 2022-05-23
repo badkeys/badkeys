@@ -12,8 +12,11 @@ def _loadblmeta():
     global _blmeta
     mlist = {}
     cachedir = str(pathlib.Path.home()) + "/.cache/badkeys/"
-    with open(f"{cachedir}badkeysdata.json") as f:
-        jdata = json.loads(f.read())
+    try:
+        with open(f"{cachedir}badkeysdata.json") as f:
+            jdata = json.loads(f.read())
+    except FileNotFoundError:
+        sys.exit("blocklist metadata not found, you need to run --update-bl")
     for bl in jdata["blocklists"]:
         blid = int(bl["id"])
         mlist[blid] = bl
@@ -28,8 +31,11 @@ def blocklist(inval):
 
     if not _bldata:
         cachedir = str(pathlib.Path.home()) + "/.cache/badkeys/"
-        with open(f"{cachedir}blocklist.dat", "rb") as f:
-            _bldata = mmap.mmap(f.fileno(), 0, prot=mmap.PROT_READ)
+        try:
+            with open(f"{cachedir}blocklist.dat", "rb") as f:
+                _bldata = mmap.mmap(f.fileno(), 0, prot=mmap.PROT_READ)
+        except FileNotFoundError:
+            sys.exit("blocklist.dat not found, you need to run --update-bl")
 
     inval_b = inval.to_bytes((inval.bit_length() + 7) // 8, byteorder="big")
 
