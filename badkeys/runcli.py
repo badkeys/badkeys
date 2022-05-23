@@ -5,7 +5,7 @@ import re
 
 from .checks import detectandcheck, allchecks
 from .checks import checkrsa, checkcrt, checksshpubkey
-from .allkeys import urllookup
+from .allkeys import urllookup, loadextrabl
 from .scanssh import scanssh
 from .scantls import scantls
 from .update import update_bl
@@ -86,6 +86,7 @@ def runcli():
         action="store_true",
         help="Update blocklist and optional URL lookup list",
     )
+    ap.add_argument("--extrabl", help="comma-separated list of extra blocklist files")
     ap.add_argument(
         "-t",
         "--tls",
@@ -128,6 +129,11 @@ def runcli():
     if not args.infiles:
         ap.print_help()
         sys.exit()
+
+    if args.extrabl:
+        extrabl = args.extrabl.split(",")
+        for bl in extrabl:
+            loadextrabl(bl)
 
     if args.checks:
         userchecks = args.checks.split(",")

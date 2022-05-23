@@ -1,2 +1,2 @@
-__all__ = ["blocklist", "urllookup"]
-from .block import blocklist, urllookup
+__all__ = ["blocklist", "loadextrabl", "urllookup"]
+from .block import blocklist, loadextrabl, urllookup

@@ -6,6 +6,7 @@ import sys
 
 _blmeta = False
 _bldata = False
+_blextra = []
 
 
 def _loadblmeta():
@@ -21,6 +22,34 @@ def _loadblmeta():
         blid = int(bl["id"])
         mlist[blid] = bl
     _blmeta = mlist
+
+
+def _checkbl(bldata, s256trunc):
+    fbegin = 0
+    fend = (len(bldata) // 16) - 1
+    while fbegin <= fend:
+        fmiddle = (fbegin + fend) // 2
+        val = bldata[fmiddle * 16 : fmiddle * 16 + 15]
+        if s256trunc == val:
+            bl_id = int(bldata[fmiddle * 16 + 15])
+            if bl_id in _blmeta:
+                subtest = _blmeta[bl_id]["name"]
+            else:
+                subtest = f"id{bl_id}"
+            lhash = s256trunc[0:8].hex()
+            return {
+                "detected": True,
+                "subtest": subtest,
+                "blid": bl_id,
+                "lookup": lhash,
+                "debug": "Truncated Hash: %s" % s256trunc.hex(),
+            }
+        if s256trunc > val:
+            fbegin = fmiddle + 1
+        else:
+            fend = fmiddle - 1
+
+    return False
 
 
 def blocklist(inval):
@@ -41,31 +70,18 @@ def blocklist(inval):
 
     s256trunc = hashlib.sha256(inval_b).digest()[:15]
 
-    fbegin = 0
-    fend = (len(_bldata) // 16) - 1
-    while fbegin <= fend:
-        fmiddle = (fbegin + fend) // 2
-        val = _bldata[fmiddle * 16 : fmiddle * 16 + 15]
-        if s256trunc == val:
-            bl_id = int(_bldata[fmiddle * 16 + 15])
-            if bl_id in _blmeta:
-                subtest = _blmeta[bl_id]["name"]
-            else:
-                subtest = f"id{bl_id}"
-            lhash = s256trunc[0:8].hex()
-            return {
-                "detected": True,
-                "subtest": subtest,
-                "blid": bl_id,
-                "lookup": lhash,
-                "debug": "Truncated Hash: %s" % s256trunc.hex(),
-            }
-        if s256trunc > val:
-            fbegin = fmiddle + 1
-        else:
-            fend = fmiddle - 1
+    ret = _checkbl(_bldata, s256trunc)
 
-    return False
+    if not ret and _blextra != []:
+        for bl in _blextra:
+            ret = _checkbl(bl, s256trunc)
+
+    return ret
+
+
+def loadextrabl(fpath):
+    with open(fpath, "rb") as f:
+        _blextra.append(mmap.mmap(f.fileno(), 0, prot=mmap.PROT_READ))
 
 
 def urllookup(blid, lhash, type="show"):
