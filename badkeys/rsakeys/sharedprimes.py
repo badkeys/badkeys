@@ -23,6 +23,6 @@ def sharedprimes(n, e=0):
         p = breakme
         q = n // p
         if n == (p * q):
-            return {"detected": True, "p": p, "q": q}
+            return {"detected": True, "p": int(p), "q": int(q)}
     # Factoring failed
     return {"detected": True}
