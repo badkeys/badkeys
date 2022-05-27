@@ -2,6 +2,7 @@ import sys
 import argparse
 import signal
 import re
+import json
 
 from .checks import detectandcheck, allchecks
 from .checks import checkrsa, checkcrt, checksshpubkey
@@ -23,6 +24,9 @@ def _sighandler(_signum, _handler):
 
 
 def _printresults(key, where, args):
+    if args.json:
+        print(json.dumps(key))
+        return
     kn = key["type"]
     if "bits" in key:
         kn += f"[{key['bits']}]"
@@ -77,6 +81,7 @@ def runcli():
     )
     ap.add_argument("-a", "--all", action="store_true", help="Show all keys")
     ap.add_argument("-v", "--verbose", action="store_true", help="Verbose output")
+    ap.add_argument("-j", "--json", action="store_true", help="JSON output")
     ap.add_argument(
         "-u", "--url", action="store_true", help="Show private key URL if possible"
     )
