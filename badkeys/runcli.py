@@ -67,6 +67,7 @@ def runcli():
     ap.add_argument(
         "-c", "--checks", help="Comma-separated list of checks (default: all)"
     )
+    ap.add_argument("--list", action="store_true", help="Show list of possible checks")
     ap.add_argument(
         "-m",
         "--moduli",
@@ -129,6 +130,11 @@ def runcli():
         sys.exit()
     if args.update_bl:
         update_bl()
+        sys.exit()
+
+    if args.list:
+        for k, v in allchecks.items():
+            print(f"{k}/{v['type']} keys: {v['desc']}")
         sys.exit()
 
     if not args.infiles:
