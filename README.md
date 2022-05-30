@@ -7,21 +7,26 @@ Tool and library to check cryptographic public keys for known vulnerabilities
 badkeys checks public keys in a variety of formats for known vulnerabilities.
 A web version can be found at [badkeys.info](https://badkeys.info/).
 
-# usage
+# install
 
-It is currently recommended to run badkeys directly from the repository. A
-[pip package](https://pypi.org/project/badkeys/) is available, but currently
-does not contain the latest code.
+badkeys can be installed via pip:
+```
+pip3 install badkeys
+```
+
+Alternatively you can call _./badkeys-cli_ directly from the git repository.
+
+# usage
 
 Before using badkeys you need to download the blocklist data:
 ```
-./badkeys-cli --update-bl
+badkeys --update-bl
 ```
 
-After that you can call _badkeys-cli_ and pass files with cryptographic
+After that you can call _badkeys_ and pass files with cryptographic
 public keys as the parameter:
 ```
-./badkeys-cli test.crt my.key
+badkeys test.crt my.key
 ```
 
 It will automatically try to detect the file format. Supported are public and
@@ -30,8 +35,8 @@ certificate signing requests (CSRs) and SSH public keys.
 You can find some test keys in the _tests/data_ directory.
 
 By default badkeys will only output information about vulnerable keys, meaning
-there will be no output if no vulnerabilities are found. The _-v_ parameter
-enables verbose output.
+there will be no output if no vulnerabilities are found. The _-a_ parameter
+creates output for all keys.
 
 # scanning
 
