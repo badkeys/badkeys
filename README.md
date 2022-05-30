@@ -9,7 +9,7 @@ A web version can be found at [badkeys.info](https://badkeys.info/).
 
 # install
 
-badkeys can be installed via pip:
+badkeys can be installed [via pip](https://pypi.org/project/badkeys/):
 ```
 pip3 install badkeys
 ```
