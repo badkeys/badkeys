@@ -177,6 +177,18 @@ def checkcsr(rawcsr, checks=allchecks.keys()):
     return _checkkey(csr.public_key(), checks)
 
 
+def checksshprivkey(sshkey, checks=allchecks.keys()):
+    try:
+        pkey = serialization.load_ssh_private_key(sshkey.encode(), password=None)
+    except ValueError:
+        # happens e.g. on password-protected keys
+        return {"type": "unsupported", "results": {}}
+    except cryptography.exceptions.UnsupportedAlgorithm:
+        # happens e.g. on pre-standard sk-ssh-ed25519@openssh.com keys
+        return {"type": "unsupported", "results": {}}
+    return _checkkey(pkey.public_key(), checks)
+
+
 def checksshpubkey(sshkey, checks=allchecks.keys()):
     try:
         pkey = serialization.load_ssh_public_key(sshkey.encode())
@@ -206,6 +218,8 @@ def detectandcheck(inkey, checks=allchecks.keys()):
         return checkprivkey(inkey, checks)
     elif "-----BEGIN EC PRIVATE KEY-----" in inkey:
         return checkprivkey(inkey, checks)
+    elif "-----BEGIN OPENSSH PRIVATE KEY-----" in inkey:
+        return checksshprivkey(inkey, checks)
     elif inkey.startswith("ssh-") or inkey.startswith("ecdsa-"):
         return checksshpubkey(inkey, checks)
     else:
