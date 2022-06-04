@@ -177,7 +177,7 @@ def runcli():
         if fn == "-":
             f = sys.stdin
         else:
-            f = open(fn)
+            f = open(fn, errors="replace")
         if args.moduli:
             for line in f:
                 count += 1
