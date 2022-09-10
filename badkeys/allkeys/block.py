@@ -62,7 +62,7 @@ def blocklist(inval):
         cachedir = str(pathlib.Path.home()) + "/.cache/badkeys/"
         try:
             with open(f"{cachedir}blocklist.dat", "rb") as f:
-                _bldata = mmap.mmap(f.fileno(), 0, prot=mmap.ACCESS_READ)
+                _bldata = mmap.mmap(f.fileno(), 0, access=mmap.ACCESS_READ)
         except FileNotFoundError:
             sys.exit("blocklist.dat not found, you need to run --update-bl")
 
