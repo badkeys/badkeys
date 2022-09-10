@@ -58,7 +58,10 @@ def _printresults(key, where, args):
 
 def runcli():
     global count
-    signal.signal(signal.SIGHUP, _sighandler)
+    try:
+        signal.signal(signal.SIGHUP, _sighandler)
+    except AttributeError:  # for OSes without SIGHUP (e.g. Windows)
+        pass
 
     ap = argparse.ArgumentParser()
     ap.add_argument(
