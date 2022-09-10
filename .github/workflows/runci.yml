@@ -5,13 +5,14 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
     strategy:
       matrix:
         python-version: [3.8,3.x]
+        os: [ubuntu-latest,windows-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
-      - name: Set up Python ${{ matrix.python-version }}
+      - name: Set up Python ${{ matrix.python-version }} ${{ matrix.os }}
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
@@ -21,5 +22,6 @@ jobs:
           pip install -r requirements.txt
           pip install pycodestyle pyflakes dlint pyupgrade black
       - name: Run tests
+        shell: bash
         run: |
           ./runci.sh
