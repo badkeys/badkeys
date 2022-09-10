@@ -22,5 +22,6 @@ jobs:
           pip install -r requirements.txt
           pip install pycodestyle pyflakes dlint pyupgrade black
       - name: Run tests
+        shell: bash
         run: |
           ./runci.sh
