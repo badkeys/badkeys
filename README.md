@@ -62,7 +62,7 @@ in alpha state and the API may change regularly.
 
 badkeys was written by [Hanno Böck](https://hboeck.de).
 
-This work was funded in part by Industriens Fond through the CIDI project
-(Cybersecure IOT in Danish Industry) and in part by the
+This work was originally funded in 2022 by Industriens Fond through the CIDI project
+(Cybersecure IOT in Danish Industry) and the
 [Center for Information Security and Trust (CISAT)](https://cisat.dk/)
 at the IT University of Copenhagen, Denmark.
