@@ -17,7 +17,15 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
         run: |
+          sudo apt-get update
+          # gmpy2 needs mpfr headers to build
+          sudo apt-get -y install libmpfr-dev libmpc-dev
           python -m pip install --upgrade pip
+
+          # force gmpy2 alpha for python 3.12 support,
+          # please remove later
+          pip install 'gmpy2>=2.2.0a1'
+
           pip install -r requirements.txt
           pip install pycodestyle pyflakes dlint pyupgrade black
       - name: Run tests
