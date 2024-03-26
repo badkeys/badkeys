@@ -17,9 +17,9 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
         run: |
-          apt-get update
+          sudo apt-get update
           # gmpy2 needs mpfr headers to build
-          apt-get -y install libmpfr-dev
+          sudo apt-get -y install libmpfr-dev
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install pycodestyle pyflakes dlint pyupgrade black
