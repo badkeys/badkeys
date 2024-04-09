@@ -6,7 +6,7 @@ set -euo pipefail
 # linters etc.
 pycodestyle --max-line-length=88 --ignore=W503,E203 badkeys-cli .
 pyflakes .
-pyupgrade --py311-plus badkeys-cli $(find -name \*.py)
+pyupgrade --py312-plus badkeys-cli $(find -name \*.py)
 black --check --diff .
 
 # security checks
