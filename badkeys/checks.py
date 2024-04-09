@@ -12,6 +12,7 @@ from .rsakeys import roca
 from .rsakeys import rsainvalid
 from .rsakeys import sharedprimes
 from .rsakeys import smallfactors
+from .rsakeys import xzbackdoor
 from .allkeys import blocklist
 
 # List of available checks
@@ -45,6 +46,11 @@ allchecks = {
         "type": "rsa",
         "function": smallfactors,
         "desc": "Small prime factors (<=65537, usually corrupt)",
+    },
+    "xzbackdoor": {
+        "type": "rsa",
+        "function": xzbackdoor,
+        "desc": "xz backdoor payload in RSA n",
     },
     "blocklist": {
         "type": "all",
