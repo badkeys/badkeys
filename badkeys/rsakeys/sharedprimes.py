@@ -1,5 +1,5 @@
 import gmpy2
-from importlib.resources import open_binary
+from importlib.resources import files
 
 _moduli = {}
 
@@ -13,7 +13,8 @@ def sharedprimes(n, e=0):
         return False
 
     if bits not in _moduli:
-        with open_binary("badkeys.keydata", f"primes{bits}.dat") as f:
+        kp = f"{files('badkeys.keydata')}/primes{bits}.dat"
+        with open(kp, "rb") as f:
             _moduli[bits] = gmpy2.from_binary(f.read())
 
     breakme = gmpy2.gcd(n, _moduli[bits])
