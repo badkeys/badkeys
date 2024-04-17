@@ -1,0 +1,42 @@
+[project]
+name = "badkeys"
+version = "0.0.6"
+description = "Check cryptographic keys for known weaknesses"
+readme = "README.md"
+authors = [{name = "Hanno Böck"}]
+classifiers = [
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3 :: Only",
+  "Natural Language :: English",
+  "Development Status :: 3 - Alpha"
+]
+license = {text = "MIT"}
+keywords = ["security", "cryptography", "rsa"]
+requires-python = ">=3.9"
+dependencies = [
+  "gmpy2",
+  "cryptography"
+]
+
+[project.urls]
+"Homepage" = "https://badkeys.info/"
+"Source" = "https://github.com/badkeys/badkeys"
+"Bug Tracker" = "https://github.com/badkeys/badkeys/issues"
+
+
+[build-system]
+requires = ["setuptools >= 61.0.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["badkeys"]
+
+[tool.setuptools]
+package-data = {"keydata" = ["*.dat"]}
+
+[project.scripts]
+badkeys = "badkeys.runcli:runcli"
+
+[project.optional-dependencies]
+urllookup = ["binary-file-search"]
+sshscan = ["paramiko"]
