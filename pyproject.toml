@@ -39,4 +39,4 @@ badkeys = "badkeys.runcli:runcli"
 
 [project.optional-dependencies]
 urllookup = ["binary-file-search"]
-sshscan = ["paramiko"]
+ssh = ["paramiko"]
