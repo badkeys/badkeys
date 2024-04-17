@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-./badkeys-cli --update-bl
+PYTHONWARNINGS=e ./badkeys-cli --update-bl
 
 # linters etc.
 pycodestyle --max-line-length=88 --ignore=W503,E203 badkeys-cli .
