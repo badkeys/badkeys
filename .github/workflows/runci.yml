@@ -1,13 +1,14 @@
+---
 name: runci
-on:
-- pull_request
-- push
+"on":
+  - pull_request
+  - push
 
 jobs:
   build:
     strategy:
       matrix:
-        python-version: [3.9,3.x]
+        python-version: [3.9, 3.x]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
