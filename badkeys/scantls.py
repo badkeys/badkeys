@@ -8,6 +8,6 @@ def scantls(host, port=443, checks=allchecks.keys()):
         # this currently does not support multiple
         # certificates on one host
         cert = ssl.get_server_certificate((host, port))
-    except (ConnectionRefusedError, ssl.SSLError):
+    except (ConnectionRefusedError, ssl.SSLError, OSError) as e:
         return []
     return [checkcrt(cert, checks=checks)]
