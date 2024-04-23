@@ -53,6 +53,15 @@ TLS and SSH scanning can be combined:
 badkeys -ts example.org
 ```
 
+Note that the scanning modes have limitations. It is often more desirable to use other
+tools to collect TLS/SSH keys and scan them locally with badkeys.
+
+SSH scanning needs [paramiko](https://www.paramiko.org/) as an additional dependency.
+
+TLS scanning can't detect multiple certificates on one host (e.g. ECDSA and RSA). This
+is a [limitation of Python's ssl.get_server_certificate() function](
+https://bugs.python.org/issue31892).
+
 # Python module and API
 
 badkeys can also be used as a Python module. However currently the software is in alpha
