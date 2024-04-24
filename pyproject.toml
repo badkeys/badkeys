@@ -38,3 +38,6 @@ badkeys = "badkeys.runcli:runcli"
 [project.optional-dependencies]
 urllookup = ["binary-file-search"]
 ssh = ["paramiko"]
+
+[tool.setuptools.package-data]
+"badkeys.keydata" = ["*.dat"]
