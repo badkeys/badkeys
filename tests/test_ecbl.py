@@ -7,6 +7,7 @@ TDPATH = f"{os.path.dirname(__file__)}/data/"
 
 
 class TestEcbl(unittest.TestCase):
+    @unittest.skipUnless(os.environ.get("RUNBLTESTS"), "Not running blocklist tests")
     def test_ecbl(self):
         with open(f"{TDPATH}ec-p256-rfc-example.key") as f:
             key = f.read()

@@ -7,6 +7,7 @@ TDPATH = f"{os.path.dirname(__file__)}/data/"
 
 
 class TestRsabl(unittest.TestCase):
+    @unittest.skipUnless(os.environ.get("RUNBLTESTS"), "Not running blocklist tests")
     def test_rsabl(self):
         with open(f"{TDPATH}rsa-debianweak.key") as f:
             key = f.read()
