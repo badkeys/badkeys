@@ -1,6 +1,6 @@
 [project]
 name = "badkeys"
-version = "0.0.7"
+version = "0.0.8"
 description = "Check cryptographic keys for known weaknesses"
 readme = "README.md"
 authors = [{name = "Hanno Böck"}]
