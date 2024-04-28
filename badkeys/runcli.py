@@ -5,11 +5,12 @@ import re
 import json
 
 from .checks import detectandcheck, allchecks
-from .checks import checkrsa, checkcrt, checksshpubkey
+from .checks import checkrsa, checkcrt, checksshpubkey, checkpubkey
 from .allkeys import urllookup, loadextrabl
 from .scanssh import scanssh
 from .scantls import scantls
 from .update import update_bl
+from .dkim import parsedkim
 
 MAXINPUTSIZE = 10000
 
@@ -83,6 +84,7 @@ def runcli():
     ap.add_argument(
         "--ssh-lines", action="store_true", help="Input file is list of ssh public keys"
     )
+    ap.add_argument("--dkim", action="store_true", help="Scan DKIM records (in files)")
     ap.add_argument("-a", "--all", action="store_true", help="Show all keys")
     ap.add_argument("-v", "--verbose", action="store_true", help="Verbose output")
     ap.add_argument("-j", "--json", action="store_true", help="JSON output")
@@ -213,6 +215,16 @@ def runcli():
                 _printresults(r, desc, args)
                 lno += 1
                 count += 1
+        elif args.dkim:
+            lno = 0
+            for line in f:
+                desc = f"{fn}[{lno}]"
+                key = parsedkim(line)
+                if key:
+                    r = checkpubkey(key, checks=userchecks)
+                    _printresults(r, desc, args)
+                    count += 1
+                lno += 1
         else:
             fcontent = f.read(MAXINPUTSIZE)
             r = detectandcheck(fcontent, checks=userchecks)
