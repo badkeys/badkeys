@@ -1,4 +1,5 @@
 import hashlib
+import warnings
 import cryptography
 from cryptography import x509
 from cryptography.hazmat.primitives.asymmetric import rsa, dsa, ec, dh
@@ -58,6 +59,14 @@ allchecks = {
         "desc": "Blocklists of compromised keys",
     },
 }
+
+# cryptography warns about SSH DSA keys being deprecated.
+# For now, disable the warnings. Needs a better long-term solution.
+warnings.filterwarnings(
+    "ignore",
+    category=cryptography.utils.CryptographyDeprecationWarning,
+    module="badkeys.checks",
+)
 
 
 def _checkkey(key, checks):
