@@ -34,6 +34,16 @@ class TestBlocklist(unittest.TestCase):
         r = badkeys.checkpubkey(key, checks=["blocklist"])
         self.assertFalse(r["results"])
 
+    # Testing key in SSH DSA pubkey format.
+    # Python cryptography plans to deprecate this format,
+    # we will need to find a solution.
+    @unittest.skipUnless(os.environ.get("RUNBLTESTS"), "Not running blocklist tests")
+    def test_dsabl(self):
+        with open(f"{TDPATH}dsa-sshpub-ietf-example.key") as f:
+            key = f.read()
+        r = badkeys.checksshpubkey(key, checks=["blocklist"])
+        self.assertTrue("blocklist" in r["results"])
+
 
 if __name__ == "__main__":
     unittest.main()
