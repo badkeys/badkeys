@@ -193,7 +193,7 @@ def runcli():
                 records = dns.resolver.resolve(host, "TXT").response
             except dns.resolver.NXDOMAIN:
                 continue
-            for record in records.answer[0]:
+            for record in records.answer[-1]:
                 dk = b"".join(record.strings).decode()
                 key = parsedkim(dk)
                 if key:
