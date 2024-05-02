@@ -11,6 +11,7 @@ from .scanssh import scanssh
 from .scantls import scantls
 from .update import update_bl
 from .dkim import parsedkim
+from . import __version__
 
 MAXINPUTSIZE = 10000
 
@@ -123,6 +124,7 @@ def runcli():
         help="Scan SSH (pass hostnames or IPs instead of files)",
     )
     ap.add_argument("--ssh-ports", default="22", help="SSH ports (comma-separated)")
+    ap.add_argument("--version", action="version", version=__version__)
     args = ap.parse_args()
 
     if (

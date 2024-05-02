@@ -1,6 +1,5 @@
 [project]
 name = "badkeys"
-version = "0.0.8"
 description = "Check cryptographic keys for known weaknesses"
 readme = "README.md"
 authors = [{name = "Hanno Böck"}]
@@ -22,6 +21,10 @@ dependencies = [
   "gmpy2",
   "cryptography"
 ]
+dynamic = ["version"]
+
+[tool.setuptools.dynamic]
+version = {attr = "badkeys.__version__"}
 
 [project.urls]
 "Homepage" = "https://badkeys.info/"
