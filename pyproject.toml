@@ -38,3 +38,4 @@ badkeys = "badkeys.runcli:runcli"
 [project.optional-dependencies]
 urllookup = ["binary-file-search"]
 ssh = ["paramiko"]
+dkim = ["dnspython"]

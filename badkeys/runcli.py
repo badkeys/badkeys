@@ -85,6 +85,11 @@ def runcli():
         "--ssh-lines", action="store_true", help="Input file is list of ssh public keys"
     )
     ap.add_argument("--dkim", action="store_true", help="Scan DKIM records (in files)")
+    ap.add_argument(
+        "--dkim-dns",
+        action="store_true",
+        help="Scan DKIM DNS record (hostnames instead of files)",
+    )
     ap.add_argument("-a", "--all", action="store_true", help="Show all keys")
     ap.add_argument("-v", "--verbose", action="store_true", help="Verbose output")
     ap.add_argument("-j", "--json", action="store_true", help="JSON output")
@@ -127,7 +132,9 @@ def runcli():
     ):
         sys.exit("Multiple input format parameters cannot be combined.")
 
-    if (args.moduli or args.crt_lines or args.ssh_lines) and (args.tls or args.ssh):
+    if (args.moduli or args.crt_lines or args.ssh_lines) and (
+        args.tls or args.ssh or args.dkim_dns
+    ):
         sys.exit("Scan modes and input file modes cannot be combined.")
 
     if args.update_bl_and_urls:
@@ -175,7 +182,25 @@ def runcli():
                 for k in keys:
                     _printresults(k, f"ssh:{host}:{port}", args)
 
-    if args.ssh or args.tls:
+    if args.dkim_dns:
+        try:
+            import dns.resolver
+        except ModuleNotFoundError:
+            sys.stderr.write("Error: DKIM DNS record scanning needs dnspython\n")
+            sys.exit(1)
+        for host in args.infiles:
+            try:
+                records = dns.resolver.resolve(host, "TXT").response
+            except dns.resolver.NXDOMAIN:
+                continue
+            for record in records.answer[0]:
+                dk = b"".join(record.strings).decode()
+                key = parsedkim(dk)
+                if key:
+                    r = checkpubkey(key, checks=userchecks)
+                    _printresults(r, host, args)
+
+    if args.ssh or args.tls or args.dkim_dns:
         sys.exit(1)
 
     for fn in args.infiles:
