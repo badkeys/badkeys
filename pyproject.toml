@@ -26,6 +26,8 @@ dynamic = ["version"]
 [tool.setuptools.dynamic]
 version = {attr = "badkeys.__version__"}
 
+[tool.setuptools_scm]
+
 [project.urls]
 "Homepage" = "https://badkeys.info/"
 "Source" = "https://github.com/badkeys/badkeys"
