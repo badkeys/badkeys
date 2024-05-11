@@ -1,9 +1,9 @@
 import ssl
 
-from .checks import checkcrt, allchecks
+from .checks import checkcrt, defaultchecks
 
 
-def scantls(host, port=443, checks=allchecks.keys()):
+def scantls(host, port=443, checks=defaultchecks.keys()):
     try:
         # this currently does not support multiple
         # certificates on one host

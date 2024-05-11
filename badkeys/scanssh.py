@@ -2,10 +2,10 @@ import contextlib
 import io
 import sys
 
-from .checks import checksshpubkey, allchecks
+from .checks import checksshpubkey, defaultchecks
 
 
-def scanssh(host, port=22, checks=allchecks.keys()):
+def scanssh(host, port=22, checks=defaultchecks.keys()):
     try:
         import paramiko
     except ModuleNotFoundError:

@@ -4,7 +4,7 @@ import signal
 import re
 import json
 
-from .checks import detectandcheck, allchecks
+from .checks import detectandcheck, defaultchecks, allchecks
 from .checks import checkrsa, checkcrt, checksshpubkey, checkpubkey
 from .allkeys import urllookup, loadextrabl
 from .scanssh import scanssh
@@ -92,6 +92,12 @@ def runcli():
         help="Scan DKIM DNS record (hostnames instead of files)",
     )
     ap.add_argument("-a", "--all", action="store_true", help="Show all keys")
+    ap.add_argument(
+        "-w",
+        "--warnings",
+        action="store_true",
+        help="Enable extra warnings (keysize etc.)",
+    )
     ap.add_argument("-v", "--verbose", action="store_true", help="Verbose output")
     ap.add_argument("-j", "--json", action="store_true", help="JSON output")
     ap.add_argument(
@@ -166,7 +172,10 @@ def runcli():
             if c not in allchecks:
                 sys.exit(f"{c} is not a valid check")
     else:
-        userchecks = allchecks.keys()
+        if args.warnings:
+            userchecks = allchecks.keys()
+        else:
+            userchecks = defaultchecks.keys()
 
     if args.tls:
         ports = [int(p) for p in args.tls_ports.split(",")]

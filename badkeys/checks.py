@@ -14,10 +14,11 @@ from .rsakeys import rsainvalid
 from .rsakeys import sharedprimes
 from .rsakeys import smallfactors
 from .rsakeys import xzbackdoor
+from .rsakeys import rsawarnings
 from .allkeys import blocklist
 
 # List of available checks
-allchecks = {
+defaultchecks = {
     "fermat": {
         "type": "rsa",
         "function": fermat,
@@ -59,6 +60,16 @@ allchecks = {
         "desc": "Blocklists of compromised keys",
     },
 }
+
+warningchecks = {
+    "rsawarnings": {
+        "type": "rsa",
+        "function": rsawarnings,
+        "desc": "RSA key size and exponent warnings",
+    },
+}
+
+allchecks = defaultchecks | warningchecks
 
 # cryptography warns about SSH DSA keys being deprecated.
 # For now, disable the warnings. Needs a better long-term solution.
@@ -121,7 +132,7 @@ def _checkkey(key, checks):
     return r
 
 
-def checkrsa(n, e=65537, checks=allchecks.keys()):
+def checkrsa(n, e=65537, checks=defaultchecks.keys()):
     results = {}
     for check in checks:
         callcheck = allchecks[check]["function"]
@@ -136,7 +147,7 @@ def checkrsa(n, e=65537, checks=allchecks.keys()):
     return results
 
 
-def checkall(x, checks=allchecks.keys()):
+def checkall(x, checks=defaultchecks.keys()):
     results = {}
     for check in checks:
         if allchecks[check]["type"] != "all":
@@ -148,7 +159,7 @@ def checkall(x, checks=allchecks.keys()):
     return results
 
 
-def checkpubkey(rawkey, checks=allchecks.keys()):
+def checkpubkey(rawkey, checks=defaultchecks.keys()):
     try:
         key = serialization.load_pem_public_key(rawkey.encode())
     except ValueError:
@@ -157,7 +168,7 @@ def checkpubkey(rawkey, checks=allchecks.keys()):
     return _checkkey(key, checks)
 
 
-def checkprivkey(rawkey, checks=allchecks.keys()):
+def checkprivkey(rawkey, checks=defaultchecks.keys()):
     try:
         priv = serialization.load_pem_private_key(rawkey.encode(), password=None)
     except ValueError:
@@ -172,7 +183,7 @@ def checkprivkey(rawkey, checks=allchecks.keys()):
     return _checkkey(priv.public_key(), checks)
 
 
-def checkcrt(rawcert, checks=allchecks.keys()):
+def checkcrt(rawcert, checks=defaultchecks.keys()):
     try:
         crt = x509.load_pem_x509_certificate(rawcert.encode())
     except (ValueError, cryptography.x509.base.InvalidVersion):
@@ -187,12 +198,12 @@ def checkcrt(rawcert, checks=allchecks.keys()):
         return {"type": "unsupported", "results": {}}
 
 
-def checkcsr(rawcsr, checks=allchecks.keys()):
+def checkcsr(rawcsr, checks=defaultchecks.keys()):
     csr = x509.load_pem_x509_csr(rawcsr.encode())
     return _checkkey(csr.public_key(), checks)
 
 
-def checksshprivkey(sshkey, checks=allchecks.keys()):
+def checksshprivkey(sshkey, checks=defaultchecks.keys()):
     try:
         pkey = serialization.load_ssh_private_key(sshkey.encode(), password=None)
     except ValueError:
@@ -204,7 +215,7 @@ def checksshprivkey(sshkey, checks=allchecks.keys()):
     return _checkkey(pkey.public_key(), checks)
 
 
-def checksshpubkey(sshkey, checks=allchecks.keys()):
+def checksshpubkey(sshkey, checks=defaultchecks.keys()):
     try:
         pkey = serialization.load_ssh_public_key(sshkey.encode())
     except ValueError:
@@ -216,7 +227,7 @@ def checksshpubkey(sshkey, checks=allchecks.keys()):
     return _checkkey(pkey, checks)
 
 
-def detectandcheck(inkey, checks=allchecks.keys()):
+def detectandcheck(inkey, checks=defaultchecks.keys()):
     if "-----BEGIN CERTIFICATE-----" in inkey:
         return checkcrt(inkey, checks)
     elif "-----BEGIN CERTIFICATE REQUEST-----" in inkey:

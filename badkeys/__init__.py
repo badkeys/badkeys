@@ -1,5 +1,7 @@
 __version__ = "0.0.9"
 __all__ = [
+    "defaultchecks",
+    "warningchecks",
     "allchecks",
     "checkrsa",
     "checkpubkey",
@@ -11,6 +13,8 @@ __all__ = [
     "scanssh",
 ]
 from .checks import (
+    defaultchecks,
+    warningchecks,
     allchecks,
     checkrsa,
     checkpubkey,

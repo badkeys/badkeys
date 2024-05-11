@@ -5,6 +5,7 @@ __all__ = [
     "rsainvalid",
     "sharedprimes",
     "smallfactors",
+    "rsawarnings",
     "xzbackdoor",
 ]
 from .fermat import fermat
@@ -14,3 +15,4 @@ from .rsainvalid import rsainvalid
 from .sharedprimes import sharedprimes
 from .smallfactors import smallfactors
 from .xzbackdoor import xzbackdoor
+from .rsawarnings import rsawarnings
