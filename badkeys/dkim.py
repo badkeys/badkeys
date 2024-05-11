@@ -31,8 +31,6 @@ def parsedkim(line):
         return False
 
     if dkim["k"] == "rsa":
-        if dkim["p"].startswith("MIIE"):
-            sys.stderr.write("DKIM key looks like private key\n")
         return PUBPRE + dkim["p"] + PUBPOST
     if dkim["k"] == "ed25519":
         der = EDASN1 + base64.b64decode(dkim["p"])
