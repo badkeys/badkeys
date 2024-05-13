@@ -25,10 +25,12 @@ def parsedkim(line):
         key = s[0].strip()
         value = s[1].strip()
         dkim[key] = value
-    if "k" not in dkim or "p" not in dkim:
+    if "p" not in dkim:
         return False
     if dkim["p"] == "":
         return False
+    if "k" not in dkim:
+        dkim["k"] = "rsa"
 
     if dkim["k"] == "rsa":
         return PUBPRE + dkim["p"] + PUBPOST
