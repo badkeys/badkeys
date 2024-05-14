@@ -14,7 +14,10 @@ badkeys can be installed [via pip](https://pypi.org/project/badkeys/):
 pip3 install badkeys
 ```
 
-Alternatively, you can call _./badkeys-cli_ directly from the git repository.
+You may want to use a virtual environment. For details about different installation
+options, please [check the official Python documentation](
+https://packaging.python.org/en/latest/tutorials/installing-packages/). Alternatively,
+you can directly call _./badkeys-cli_ directly from the git repository.
 
 # usage
 
