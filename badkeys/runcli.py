@@ -202,7 +202,8 @@ def runcli():
         for host in args.infiles:
             try:
                 records = dns.resolver.resolve(host, "TXT").response
-            except dns.resolver.NXDOMAIN:
+            except (dns.resolver.NXDOMAIN, dns.resolver.NoAnswer):
+                sys.stderr.write(f"No TXT record for {host} found\n")
                 continue
             for record in records.answer[-1]:
                 dk = b"".join(record.strings).decode()
