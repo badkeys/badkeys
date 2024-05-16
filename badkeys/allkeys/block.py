@@ -104,7 +104,6 @@ def urllookup(blid, lhash, type="show"):
         sys.stderr.write("ERROR: lookup.txt not found, run --update-bl-and-urls\n")
         return False
     except KeyError:
-        sys.stderr.write("ERROR: URL lookup failed, not found\n")
         return False
     d = _blmeta[blid]
     showurl = f"https://github.com/{d['repo']}/blob/{d['path']}/{x[0][1]}"

@@ -50,6 +50,8 @@ def _printresults(key, where, args):
             url = urllookup(result["blid"], result["lookup"])
             if url:
                 print(url)
+            else:
+                sys.stderr.write("ERROR: URL lookup failed, not found\n")
         if args.verbose and "debug" in result:
             print(result["debug"])
         if args.verbose and "p" in result:
