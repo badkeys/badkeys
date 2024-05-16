@@ -20,4 +20,7 @@ def fermat(n, e=65535):
     p = a + b
     q = a - b
     debugmsg = f"Fermat factorization after {c} rounds, b={b}"
-    return {"p": int(p), "q": int(q), "a": int(a), "b": int(b), "debug": debugmsg}
+    ret = {"p": int(p), "q": int(q), "a": int(a), "b": int(b), "debug": debugmsg}
+    if b == 0:
+        ret["subtest"] = "square"
+    return ret
