@@ -199,7 +199,10 @@ def checkcrt(rawcert, checks=defaultchecks.keys()):
 
 
 def checkcsr(rawcsr, checks=defaultchecks.keys()):
-    csr = x509.load_pem_x509_csr(rawcsr.encode())
+    try:
+        csr = x509.load_pem_x509_csr(rawcsr.encode())
+    except ValueError:
+        return {"type": "unparseable", "results": {}}
     return _checkkey(csr.public_key(), checks)
 
 
