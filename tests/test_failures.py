@@ -12,6 +12,11 @@ class TestFailures(unittest.TestCase):
         r = badkeys.detectandcheck(brokencrt)
         self.assertEqual(r["type"], "unparseable")
 
+    def test_brokencsr(self):
+        brokencsr = "-----BEGIN CERTIFICATE REQUEST-----\nMII"
+        r = badkeys.detectandcheck(brokencsr)
+        self.assertEqual(r["type"], "unparseable")
+
     def test_empty(self):
         r = badkeys.detectandcheck("")
         self.assertEqual(r["type"], "notfound")
