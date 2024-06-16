@@ -71,12 +71,15 @@ def blocklist(inval):
     s256trunc = hashlib.sha256(inval_b).digest()[:15]
 
     ret = _checkbl(_bldata, s256trunc)
+    if ret:
+        return ret
 
-    if not ret and _blextra != []:
-        for bl in _blextra:
-            ret = _checkbl(bl, s256trunc)
+    for bl in _blextra:
+        ret = _checkbl(bl, s256trunc)
+        if ret:
+            return ret
 
-    return ret
+    return False
 
 
 def loadextrabl(fpath):
