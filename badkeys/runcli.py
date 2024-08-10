@@ -33,11 +33,11 @@ def _printresults(key, where, args):
     if "bits" in key:
         kn += f"[{key['bits']}]"
     if key["type"] == "unsupported":
-        print(f"Warning: Unsupported key type, {where}", file=sys.stderr)
+        print(f"WARNING: Unsupported key type, {where}", file=sys.stderr)
     elif key["type"] == "unparseable":
-        print(f"Warning: Unparseable input, {where}", file=sys.stderr)
+        print(f"WARNING: Unparseable input, {where}", file=sys.stderr)
     elif key["type"] == "notfound":
-        print(f"Warning: No key found, {where}", file=sys.stderr)
+        print(f"WARNING: No key found, {where}", file=sys.stderr)
     elif args.verbose or args.all:
         if key["results"] == {}:
             print(f"{kn} key ok, {where}")
@@ -199,7 +199,7 @@ def runcli():
         try:
             import dns.resolver
         except ModuleNotFoundError:
-            sys.stderr.write("Error: DKIM DNS record scanning needs dnspython\n")
+            sys.stderr.write("ERROR: DKIM DNS record scanning needs dnspython\n")
             sys.exit(1)
         for host in args.infiles:
             try:
