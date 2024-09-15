@@ -102,7 +102,9 @@ def runcli():
     )
     ap.add_argument("-v", "--verbose", action="store_true", help="Verbose output")
     ap.add_argument("-j", "--json", action="store_true", help="JSON output")
-    ap.add_argument("-q", "--quiet", action="store_true", help="Quiet output (for update commands)")
+    ap.add_argument(
+        "-q", "--quiet", action="store_true", help="Quiet output (for update commands)"
+    )
     ap.add_argument(
         "-u", "--url", action="store_true", help="Show private key URL if possible"
     )
