@@ -102,6 +102,7 @@ def runcli():
     )
     ap.add_argument("-v", "--verbose", action="store_true", help="Verbose output")
     ap.add_argument("-j", "--json", action="store_true", help="JSON output")
+    ap.add_argument("-q", "--quiet", action="store_true", help="Quiet output (for update commands)")
     ap.add_argument(
         "-u", "--url", action="store_true", help="Show private key URL if possible"
     )
@@ -148,10 +149,10 @@ def runcli():
         sys.exit("Scan modes and input file modes cannot be combined.")
 
     if args.update_bl_and_urls:
-        update_bl(lookup=True)
+        update_bl(lookup=True, quiet=args.quiet)
         sys.exit()
     if args.update_bl:
-        update_bl()
+        update_bl(quiet=args.quiet)
         sys.exit()
 
     if args.list:

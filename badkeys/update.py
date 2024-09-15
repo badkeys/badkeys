@@ -7,7 +7,7 @@ import hashlib
 import sys
 
 
-def update_bl(lookup=False):
+def update_bl(lookup=False, quiet=False):
     UPDATEURL = "https://update.badkeys.info/"
     BKFORMAT = 0
 
@@ -27,9 +27,11 @@ def update_bl(lookup=False):
         sys.exit("ERROR: Wrong format")
 
     if bkdata == bkdata_old:
-        print("No new data")
+        if not quiet:
+            print("No new data")
     else:
-        print("Writing new badkeysdata.json...")
+        if not quiet:
+            print("Writing new badkeysdata.json...")
         with open(f"{cachedir}badkeysdata.json", "w") as f:
             f.write(bkdata)
 
@@ -40,7 +42,8 @@ def update_bl(lookup=False):
             oldbl_sha256 = hashlib.sha256(f.read()).hexdigest()
 
     if oldbl_sha256 != data["blocklist_sha256"]:
-        print("Downloading blocklist.dat...")
+        if not quiet:
+            print("Downloading blocklist.dat...")
         xzblocklist = urllib.request.urlopen(data["blocklist_url"]).read()
         blocklist = lzma.decompress(xzblocklist)
         newbl_sha256 = hashlib.sha256(blocklist).hexdigest()
@@ -59,7 +62,8 @@ def update_bl(lookup=False):
             print("You may want to run --update-bl-and-urls")
 
     if lookup and (oldlu_sha256 != data["lookup_sha256"]):
-        print("Downloading lookup.txt...")
+        if not quiet:
+            print("Downloading lookup.txt...")
         xzlookup = urllib.request.urlopen(data["lookup_url"]).read()
         lookup = lzma.decompress(xzlookup)
         newlu_sha256 = hashlib.sha256(lookup).hexdigest()
