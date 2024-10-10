@@ -74,6 +74,14 @@ state and the API may change regularly.
 
 badkeys was written by [Hanno Böck](https://hboeck.de).
 
+[badkeys is currently funded](https://nlnet.nl/project/badkeys/) through the [NGI0 Core
+Fund](https://nlnet.nl/core), a fund established by [NLnet](https://nlnet.nl/) with
+financial support from the European Commission's [Next Generation Internet](
+https://ngi.eu/) programme, under the aegis of [DG Communications Networks, Content and
+Technology](
+https://commission.europa.eu/about-european-commission/departments-and-executive-agencies/communications-networks-content-and-technology_en)
+under grant agreement No [101092990](https://cordis.europa.eu/project/id/101092990).
+
 This work was initially funded in 2022 by Industriens Fond through the CIDI project
 (Cybersecure IOT in Danish Industry) and the [Center for Information Security and Trust
 (CISAT)](https://cisat.dk/) at the IT University of Copenhagen, Denmark.
