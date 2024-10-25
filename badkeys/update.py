@@ -1,10 +1,10 @@
-import urllib.request
-import os.path
-import pathlib
+import hashlib
 import json
 import lzma
-import hashlib
+import os.path
+import pathlib
 import sys
+import urllib.request
 
 
 def update_bl(lookup=False, quiet=False):

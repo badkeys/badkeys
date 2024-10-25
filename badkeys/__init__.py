@@ -13,15 +13,15 @@ __all__ = [
     "scanssh",
 ]
 from .checks import (
-    defaultchecks,
-    warningchecks,
     allchecks,
-    checkrsa,
-    checkpubkey,
-    checkprivkey,
     checkcrt,
     checkcsr,
+    checkprivkey,
+    checkpubkey,
+    checkrsa,
     checksshpubkey,
+    defaultchecks,
     detectandcheck,
+    warningchecks,
 )
 from .scanssh import scanssh

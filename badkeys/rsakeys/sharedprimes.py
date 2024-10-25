@@ -1,5 +1,6 @@
-import gmpy2
 from importlib.resources import files
+
+import gmpy2
 
 _moduli = {}
 

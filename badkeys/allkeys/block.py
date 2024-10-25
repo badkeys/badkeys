@@ -1,7 +1,7 @@
 import hashlib
+import json
 import mmap
 import pathlib
-import json
 import sys
 
 _blmeta = False
