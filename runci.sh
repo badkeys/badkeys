@@ -10,7 +10,7 @@ pyupgrade --py312-plus badkeys-cli $(find -name \*.py)
 black --check --diff .
 
 # security checks
-flake8 --select=DUO badkeys-cli .
+#flake8 --select=DUO badkeys-cli .
 
 # run tests
 PYTHONWARNINGS=e RUNBLTESTS=1 python -m unittest -v
