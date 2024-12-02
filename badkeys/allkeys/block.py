@@ -42,7 +42,7 @@ def _checkbl(bldata, s256trunc):
                 "subtest": subtest,
                 "blid": bl_id,
                 "lookup": lhash,
-                "debug": "Truncated Hash: %s" % s256trunc.hex(),
+                "debug": f"Truncated Hash: {s256trunc.hex()}",
             }
         if s256trunc > val:
             fbegin = fmiddle + 1
@@ -115,5 +115,5 @@ def urllookup(blid, lhash, type="show"):
         return showurl
     if type == "raw":
         return rawurl
-    if type == "both":
-        return [showurl, rawurl]
+    # "both"
+    return [showurl, rawurl]

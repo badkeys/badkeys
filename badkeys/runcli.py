@@ -176,11 +176,10 @@ def runcli():
         for c in userchecks:
             if c not in allchecks:
                 sys.exit(f"{c} is not a valid check")
+    elif args.warnings:
+        userchecks = allchecks.keys()
     else:
-        if args.warnings:
-            userchecks = allchecks.keys()
-        else:
-            userchecks = defaultchecks.keys()
+        userchecks = defaultchecks.keys()
 
     if args.tls:
         ports = [int(p) for p in args.tls_ports.split(",")]
@@ -229,8 +228,9 @@ def runcli():
             for line in f:
                 count += 1
                 if line.startswith("Modulus="):
-                    line = line[8:]
-                n = int(line, 16)
+                    n = int(line[8:], 16)
+                else:
+                    n = int(line, 16)
                 r = {"type": "rsa", "bits": n.bit_length()}
                 r["results"] = checkrsa(n, checks=userchecks)
                 _printresults(r, f"modulus {n:02x}", args)

@@ -3,9 +3,9 @@ __all__ = [
     "pattern",
     "roca",
     "rsainvalid",
+    "rsawarnings",
     "sharedprimes",
     "smallfactors",
-    "rsawarnings",
     "xzbackdoor",
 ]
 from .fermat import fermat

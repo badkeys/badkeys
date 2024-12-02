@@ -98,11 +98,14 @@ def _checkkey(key, checks):
         r["y"] = key.public_numbers().y
         r["bits"] = key.key_size
         r["results"] = checkall(r["y"], checks=checks)
-    elif (
-        isinstance(key, ed25519.Ed25519PublicKey)
-        or isinstance(key, x25519.X25519PublicKey)
-        or isinstance(key, x448.X448PublicKey)
-        or isinstance(key, ed448.Ed448PublicKey)
+    elif isinstance(
+        key,
+        (
+            ed25519.Ed25519PublicKey,
+            x25519.X25519PublicKey,
+            x448.X448PublicKey,
+            ed448.Ed448PublicKey,
+        ),
     ):
         r["type"] = "ec"
         # For Ed25519 the raw key is the x coordinate
@@ -233,23 +236,22 @@ def checksshpubkey(sshkey, checks=defaultchecks.keys()):
 def detectandcheck(inkey, checks=defaultchecks.keys()):
     if "-----BEGIN CERTIFICATE-----" in inkey:
         return checkcrt(inkey, checks)
-    elif "-----BEGIN CERTIFICATE REQUEST-----" in inkey:
+    if "-----BEGIN CERTIFICATE REQUEST-----" in inkey:
         return checkcsr(inkey, checks)
-    elif "-----BEGIN PUBLIC KEY-----" in inkey:
+    if "-----BEGIN PUBLIC KEY-----" in inkey:
         return checkpubkey(inkey, checks)
-    elif "-----BEGIN RSA PUBLIC KEY-----" in inkey:
+    if "-----BEGIN RSA PUBLIC KEY-----" in inkey:
         return checkpubkey(inkey, checks)
-    elif "-----BEGIN PRIVATE KEY-----" in inkey:
+    if "-----BEGIN PRIVATE KEY-----" in inkey:
         return checkprivkey(inkey, checks)
-    elif "-----BEGIN RSA PRIVATE KEY-----" in inkey:
+    if "-----BEGIN RSA PRIVATE KEY-----" in inkey:
         return checkprivkey(inkey, checks)
-    elif "-----BEGIN DSA PRIVATE KEY-----" in inkey:
+    if "-----BEGIN DSA PRIVATE KEY-----" in inkey:
         return checkprivkey(inkey, checks)
-    elif "-----BEGIN EC PRIVATE KEY-----" in inkey:
+    if "-----BEGIN EC PRIVATE KEY-----" in inkey:
         return checkprivkey(inkey, checks)
-    elif "-----BEGIN OPENSSH PRIVATE KEY-----" in inkey:
+    if "-----BEGIN OPENSSH PRIVATE KEY-----" in inkey:
         return checksshprivkey(inkey, checks)
-    elif inkey.startswith("ssh-") or inkey.startswith("ecdsa-"):
+    if inkey.startswith(("ssh-", "ecdsa-")):
         return checksshpubkey(inkey, checks)
-    else:
-        return {"type": "notfound", "results": {}}
+    return {"type": "notfound", "results": {}}
