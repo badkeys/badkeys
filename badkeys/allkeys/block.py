@@ -87,7 +87,7 @@ def loadextrabl(fpath):
         _blextra.append(mmap.mmap(f.fileno(), 0, prot=mmap.PROT_READ))
 
 
-def urllookup(blid, lhash, type="show"):
+def urllookup(blid, lhash):
     global _blmeta
     try:
         from binary_file_search.BinaryFileSearch import BinaryFileSearch
@@ -111,9 +111,5 @@ def urllookup(blid, lhash, type="show"):
     d = _blmeta[blid]
     showurl = f"https://github.com/{d['repo']}/blob/{d['path']}/{x[0][1]}"
     rawurl = f"https://raw.githubusercontent.com/{d['repo']}/{d['path']}/{x[0][1]}"
-    if type == "show":
-        return showurl
-    if type == "raw":
-        return rawurl
-    # "both"
-    return [showurl, rawurl]
+    print("hello")
+    return showurl, rawurl

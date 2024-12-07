@@ -47,7 +47,7 @@ def _printresults(key, where, args):
             sub = f"/{result['subtest']}"
         print(f"{check}{sub} vulnerability, {kn}, {where}")
         if args.url and "lookup" in result:
-            url = urllookup(result["blid"], result["lookup"])
+            url, _ = urllookup(result["blid"], result["lookup"])
             if url:
                 print(url)
             else:
