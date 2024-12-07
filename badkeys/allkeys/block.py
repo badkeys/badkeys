@@ -111,5 +111,4 @@ def urllookup(blid, lhash):
     d = _blmeta[blid]
     showurl = f"https://github.com/{d['repo']}/blob/{d['path']}/{x[0][1]}"
     rawurl = f"https://raw.githubusercontent.com/{d['repo']}/{d['path']}/{x[0][1]}"
-    print("hello")
     return showurl, rawurl
