@@ -12,10 +12,12 @@ def smallfactors(n, e=0):
     # We calculate this once per program run, we could precalculate the
     # constant, but it's fast enough to calculate on the fly.
     if _smallprimes is None:
-        sp = 2
-        for i in range(3, MAX_PRIME + 1, 2):
-            if gmpy2.is_prime(i):
-                sp *= i
+        sp = 1
+        prime = 2
+        while prime <= MAX_PRIME:
+            sp *= prime
+            prime = gmpy2.next_prime(prime)
+
         _smallprimes = sp
 
     factor = gmpy2.gcd(_smallprimes, n)
