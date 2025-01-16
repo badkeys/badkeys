@@ -93,7 +93,7 @@ def urllookup(blid, lhash):
         from binary_file_search.BinaryFileSearch import BinaryFileSearch
     except ModuleNotFoundError:
         sys.stderr.write("ERROR: URL lookup failed, needs binary_file_search module\n")
-        return False
+        return None, None
 
     if not _blmeta:
         _loadblmeta()
@@ -105,9 +105,9 @@ def urllookup(blid, lhash):
             x = bfs.search(lhash)
     except FileNotFoundError:
         sys.stderr.write("ERROR: lookup.txt not found, run --update-bl-and-urls\n")
-        return False
+        return None, None
     except KeyError:
-        return False
+        return None, None
     d = _blmeta[blid]
     showurl = f"https://github.com/{d['repo']}/blob/{d['path']}/{x[0][1]}"
     rawurl = f"https://raw.githubusercontent.com/{d['repo']}/{d['path']}/{x[0][1]}"
