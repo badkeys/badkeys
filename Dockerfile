@@ -15,4 +15,4 @@ COPY . .
 RUN pip install --root-user-action --no-cache-dir badkeys
 RUN badkeys --update-bl-and-urls
 
-CMD ["badkeys"]
+ENTRYPOINT ["badkeys"]
