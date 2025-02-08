@@ -20,6 +20,7 @@ def checkjwk(key, checks):
         r["type"] = "rsa"
         r["n"] = _ub64toint(key["n"])
         r["e"] = _ub64toint(key["e"])
+        r["bits"] = r["n"].bit_length()
         r["results"] = checkrsa(r["n"], e=r["e"], checks=checks)
     elif key["kty"] == "EC":
         if "x" not in key or "y" not in key or key["x"] == "" or key["y"] == "":
