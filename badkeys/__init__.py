@@ -3,6 +3,7 @@ __all__ = [
     "allchecks",
     "checkcrt",
     "checkcsr",
+    "checkjwk",
     "checkprivkey",
     "checkpubkey",
     "checkrsa",
@@ -24,4 +25,5 @@ from .checks import (
     detectandcheck,
     warningchecks,
 )
+from .jwk import checkjwk
 from .scanssh import scanssh

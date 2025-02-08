@@ -7,6 +7,7 @@ import json
 from .checks import detectandcheck, defaultchecks, allchecks
 from .checks import checkrsa, checkcrt, checksshpubkey, checkpubkey
 from .allkeys import urllookup, loadextrabl
+from .jwk import checkjwk
 from .scanssh import scanssh
 from .scantls import scantls
 from .update import update_bl
@@ -93,6 +94,7 @@ def runcli():
         action="store_true",
         help="Scan DKIM DNS record (hostnames instead of files)",
     )
+    ap.add_argument("--jwk", action="store_true", help="Scan JSON Web Keys / Key Sets")
     ap.add_argument("-a", "--all", action="store_true", help="Show all keys")
     ap.add_argument(
         "-w",
@@ -216,8 +218,23 @@ def runcli():
                     r = checkpubkey(key, checks=userchecks)
                     _printresults(r, host, args)
 
-    if args.ssh or args.tls or args.dkim_dns:
-        sys.exit(1)
+    if args.jwk:
+        for fn in args.infiles:
+            with open(fn) as f:
+                try:
+                    j = json.load(f)
+                except json.decoder.JSONDecodeError:
+                    print(f"ERROR: No valid JSON in {fn}")
+            if "kty" in j:
+                r = checkjwk(j, checks=userchecks)
+                _printresults(r, fn, args)
+            elif "keys" in j:
+                for k in j["keys"]:
+                    r = checkjwk(k, checks=userchecks)
+                    _printresults(r, fn, args)
+
+    if args.ssh or args.tls or args.dkim_dns or args.jwk:
+        sys.exit(0)
 
     for fn in args.infiles:
         if fn == "-":
