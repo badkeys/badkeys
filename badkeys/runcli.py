@@ -11,6 +11,7 @@ from .jwk import checkjwk
 from .scanssh import scanssh
 from .scantls import scantls
 from .update import update_bl
+from .utils import _warnmsg
 from .dkim import parsedkim
 from . import __version__
 
@@ -34,11 +35,11 @@ def _printresults(key, where, args):
     if "bits" in key:
         kn += f"[{key['bits']}]"
     if key["type"] == "unsupported":
-        print(f"WARNING: Unsupported key type, {where}", file=sys.stderr)
+        _warnmsg(f"Unsupported key type, {where}")
     elif key["type"] == "unparseable":
-        print(f"WARNING: Unparseable input, {where}", file=sys.stderr)
+        _warnmsg(f"Unparseable input, {where}")
     elif key["type"] == "notfound":
-        print(f"WARNING: No key found, {where}", file=sys.stderr)
+        _warnmsg(f"No key found, {where}")
     elif args.verbose or args.all:
         if key["results"] == {}:
             print(f"{kn} key ok, {where}")
@@ -224,7 +225,7 @@ def runcli():
                 try:
                     j = json.load(f)
                 except json.decoder.JSONDecodeError:
-                    print(f"ERROR: No valid JSON in {fn}")
+                    _warnmsg(f"No valid JSON, {fn}")
             if "kty" in j:
                 r = checkjwk(j, checks=userchecks)
                 _printresults(r, fn, args)

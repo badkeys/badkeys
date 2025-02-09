@@ -6,6 +6,8 @@ import pathlib
 import sys
 import urllib.request
 
+from .utils import _warnmsg
+
 
 def update_bl(lookup=False, quiet=False):
     UPDATEURL = "https://update.badkeys.info/"
@@ -58,8 +60,8 @@ def update_bl(lookup=False, quiet=False):
         with open(f"{cachedir}lookup.txt", "rb") as f:
             oldlu_sha256 = hashlib.sha256(f.read()).hexdigest()
         if not lookup and (oldlu_sha256 != data["lookup_sha256"]):
-            print("WARNING: Old lookup.txt file found.")
-            print("You may want to run --update-bl-and-urls")
+            _warnmsg("Old lookup.txt file found.")
+            _warnmsg("You may want to run --update-bl-and-urls")
 
     if lookup and (oldlu_sha256 != data["lookup_sha256"]):
         if not quiet:

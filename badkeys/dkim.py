@@ -1,5 +1,6 @@
 import base64
-import sys
+
+from .utils import _warnmsg
 
 PUBPRE = "-----BEGIN PUBLIC KEY-----\n"
 PUBPOST = "\n-----END PUBLIC KEY-----"
@@ -37,5 +38,5 @@ def parsedkim(line):
     if dkim["k"] == "ed25519":
         der = EDASN1 + base64.b64decode(dkim["p"])
         return PUBPRE + base64.b64encode(der).decode() + PUBPOST
-    sys.stderr.write(f"WARNING: Unknown DKIM key type {dkim['k']}\n")
+    _warnmsg(f"Unknown DKIM key type {dkim['k']}")
     return False
