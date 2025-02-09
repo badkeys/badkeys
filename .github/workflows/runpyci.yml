@@ -10,7 +10,7 @@ jobs:
   build:
     strategy:
       matrix:
-        python-version: [3.9, 3.x, 3.14-dev]
+        python-version: [3.9, 3.x  # CUSTOM: Disable 3.14-dev due to gmpy2
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
