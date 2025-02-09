@@ -1,7 +1,7 @@
 import gmpy2
 
 
-def fermat(n, e=65535):
+def fermat(n, e=65535):  # noqa: ARG001
     tries = 100
 
     a = gmpy2.isqrt(n)

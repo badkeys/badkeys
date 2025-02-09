@@ -5,7 +5,7 @@ MAX_PRIME = 65537
 _smallprimes = None
 
 
-def smallfactors(n, e=0):
+def smallfactors(n, e=0):  # noqa: ARG001
     global _smallprimes
 
     # Generate product of all primes <= MAX_PRIME.

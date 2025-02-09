@@ -7,7 +7,7 @@ _moduli = {}
 _supported_bits = [512, 768, 1024, 2048, 4096]
 
 
-def sharedprimes(n, e=0):
+def sharedprimes(n, e=0):  # noqa: ARG001
     global _moduli
     bits = n.bit_length()
     if bits not in _supported_bits:

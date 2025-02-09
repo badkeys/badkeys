@@ -8,7 +8,7 @@
 import gmpy2
 
 
-def roca(element, e=0):
+def roca(element, e=0):  # noqa: ARG001
     generator = 65537
     generator_order = 2454106387091158800
     pp = [16, 81, 25, 7, 11, 13, 17, 23, 29, 37, 41, 53, 83]

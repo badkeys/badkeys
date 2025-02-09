@@ -4,7 +4,7 @@ import re
 _prex = re.compile(r"(..)\1{15}")
 
 
-def pattern(n, e=0):
+def pattern(n, e=0):  # noqa: ARG001
     r = _prex.search(f"{n:02x}")
     if r:
         return {"detected": True}
