@@ -1,19 +1,19 @@
-import sys
 import argparse
-import signal
-import re
 import json
+import re
+import signal
+import sys
 
+from . import __version__
+from .allkeys import loadextrabl, urllookup
 from .checks import detectandcheck, defaultchecks, allchecks
 from .checks import checkrsa, checkcrt, checksshpubkey, checkpubkey
-from .allkeys import urllookup, loadextrabl
+from .dkim import parsedkim
 from .jwk import checkjwk
 from .scanssh import scanssh
 from .scantls import scantls
 from .update import update_bl
 from .utils import _warnmsg
-from .dkim import parsedkim
-from . import __version__
 
 MAXINPUTSIZE = 10000
 
