@@ -13,4 +13,4 @@ black --check --diff .
 flake8 --select=DUO badkeys-cli .
 
 # run tests
-PYTHONWARNINGS=e RUNBLTESTS=1 python -m unittest -v
+PYTHONWARNINGS=e RUN_ONLINETESTS=1 python -m unittest -v
