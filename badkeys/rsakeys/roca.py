@@ -1,6 +1,6 @@
-# License: MIT
+# SPDX-License-Identifier: MIT
 # Copyright (c) 2017, CRoCS, EnigmaBridge Ltd.
-# Copyright (c) 2022, Hanno Böck
+# Copyright (c) Hanno Böck
 #
 # Original: https://github.com/crocs-muni/roca
 # Reduced to core functionality by Hanno Böck
