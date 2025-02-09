@@ -210,14 +210,18 @@ def runcli():
             try:
                 records = dns.resolver.resolve(host, "TXT").response
             except (dns.resolver.NXDOMAIN, dns.resolver.NoAnswer):
-                _warnmsg(f"No TXT record for {host} found")
+                _warnmsg(f"No TXT record found, {host}")
                 continue
+            found = False
             for record in records.answer[-1]:
                 dk = b"".join(record.strings).decode()
                 key = parsedkim(dk)
                 if key:
                     r = checkpubkey(key, checks=userchecks)
                     _printresults(r, host, args)
+                    found = True
+            if not found:
+                _warnmsg(f"No DKIM/DomainKeys key in TXT record, {host}")
 
     if args.jwk:
         for fn in args.infiles:
