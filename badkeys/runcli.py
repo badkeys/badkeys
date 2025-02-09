@@ -230,13 +230,16 @@ def runcli():
                     j = json.load(f)
                 except json.decoder.JSONDecodeError:
                     _warnmsg(f"No valid JSON, {fn}")
-            if "kty" in j:
+                    continue
+            if isinstance(j, dict) and "kty" in j:
                 r = checkjwk(j, checks=userchecks)
                 _printresults(r, fn, args)
-            elif "keys" in j:
+            elif isinstance(j, dict) and "keys" in j:
                 for k in j["keys"]:
                     r = checkjwk(k, checks=userchecks)
                     _printresults(r, fn, args)
+            else:
+                _warnmsg(f"No JWK/JWKS, {fn}")
 
     if args.ssh or args.tls or args.dkim_dns or args.jwk:
         sys.exit(0)
