@@ -53,7 +53,7 @@ def _checkbl(bldata, s256trunc):
 
 
 def blocklist(inval):
-    global _blmeta, _bldata
+    global _bldata
 
     if not _blmeta:
         _loadblmeta()
@@ -88,7 +88,6 @@ def loadextrabl(fpath):
 
 
 def urllookup(blid, lhash):
-    global _blmeta
     try:
         from binary_file_search.BinaryFileSearch import BinaryFileSearch
     except ModuleNotFoundError:
