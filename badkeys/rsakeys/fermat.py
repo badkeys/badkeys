@@ -4,6 +4,9 @@ import gmpy2
 def fermat(n, e=65535):  # noqa: ARG001
     tries = 100
 
+    if n <= 5:
+        return False
+
     a = gmpy2.isqrt(n)
 
     c = 0
