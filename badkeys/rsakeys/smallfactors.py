@@ -8,6 +8,10 @@ _smallprimes = None
 def smallfactors(n, e=0):  # noqa: ARG001
     global _smallprimes
 
+    # Don't try to factor nonsensical keys
+    if n <= 5:
+        return False
+
     # Generate product of all primes <= MAX_PRIME.
     # We calculate this once per program run, we could precalculate the
     # constant, but it's fast enough to calculate on the fly.
