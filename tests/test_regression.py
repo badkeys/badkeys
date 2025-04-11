@@ -15,6 +15,9 @@ class TestRegressions(unittest.TestCase):
         key = pathlib.Path(f"{TDPATH}rsazerozero.key").read_text()
         r = badkeys.checkpubkey(key, checks=["xzbackdoor"])
         self.assertFalse(r["results"])
+        key = pathlib.Path(f"{TDPATH}rsanzero.key").read_text()
+        r = badkeys.checkpubkey(key, checks=["xzbackdoor"])
+        self.assertFalse(r["results"])
 
 
 if __name__ == "__main__":
