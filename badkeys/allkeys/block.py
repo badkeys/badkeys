@@ -84,7 +84,7 @@ def blocklist(inval):
 
 def loadextrabl(fpath):
     with open(fpath, "rb") as f:
-        _blextra.append(mmap.mmap(f.fileno(), 0, prot=mmap.PROT_READ))
+        _blextra.append(mmap.mmap(f.fileno(), 0, access=mmap.ACCESS_READ))
 
 
 def urllookup(blid, lhash):
