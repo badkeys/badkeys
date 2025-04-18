@@ -1,12 +1,24 @@
 import hashlib
 import json
 import lzma
-import os.path
+import os
 import pathlib
 import sys
 import urllib.request
 
 from .utils import _warnmsg
+
+
+def _dlxz(url, filename, exphash, cachedir, quiet):
+    if not quiet:
+        print(f"Downloading {filename}...")
+    dldata = urllib.request.urlopen(url).read()
+    dlunpacked = lzma.decompress(dldata)
+    dlhash = hashlib.sha256(dlunpacked).hexdigest()
+    if dlhash != exphash:
+        sys.exit(f"ERROR: SHA256 hash of downloaded {filename} does not match")
+    pathlib.Path(f"{cachedir}_{filename}.tmp").write_bytes(dlunpacked)
+    os.replace(f"{cachedir}_{filename}.tmp", f"{cachedir}{filename}")
 
 
 def update_bl(lookup=False, quiet=False):
@@ -44,15 +56,7 @@ def update_bl(lookup=False, quiet=False):
             oldbl_sha256 = hashlib.sha256(f.read()).hexdigest()
 
     if oldbl_sha256 != data["blocklist_sha256"]:
-        if not quiet:
-            print("Downloading blocklist.dat...")
-        xzblocklist = urllib.request.urlopen(data["blocklist_url"]).read()
-        blocklist = lzma.decompress(xzblocklist)
-        newbl_sha256 = hashlib.sha256(blocklist).hexdigest()
-        if newbl_sha256 != data["blocklist_sha256"]:
-            sys.exit("ERROR: SHA256 hash of downloaded blocklist.dat does not match")
-        with open(f"{cachedir}blocklist.dat", "wb") as f:
-            f.write(blocklist)
+        _dlxz(data["blocklist_url"], "blocklist.dat", data["blocklist_sha256"], cachedir, quiet)
 
     # starting with lookup.txt
     oldlu_sha256 = ""
@@ -64,12 +68,4 @@ def update_bl(lookup=False, quiet=False):
             _warnmsg("You may want to run --update-bl-and-urls")
 
     if lookup and (oldlu_sha256 != data["lookup_sha256"]):
-        if not quiet:
-            print("Downloading lookup.txt...")
-        xzlookup = urllib.request.urlopen(data["lookup_url"]).read()
-        lookup = lzma.decompress(xzlookup)
-        newlu_sha256 = hashlib.sha256(lookup).hexdigest()
-        if newlu_sha256 != data["lookup_sha256"]:
-            sys.exit("ERROR: SHA256 hash of downloaded lookup.txt does not match")
-        with open(f"{cachedir}lookup.txt", "wb") as f:
-            f.write(lookup)
+        _dlxz(data["lookup_url"], "lookup.txt", data["lookup_sha256"], cachedir, quiet)
