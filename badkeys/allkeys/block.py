@@ -1,8 +1,10 @@
 import hashlib
 import json
 import mmap
-import pathlib
+import os
 import sys
+
+from badkeys.utils import _cachedir
 
 _blmeta = False
 _bldata = False
@@ -12,9 +14,8 @@ _blextra = []
 def _loadblmeta():
     global _blmeta
     mlist = {}
-    cachedir = str(pathlib.Path.home()) + "/.cache/badkeys/"
     try:
-        with open(f"{cachedir}badkeysdata.json") as f:
+        with open(os.path.join(_cachedir(), "badkeysdata.json")) as f:
             jdata = json.loads(f.read())
     except FileNotFoundError:
         sys.exit("blocklist metadata not found, you need to run --update-bl")
@@ -59,9 +60,8 @@ def blocklist(inval):
         _loadblmeta()
 
     if not _bldata:
-        cachedir = str(pathlib.Path.home()) + "/.cache/badkeys/"
         try:
-            with open(f"{cachedir}blocklist.dat", "rb") as f:
+            with open(os.path.join(_cachedir(), "blocklist.dat"), "rb") as f:
                 _bldata = mmap.mmap(f.fileno(), 0, access=mmap.ACCESS_READ)
         except FileNotFoundError:
             sys.exit("blocklist.dat not found, you need to run --update-bl")
@@ -97,7 +97,7 @@ def urllookup(blid, lhash):
     if not _blmeta:
         _loadblmeta()
 
-    lfile = str(pathlib.Path.home()) + "/.cache/badkeys/lookup.txt"
+    lfile = os.path.join(_cachedir(), "lookup.txt")
 
     try:
         with BinaryFileSearch(lfile, sep=";", string_mode=True) as bfs:
