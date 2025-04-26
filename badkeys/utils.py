@@ -11,5 +11,5 @@ def _warnmsg(warnmsg):
 def _cachedir():
     cachedir = os.getenv("XDG_CACHE_HOME")
     if cachedir:
-        return os.path.join(cachedir, "badkeys/")
+        return os.path.join(cachedir, "badkeys", "")
     return os.path.expanduser("~/.cache/badkeys/")
