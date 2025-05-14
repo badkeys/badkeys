@@ -3,6 +3,7 @@ import json
 import lzma
 import os
 import pathlib
+import string
 import sys
 import urllib.request
 
@@ -39,6 +40,18 @@ def update_bl(lookup=False, quiet=False):
     data = json.loads(bkdata)
     if data["bkformat"] != BKFORMAT:
         sys.exit("ERROR: Wrong format")
+
+    if "deprecated" in data:
+        _warnmsg("Your badkeys version uses a deprecated blocklist format, please update!")
+        # "deprecated" field can be 'true' or a string with additional info
+        if isinstance(data["deprecated"], str):
+            # make sure message is pure ASCII without ANSI control chars
+            depmsg = "".join(filter(lambda x: x in string.printable, data["deprecated"]))
+            _warnmsg(depmsg)
+
+    if "blocklist_url" not in data:
+        _warnmsg("Blocklist no longer available in requested format")
+        return
 
     if bkdata == bkdata_old:
         if not quiet:
