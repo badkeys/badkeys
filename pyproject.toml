@@ -4,7 +4,6 @@ description = "Check cryptographic keys for known weaknesses"
 readme = "README.md"
 authors = [{name = "Hanno Böck"}]
 classifiers = [
-  "License :: OSI Approved :: MIT License",
   "Programming Language :: Python :: 3 :: Only",
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3.9",
@@ -14,7 +13,7 @@ classifiers = [
   "Natural Language :: English",
   "Development Status :: 4 - Beta"
 ]
-license = {text = "MIT"}
+license = "MIT"
 keywords = ["security", "cryptography", "rsa"]
 requires-python = ">=3.9"
 dependencies = [
