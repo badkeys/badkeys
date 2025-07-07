@@ -29,7 +29,15 @@ def _sighandler(_signum, _handler):
 
 def _printresults(key, where, args):
     if args.json:
-        print(json.dumps(key))
+        jout = key
+        for val in ["n", "e", "x"]:
+            if val in jout:
+                jout[val] = f"{jout[val]:x}"
+        for result in jout["results"]:
+            if "p" in jout["results"][result]:
+                jout["results"][result]["p"] = f'{jout["results"][result]["p"]:x}'
+                jout["results"][result]["q"] = f'{jout["results"][result]["q"]:x}'
+        print(json.dumps(jout))
         return
     kn = key["type"]
     if "bits" in key:
