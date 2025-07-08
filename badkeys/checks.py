@@ -4,13 +4,11 @@ import warnings
 import cryptography
 from cryptography import x509
 from cryptography.hazmat.primitives import serialization
-from cryptography.hazmat.primitives.asymmetric import (dh, dsa, ec, ed448,
-                                                       ed25519, rsa, x448,
-                                                       x25519)
+from cryptography.hazmat.primitives.asymmetric import dh, dsa, ec, ed448, ed25519, rsa, x448, x25519
 
 from .allkeys import blocklist
-from .rsakeys import (fermat, pattern, roca, rsainvalid, rsawarnings,
-                      sharedprimes, smallfactors, xzbackdoor)
+from .rsakeys import (fermat, pattern, roca, rsainvalid, rsawarnings, sharedprimes, smallfactors,
+                      xzbackdoor)
 
 # List of available checks
 defaultchecks = {
