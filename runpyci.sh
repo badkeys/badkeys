@@ -1,5 +1,5 @@
 #!/bin/bash
-# last update: 2025-07-02
+# last update: 2025-07-08
 # https://github.com/hannob/codingstyle
 set -euo pipefail
 
@@ -14,6 +14,7 @@ pycodestyle --max-line-length=100 --ignore=W503,E203 $pyfiles
 pyupgrade --py313-plus $pyfiles
 pyflakes $pyfiles
 flake8 --select=DUO --ignore=DUO107,DUO123,DUO131 $pyfiles
+isort --line-length=100 --diff --check-only .
 pylint --disable=$PYLINTIG $pyfiles
 ruff check --line-length=100 --select=ALL --ignore=$RUFFIG $pyfiles
 
