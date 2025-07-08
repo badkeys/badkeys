@@ -6,8 +6,8 @@ import sys
 
 from . import __version__
 from .allkeys import loadextrabl, urllookup
-from .checks import detectandcheck, defaultchecks, allchecks
-from .checks import checkrsa, checkcrt, checksshpubkey, checkpubkey
+from .checks import (allchecks, checkcrt, checkpubkey, checkrsa,
+                     checksshpubkey, defaultchecks, detectandcheck)
 from .dkim import parsedkim
 from .jwk import checkjwk
 from .scanssh import scanssh

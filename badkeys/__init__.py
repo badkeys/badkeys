@@ -13,17 +13,8 @@ __all__ = [
     "scanssh",
     "warningchecks",
 ]
-from .checks import (
-    allchecks,
-    checkcrt,
-    checkcsr,
-    checkprivkey,
-    checkpubkey,
-    checkrsa,
-    checksshpubkey,
-    defaultchecks,
-    detectandcheck,
-    warningchecks,
-)
+from .checks import (allchecks, checkcrt, checkcsr, checkprivkey, checkpubkey,
+                     checkrsa, checksshpubkey, defaultchecks, detectandcheck,
+                     warningchecks)
 from .jwk import checkjwk
 from .scanssh import scanssh

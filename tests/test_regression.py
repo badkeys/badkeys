@@ -1,8 +1,8 @@
 # Tests for bugs in past versions of badkeys
 
 import os
-import unittest
 import pathlib
+import unittest
 
 import badkeys
 
