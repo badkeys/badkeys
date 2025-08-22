@@ -9,6 +9,7 @@ from .allkeys import loadextrabl, urllookup
 from .checks import (allchecks, checkcrt, checkpubkey, checkrsa, checksshpubkey, defaultchecks,
                      detectandcheck)
 from .dkim import parsedkim
+from .dnssec import checkdnskey
 from .jwk import checkjwk
 from .scanssh import scanssh
 from .scantls import scantls
@@ -103,6 +104,7 @@ def runcli():
         action="store_true",
         help="Scan DKIM DNS record (hostnames instead of files)",
     )
+    ap.add_argument("--dnssec", action="store_true", help="Scan DNSKEY/DNSSEC records (in files)")
     ap.add_argument("--jwk", action="store_true", help="Scan JSON Web Keys / Key Sets")
     ap.add_argument("-a", "--all", action="store_true", help="Show all keys")
     ap.add_argument(
@@ -252,6 +254,9 @@ def runcli():
     if args.ssh or args.tls or args.dkim_dns or args.jwk:
         sys.exit(0)
 
+    if args.dnssec:
+        dnskeyre = re.compile(r"[0-9]{1,3}\s+[0-9]{1,3}\s+[0-9]{1,3}\s+[A-Za-z0-9/+= ]+")
+
     for fn in args.infiles:
         if fn == "-":
             f = sys.stdin
@@ -300,6 +305,16 @@ def runcli():
                     _printresults(r, desc, args)
                     count += 1
                 lno += 1
+        elif args.dnssec:
+            fcontent = f.read(MAXINPUTSIZE)
+
+            keyrecs = dnskeyre.findall(fcontent)
+            if not keyrecs:
+                _warnmsg(f"No DNSSEC key found, {fn}")
+            for rec in keyrecs:
+                r = checkdnskey(rec, checks=userchecks)
+                _printresults(r, fn, args)
+                count += 1
         else:
             fcontent = f.read(MAXINPUTSIZE)
             r = detectandcheck(fcontent, checks=userchecks)
