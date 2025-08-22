@@ -83,6 +83,10 @@ def _checkkey(key, checks):
         r["results"] = checkrsa(r["n"], e=r["e"], checks=checks)
     elif isinstance(key, ec.EllipticCurvePublicKey):
         r["type"] = "ec"
+        r["curve"] = key.curve.name
+        # shorter names for standard curves
+        if r["curve"].startswith("sec") and r["curve"].endswith("r1"):
+            r["curve"] = r["curve"][3:-2]
         r["x"] = key.public_numbers().x
         r["y"] = key.public_numbers().y
         r["results"] = checkall(r["x"], checks=checks)
@@ -101,6 +105,7 @@ def _checkkey(key, checks):
         ),
     ):
         r["type"] = "ec"
+        r["curve"] = str(type(key).__name__).lower()[:-9]
         # For Ed25519 the raw key is the x coordinate
         x_b = key.public_bytes(
             encoding=serialization.Encoding.Raw,

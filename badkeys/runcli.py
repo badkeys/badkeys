@@ -43,6 +43,8 @@ def _printresults(key, where, args):
     kn = key["type"]
     if "bits" in key:
         kn += f"[{key['bits']}]"
+    if "curve" in key:
+        kn += f"[{key['curve']}]"
     if key["type"] == "unsupported":
         _warnmsg(f"Unsupported key type, {where}")
     elif key["type"] == "unparseable":

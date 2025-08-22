@@ -33,18 +33,22 @@ def checkdnskey(rec, checks):
     if keytype == 13:  # ECDSAP256SHA256
         if len(key) != 64:
             return {"type": "unparseable", "results": {}}
+        r["curve"] = "p256"
         r["x"] = int.from_bytes(key[0:32], byteorder="big")
     if keytype == 14:  # ECDSAP384SHA384
         if len(key) != 96:
             return {"type": "unparseable", "results": {}}
+        r["curve"] = "p384"
         r["x"] = int.from_bytes(key[0:48], byteorder="big")
     if keytype == 15:  # ED25519
         if len(key) != 32:
             return {"type": "unparseable", "results": {}}
+        r["curve"] = "ed25519"
         r["x"] = int.from_bytes(key, byteorder="big")
     if keytype == 16:  # ED448
         if len(key) != 57:
             return {"type": "unparseable", "results": {}}
+        r["curve"] = "ed448"
         r["x"] = int.from_bytes(key, byteorder="big")
     if "x" in r:
         r["type"] = "ec"

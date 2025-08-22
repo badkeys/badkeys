@@ -28,6 +28,8 @@ def checkjwk(key, checks):
             r["results"] = {}
             return r
         r["type"] = "ec"
+        if "crv" in key:
+            r["curve"] = key["crv"].lower().replace("-", "")
         r["x"] = _ub64toint(key["x"])
         r["y"] = _ub64toint(key["x"])
         r["results"] = checkall(r["x"], checks=checks)
@@ -37,6 +39,8 @@ def checkjwk(key, checks):
             r["results"] = {}
             return r
         r["type"] = "ec"
+        if "crv" in key:
+            r["curve"] = key["crv"].lower()
         r["x"] = _ub64toint(key["x"])
         # no y coordinate for ed25519/ed448
         r["results"] = checkall(r["x"], checks=checks)
