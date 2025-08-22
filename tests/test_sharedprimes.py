@@ -12,10 +12,12 @@ class TestSharedprimes(unittest.TestCase):
             key = f.read()
         r = badkeys.checkpubkey(key, checks=["sharedprimes"])
         self.assertTrue("sharedprimes" in r["results"])
+        self.assertTrue(r["bits"] == 2048)
         with open(f"{TDPATH}rsa-ok.key") as f:
             key = f.read()
         r = badkeys.checkpubkey(key, checks=["sharedprimes"])
         self.assertFalse(r["results"])
+        self.assertTrue(r["bits"] == 2048)
 
 
 if __name__ == "__main__":

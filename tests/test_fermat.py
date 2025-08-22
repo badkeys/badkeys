@@ -17,29 +17,37 @@ class TestFermat(unittest.TestCase):
             inp = f.read()
         r = badkeys.checkcrt(inp, ["fermat"])
         self.assertTrue("fermat" in r["results"])
+        self.assertTrue(r["bits"] == 2048)
         r = badkeys.detectandcheck(inp, checks=["fermat"])
         self.assertTrue("fermat" in r["results"])
+        self.assertTrue(r["bits"] == 2048)
 
         with open(f"{TDPATH}rsa-fermat.csr") as f:
             inp = f.read()
         r = badkeys.checkcsr(inp, ["fermat"])
         self.assertTrue("fermat" in r["results"])
+        self.assertTrue(r["bits"] == 2048)
         r = badkeys.detectandcheck(inp, checks=["fermat"])
         self.assertTrue("fermat" in r["results"])
+        self.assertTrue(r["bits"] == 2048)
 
         with open(f"{TDPATH}rsa-fermat-pkcs1.key") as f:
             inp = f.read()
         r = badkeys.checkpubkey(inp, ["fermat"])
         self.assertTrue("fermat" in r["results"])
+        self.assertTrue(r["bits"] == 2048)
         r = badkeys.detectandcheck(inp, checks=["fermat"])
         self.assertTrue("fermat" in r["results"])
+        self.assertTrue(r["bits"] == 2048)
 
         with open(f"{TDPATH}rsa-fermat-pkcs8.key") as f:
             inp = f.read()
         r = badkeys.checkpubkey(inp, checks=["fermat"])
         self.assertTrue("fermat" in r["results"])
+        self.assertTrue(r["bits"] == 2048)
         r = badkeys.detectandcheck(inp, checks=["fermat"])
         self.assertTrue("fermat" in r["results"])
+        self.assertTrue(r["bits"] == 2048)
 
         with open(f"{TDPATH}rsa-fermat-hexmodulus.txt") as f:
             inp = f.read()
@@ -55,6 +63,7 @@ class TestFermat(unittest.TestCase):
             key = f.read()
         r = badkeys.checkpubkey(key, checks=["fermat"])
         self.assertFalse(r["results"])
+        self.assertTrue(r["bits"] == 2048)
 
 
 if __name__ == "__main__":
