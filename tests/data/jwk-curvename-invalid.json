@@ -1,0 +1,7 @@
+{
+  "kty": "EC",
+  "crv": "_INVALID_",
+  "x": "f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU",
+  "y": "x_FEzRu9m36HLN_tue659LNpXW6pCyStikYjKIWI5a0",
+  "kid": "EC key with invalid curve name"
+}

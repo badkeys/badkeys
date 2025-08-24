@@ -37,6 +37,10 @@ class TestJwk(unittest.TestCase):
         self.assertTrue(r["type"] == "rsa")
         self.assertTrue(r["bits"] == 2048)
 
+        jkey = json.loads(pathlib.Path(f"{TDPATH}jwk-curvename-invalid.json").read_text())
+        r = badkeys.checkjwk(jkey, checks=["roca", "pattern", "sharedprimes", "fermat"])
+        self.assertTrue(r["type"] == "unparseable")
+
 
 if __name__ == "__main__":
     unittest.main()

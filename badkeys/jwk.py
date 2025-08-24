@@ -2,6 +2,9 @@ import base64
 
 from .checks import checkall, checkrsa
 
+# See https://www.iana.org/assignments/jose/jose.xhtml
+VALIDCURVES = ["P-256", "P-384", "P-521", "Ed25519", "Ed448", "X25519", "X448", "secp256k1"]
+
 
 def _ub64toint(b64):
     fb64 = b64.replace(" ", "").encode()
@@ -23,24 +26,24 @@ def checkjwk(key, checks):
         r["bits"] = r["n"].bit_length()
         r["results"] = checkrsa(r["n"], e=r["e"], checks=checks)
     elif key["kty"] == "EC":
-        if "x" not in key or "y" not in key or key["x"] == "" or key["y"] == "":
+        if "x" not in key or "y" not in key or key["x"] == "" or key["y"] == "" \
+           or "crv" not in key or key["crv"] not in VALIDCURVES:
             r["type"] = "unparseable"
             r["results"] = {}
             return r
         r["type"] = "ec"
-        if "crv" in key:
-            r["curve"] = key["crv"].lower().replace("-", "")
+        r["curve"] = key["crv"].lower().replace("-", "")
         r["x"] = _ub64toint(key["x"])
         r["y"] = _ub64toint(key["x"])
         r["results"] = checkall(r["x"], checks=checks)
     elif key["kty"] == "OKP":
-        if "x" not in key or key["x"] == "":
+        if "x" not in key or key["x"] == "" \
+           or "crv" not in key or key["crv"] not in VALIDCURVES:
             r["type"] = "unparseable"
             r["results"] = {}
             return r
         r["type"] = "ec"
-        if "crv" in key:
-            r["curve"] = key["crv"].lower()
+        r["curve"] = key["crv"].lower()
         r["x"] = _ub64toint(key["x"])
         # no y coordinate for ed25519/ed448
         r["results"] = checkall(r["x"], checks=checks)
