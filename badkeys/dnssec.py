@@ -30,6 +30,19 @@ def checkdnskey(rec, checks):
         r["bits"] = r["n"].bit_length()
         r["results"] = checkrsa(r["n"], r["e"], checks=checks)
         return r
+    if keytype in {3, 6}:  # DSA
+        # DSA key format description in RFC 2536 Section 2
+        if len(key) < 213:
+            return {"type": "unparseable", "results": {}}
+        dsa_t = int(key[0])
+        if dsa_t > 8 or len(key) != 213 + dsa_t * 24:
+            return {"type": "unparseable", "results": {}}
+        r["type"] = "dsa"
+        y_off = 149 + dsa_t * 16
+        r["y"] = int.from_bytes(key[y_off:], "big")
+        r["bits"] = 512 + dsa_t * 64
+        r["results"] = checkall(r["y"], checks=checks)
+        return r
     if keytype == 13:  # ECDSAP256SHA256
         if len(key) != 64:
             return {"type": "unparseable", "results": {}}
