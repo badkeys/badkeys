@@ -1,0 +1,6 @@
+{
+  "kty": "RSA",
+  "n": "3-7n3nVVncZkM25RdNknGuAfkKMwcYaWqQGN4C01zGQlpJvDmXDdVM-YNi4pZwRACs21V-h6LLy7mieYCWZy9NV_AfjovxZEInrCX3nyHgBxtYaV-btajFzFE4T3PJvuE5hc6Kx_KawU1NvE-kvQAirGDcVQe500rEcePgdezBh9wSA0yk_qPbc8hgrR6z255RGodzLgJi6v7uaXdvQlhDuIwjITIcdakspIX09xdCI1IzLkEdHXdr4gutR8_D0UoR3RSfiWLwc4AcdAGvJ0X0HK3tCawPFxGoU3YkLIOIa0XYHTlIquDyq3WaxIJjM_tDRYlBbYl1UF-qHcy4BDjQ",
+  "e": "AQAB",
+  "kid": "same as rsa-ok.key"
+}
