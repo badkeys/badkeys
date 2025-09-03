@@ -166,6 +166,9 @@ def checkpubkey(rawkey, checks=defaultchecks.keys()):
     except ValueError:
         # happens e.g. on partial inputs
         return {"type": "unparseable", "results": {}}
+    except cryptography.exceptions.UnsupportedAlgorithm:
+        # happens, e.g., with unsupported curves
+        return {"type": "unsupported", "results": {}}
     return _checkkey(key, checks)
 
 
@@ -176,8 +179,8 @@ def checkprivkey(rawkey, checks=defaultchecks.keys()):
         # happens on invalid values, e.g. p=q
         return {"type": "unparseable", "results": {}}
     except cryptography.exceptions.UnsupportedAlgorithm:
-        # happens e.g. with unsupported curves
-        return {"type": "unparseable", "results": {}}
+        # happens, e.g., with unsupported curves
+        return {"type": "unsupported", "results": {}}
     except TypeError:
         # happens on keys with passwords
         return {"type": "unparseable", "results": {}}
@@ -204,6 +207,9 @@ def checkcsr(rawcsr, checks=defaultchecks.keys()):
         csr = x509.load_pem_x509_csr(rawcsr.encode())
     except ValueError:
         return {"type": "unparseable", "results": {}}
+    except cryptography.exceptions.UnsupportedAlgorithm:
+        # happens, e.g., with unsupported curves
+        return {"type": "unsupported", "results": {}}
     return _checkkey(csr.public_key(), checks)
 
 
