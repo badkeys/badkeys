@@ -207,10 +207,14 @@ def checkcsr(rawcsr, checks=defaultchecks.keys()):
         csr = x509.load_pem_x509_csr(rawcsr.encode())
     except ValueError:
         return {"type": "unparseable", "results": {}}
+    try:
+        return _checkkey(csr.public_key(), checks)
     except cryptography.exceptions.UnsupportedAlgorithm:
         # happens, e.g., with unsupported curves
         return {"type": "unsupported", "results": {}}
-    return _checkkey(csr.public_key(), checks)
+    except ValueError:
+        # happens, e.g., with ECDSA custom curves
+        return {"type": "unsupported", "results": {}}
 
 
 def checksshprivkey(sshkey, checks=defaultchecks.keys()):
