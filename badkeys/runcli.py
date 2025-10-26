@@ -16,7 +16,7 @@ from .scantls import scantls
 from .update import update_bl
 from .utils import _warnmsg
 
-MAXINPUTSIZE = 10000
+MAXINPUTSIZE = 2048000
 
 count = 0
 
