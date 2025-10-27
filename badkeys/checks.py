@@ -160,84 +160,87 @@ def checkall(x, checks=defaultchecks.keys()):
     return results
 
 
+def _reterr(rtype, ex):
+    return {"type": rtype, "results": {}, "exception": ex.__class__.__name__, "errmsg": str(ex)}
+
+
 def checkpubkey(rawkey, checks=defaultchecks.keys()):
     try:
         key = serialization.load_pem_public_key(rawkey.encode())
-    except ValueError:
-        # happens e.g. on partial inputs
-        return {"type": "unparseable", "results": {}}
-    except cryptography.exceptions.UnsupportedAlgorithm:
-        # happens, e.g., with unsupported curves
-        return {"type": "unsupported", "results": {}}
+    except ValueError as e:
+        # ValueError: defect inputs (partial keys, ASN.1 errors), ECDSA with explicit curves,
+        #             unknown key types (e.g., ML-DSA)
+        return _reterr("unparseable", e)
+    except cryptography.exceptions.UnsupportedAlgorithm as e:
+        # UnsupportedAlgorithm: Unsupported elliptic curves
+        return _reterr("unsupported", e)
     return _checkkey(key, checks)
 
 
 def checkprivkey(rawkey, checks=defaultchecks.keys()):
     try:
         priv = serialization.load_pem_private_key(rawkey.encode(), password=None)
-    except ValueError:
-        # happens on invalid values, e.g. p=q
-        return {"type": "unparseable", "results": {}}
-    except cryptography.exceptions.UnsupportedAlgorithm:
-        # happens, e.g., with unsupported curves
-        return {"type": "unsupported", "results": {}}
-    except TypeError:
-        # happens on keys with passwords
-        return {"type": "unparseable", "results": {}}
+    except ValueError as e:
+        # ValueError: defect inputs, unknown key types, explicit curves
+        return _reterr("unparseable", e)
+    except (cryptography.exceptions.UnsupportedAlgorithm, TypeError) as e:
+        # UnsupportedAlgorithm: Unsupported elliptic curves
+        # TypeError: passwords-protected keys
+        return _reterr("unsupported", e)
     return _checkkey(priv.public_key(), checks)
 
 
 def checkcrt(rawcert, checks=defaultchecks.keys()):
     try:
         crt = x509.load_pem_x509_certificate(rawcert.encode())
-    except (ValueError, cryptography.x509.base.InvalidVersion):
-        return {"type": "unparseable", "results": {}}
+    except (ValueError, cryptography.x509.base.InvalidVersion) as e:
+        return _reterr("unparseable", e)
     try:
-        return _checkkey(crt.public_key(), checks)
-    except cryptography.exceptions.UnsupportedAlgorithm:
-        # happens e.g. with PSS keys
-        return {"type": "unsupported", "results": {}}
-    except (ValueError, NotImplementedError):
-        # happens e.g. with ECDSA custom curves
-        return {"type": "unsupported", "results": {}}
+        pubkey = crt.public_key()
+    except (cryptography.exceptions.UnsupportedAlgorithm, ValueError, NotImplementedError) as e:
+        # ValueError: unknown key types, explicit curves
+        # UnsupportedAlgorithm: unsupported curves
+        # NotImplementedError: ? (possibly certificate extension issues)
+        return _reterr("unsupported", e)
+    return _checkkey(pubkey, checks)
 
 
 def checkcsr(rawcsr, checks=defaultchecks.keys()):
     try:
         csr = x509.load_pem_x509_csr(rawcsr.encode())
-    except ValueError:
-        return {"type": "unparseable", "results": {}}
+    except (ValueError, cryptography.x509.base.InvalidVersion) as e:
+        return _reterr("unparseable", e)
     try:
-        return _checkkey(csr.public_key(), checks)
-    except cryptography.exceptions.UnsupportedAlgorithm:
-        # happens, e.g., with unsupported curves
-        return {"type": "unsupported", "results": {}}
-    except ValueError:
-        # happens, e.g., with ECDSA custom curves
-        return {"type": "unsupported", "results": {}}
+        pubkey = csr.public_key()
+    except (cryptography.exceptions.UnsupportedAlgorithm, ValueError) as e:
+        # ValueError: unknown key types, explicit curves
+        # UnsupportedAlgorithm: unsupported curves
+        return _reterr("unsupported", e)
+    return _checkkey(pubkey, checks)
 
 
 def checksshprivkey(sshkey, checks=defaultchecks.keys()):
     try:
         pkey = serialization.load_ssh_private_key(sshkey.encode(), password=None)
-    except ValueError:
-        # happens e.g. on password-protected keys
-        return {"type": "unsupported", "results": {}}
-    except cryptography.exceptions.UnsupportedAlgorithm:
-        # happens e.g. on pre-standard sk-ssh-ed25519@openssh.com keys
-        return {"type": "unsupported", "results": {}}
+    except ValueError as e:
+        # ValueError: defect keys
+        return _reterr("unparseable", e)
+    except (cryptography.exceptions.UnsupportedAlgorithm, TypeError) as e:
+        # UnsupportedAlgorithm: unsupported key types, e.g., sk-*
+        # TypeError: password-protected keys
+        return _reterr("unsupported", e)
     return _checkkey(pkey.public_key(), checks)
 
 
 def checksshpubkey(sshkey, checks=defaultchecks.keys()):
     try:
         pkey = serialization.load_ssh_public_key(sshkey.encode())
-    except ValueError:
-        # happens e.g. on non-standard DSA keys (!=1024 bit)
-        return {"type": "unsupported", "results": {}}
-    except cryptography.exceptions.UnsupportedAlgorithm:
-        # happens e.g. on pre-standard sk-ssh-ed25519@openssh.com keys
-        return {"type": "unsupported", "results": {}}
+    except ValueError as e:
+        # ValueError: defect keys, non-standard DSA keys (!=1024 bit)
+        return _reterr("unparseable", e)
+    except cryptography.exceptions.UnsupportedAlgorithm as e:
+        # UnsupportedAlgorithm: unsupported key types
+        return _reterr("unsupported", e)
     return _checkkey(pkey, checks)
 
 
