@@ -2,9 +2,27 @@ import functools
 import os
 import sys
 
+_retval = 0
 
-def _warnmsg(warnmsg):
-    print(f"WARNING: {warnmsg}", file=sys.stderr)
+
+@functools.cache
+def _setret(rv):
+    global _retval
+    _retval |= rv
+
+
+def _getret():
+    return _retval
+
+
+def _warnmsg(msg):
+    _setret(2)
+    print(f"WARNING: {msg}", file=sys.stderr)
+
+
+def _errexit(msg):
+    print(f"ERROR: {msg}", file=sys.stderr)
+    sys.exit(_retval | 1)
 
 
 @functools.cache

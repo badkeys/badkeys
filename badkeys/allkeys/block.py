@@ -2,9 +2,8 @@ import hashlib
 import json
 import mmap
 import os
-import sys
 
-from badkeys.utils import _cachedir
+from badkeys.utils import _cachedir, _errexit
 
 _blmeta = False
 _bldata = False
@@ -18,7 +17,7 @@ def _loadblmeta():
         with open(os.path.join(_cachedir(), "badkeysdata.json")) as f:
             jdata = json.loads(f.read())
     except FileNotFoundError:
-        sys.exit("blocklist metadata not found, you need to run --update-bl")
+        _errexit("blocklist metadata not found, you need to run --update-bl")
     for bl in jdata["blocklists"]:
         blid = int(bl["id"])
         mlist[blid] = bl
@@ -64,7 +63,7 @@ def blocklist(inval):
             with open(os.path.join(_cachedir(), "blocklist.dat"), "rb") as f:
                 _bldata = mmap.mmap(f.fileno(), 0, access=mmap.ACCESS_READ)
         except FileNotFoundError:
-            sys.exit("blocklist.dat not found, you need to run --update-bl")
+            _errexit("blocklist.dat not found, you need to run --update-bl")
 
     inval_b = inval.to_bytes((inval.bit_length() + 7) // 8, byteorder="big")
 
@@ -91,8 +90,7 @@ def urllookup(blid, lhash):
     try:
         from binary_file_search.BinaryFileSearch import BinaryFileSearch
     except ModuleNotFoundError:
-        sys.stderr.write("ERROR: URL lookup failed, needs binary_file_search module\n")
-        return None, None
+        _errexit("URL lookup failed, needs binary_file_search module")
 
     if not _blmeta:
         _loadblmeta()
@@ -103,8 +101,7 @@ def urllookup(blid, lhash):
         with BinaryFileSearch(lfile, sep=";", string_mode=True) as bfs:
             x = bfs.search(lhash)
     except FileNotFoundError:
-        sys.stderr.write("ERROR: lookup.txt not found, run --update-bl-and-urls\n")
-        return None, None
+        _errexit("lookup.txt not found, run --update-bl-and-urls")
     except KeyError:
         return None, None
     d = _blmeta[blid]

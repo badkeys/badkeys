@@ -4,10 +4,9 @@ import lzma
 import os
 import pathlib
 import string
-import sys
 import urllib.request
 
-from .utils import _cachedir, _warnmsg
+from .utils import _cachedir, _errexit, _warnmsg
 
 
 def _dlxz(url, filename, exphash, quiet):
@@ -17,7 +16,7 @@ def _dlxz(url, filename, exphash, quiet):
     dlunpacked = lzma.decompress(dldata)
     dlhash = hashlib.sha256(dlunpacked).hexdigest()
     if dlhash != exphash:
-        sys.exit(f"ERROR: SHA256 hash of downloaded {filename} does not match")
+        _errexit(f"SHA256 hash of downloaded {filename} does not match")
     tmpfile = os.path.join(_cachedir(), f"_{filename}.tmp")
     pathlib.Path(tmpfile).write_bytes(dlunpacked)
     os.replace(tmpfile, os.path.join(_cachedir(), filename))
@@ -39,7 +38,7 @@ def update_bl(lookup=False, quiet=False):
 
     data = json.loads(bkdata)
     if data["bkformat"] != BKFORMAT:
-        sys.exit("ERROR: Wrong format")
+        _errexit("Wrong format")
 
     if "deprecated" in data:
         _warnmsg("Your badkeys version uses a deprecated blocklist format, please update!")

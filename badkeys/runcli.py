@@ -14,7 +14,7 @@ from .jwk import checkjwk
 from .scanssh import scanssh
 from .scantls import scantls
 from .update import update_bl
-from .utils import _warnmsg
+from .utils import _errexit, _getret, _setret, _warnmsg
 
 MAXINPUTSIZE = 2048000
 
@@ -59,12 +59,13 @@ def _printresults(key, where, args):
         if "subtest" in result:
             sub = f"/{result['subtest']}"
         print(f"{check}{sub} vulnerability, {kn}, {where}")
+        _setret(4)
         if args.url and "lookup" in result:
             url, _ = urllookup(result["blid"], result["lookup"])
             if url:
                 print(url)
             else:
-                sys.stderr.write("ERROR: URL lookup failed, not found\n")
+                _warnmsg("URL lookup failed, not found")
         if args.verbose and "debug" in result:
             print(result["debug"])
         if args.verbose and "p" in result:
@@ -158,12 +159,12 @@ def runcli():
         or (args.moduli and args.ssh_lines)
         or (args.ssh_lines and args.crt_lines)
     ):
-        sys.exit("Multiple input format parameters cannot be combined.")
+        _errexit("Multiple input format parameters cannot be combined.")
 
     if (args.moduli or args.crt_lines or args.ssh_lines) and (
         args.tls or args.ssh or args.dkim_dns
     ):
-        sys.exit("Scan modes and input file modes cannot be combined.")
+        _errexit("Scan modes and input file modes cannot be combined.")
 
     if args.update_bl_and_urls:
         update_bl(lookup=True, quiet=args.quiet)
@@ -179,7 +180,7 @@ def runcli():
 
     if not args.infiles:
         ap.print_help()
-        sys.exit()
+        sys.exit(1)
 
     if args.extrabl:
         extrabl = args.extrabl.split(",")
@@ -190,7 +191,7 @@ def runcli():
         userchecks = args.checks.split(",")
         for c in userchecks:
             if c not in allchecks:
-                sys.exit(f"{c} is not a valid check")
+                _errexit(f"{c} is not a valid check")
     elif args.warnings:
         userchecks = allchecks.keys()
     else:
@@ -216,8 +217,7 @@ def runcli():
         try:
             import dns.resolver
         except ModuleNotFoundError:
-            sys.stderr.write("ERROR: DKIM DNS record scanning needs dnspython\n")
-            sys.exit(1)
+            _errexit("DKIM DNS record scanning needs dnspython")
         for host in args.infiles:
             try:
                 records = dns.resolver.resolve(host, "TXT").response
@@ -254,7 +254,7 @@ def runcli():
                 _warnmsg(f"No JWK/JWKS, {fn}")
 
     if args.ssh or args.tls or args.dkim_dns or args.jwk:
-        sys.exit(0)
+        sys.exit(_getret())
 
     if args.dnssec:
         dnskeyre = re.compile(r"[0-9]{1,3}\s+[0-9]{1,3}\s+[0-9]{1,3}\s+[A-Za-z0-9/+= ]+")
@@ -324,3 +324,5 @@ def runcli():
 
         if fn != "-":
             f.close()
+
+    sys.exit(_getret())

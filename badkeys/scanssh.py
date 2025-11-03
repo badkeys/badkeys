@@ -1,16 +1,15 @@
 import contextlib
 import io
-import sys
 
 from .checks import checksshpubkey, defaultchecks
+from .utils import _errexit
 
 
 def scanssh(host, port=22, checks=defaultchecks.keys()):
     try:
         import paramiko
     except ModuleNotFoundError:
-        sys.stderr.write("ERROR: SSH scanning needs paramiko\n")
-        return []
+        _errexit("SSH scanning needs paramiko")
 
     allkeytypes = paramiko.Transport._preferred_keys
 
