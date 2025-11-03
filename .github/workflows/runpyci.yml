@@ -1,4 +1,4 @@
-# last update: 2024-12-07
+# last update: 2025-10-08
 # https://github.com/hannob/codingstyle
 ---
 name: runpyci
@@ -10,7 +10,7 @@ jobs:
   build:
     strategy:
       matrix:
-        python-version: [3.9, 3.x]  # CUSTOM: Disable 3.14-dev due to gmpy2
+        python-version: [3.9, 3.13]  # CUSTOM: 3.x is now 3.14, disable until gmpy2 provides packages
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
