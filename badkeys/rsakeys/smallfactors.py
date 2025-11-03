@@ -23,6 +23,14 @@ def smallfactors(n, e=0):  # noqa: ARG001
         return False
 
     factor = gmpy2.gcd(_gensmallprimes(), n)
-    if factor != 1:
-        return {"p": int(factor), "q": int(n // factor)}
-    return False
+    if factor == 1:
+        return False
+    p = factor
+    q = n // factor
+    if not gmpy2.is_prime(p) or not gmpy2.is_prime(q):
+        sub = "corrupt"
+    else:
+        sub = "valid"
+
+    # convert gmpy2 mpz to python integers
+    return {"p": int(p), "q": int(q), "subtest": sub}
