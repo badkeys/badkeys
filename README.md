@@ -41,6 +41,12 @@ By default, badkeys will only output information about vulnerable keys, meaning 
 output will be generated if no vulnerabilities are found. The _-a_ parameter creates
 output for all keys.
 
+The command line tool will return 0 if keys were scanned, no errors occurred, and no
+vulnerabilities were detected. It returns 1 for application errors, 2 if any input could
+not be scanned (parser errors, unsupported key types, files without a key), and 4 if a
+vulnerable key was found. Return codes can be combined as a bitmask. (E.g., 2|4=6
+indicates that some keys were vulnerable and some could not be scanned.)
+
 # scanning
 
 badkeys can scan SSH and TLS hosts and automatically check their public keys. This can
