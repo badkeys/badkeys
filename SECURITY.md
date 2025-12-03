@@ -63,9 +63,10 @@ security vulnerability.
 ### Infrastructure
 
 The security of a software relies to a certain degree on its infrastructure. Reports
-about security issues of the [badkeys web page](https://badkeys.info/)([web page source
-code](https://github.com/badkeys/bkweb), the server where it is hosted, the code
-repositories, or the pypi packages are also appreciated and will be addressed
+about security issues of the [badkeys.info](https://badkeys.info/) web page ([source
+code](https://github.com/badkeys/bkweb)), the server where it is hosted, the [code
+repositories](https://github.com/badkeys/), or the [pypi packages](
+https://pypi.org/project/badkeys/) are also appreciated and will be addressed
 accordingly.
 
 ### Inconclusive list
@@ -81,12 +82,12 @@ security issues and bugs in dependencies can cause problems in `badkeys`.
 Obviously, bugs and security issues in dependencies should be fixed. However, `badkeys`
 will usually not implement workarounds to address bugs in other software.
 
-An example: key parsing by `badkeys` relies on the Python
-`[cryptography](https://cryptography.io/)` package. During the development of `badkeys`
-and its supporting tools, bugs in `cryptography`'s key parsers were uncovered that
-[could cause unexpected exceptions](https://github.com/pyca/cryptography/issues/13050).
-Such bugs can cause an abnormal program termination of `badkeys` when using an outdated
-version of `cryptography`. That is, however, not treated as a bug in `badkeys`.
+An example: key parsing by `badkeys` relies on the Python [`cryptography`
+](https://cryptography.io/) package. During the development of `badkeys` and its
+supporting tools, bugs in `cryptography`'s key parsers were uncovered that [could cause
+unexpected exceptions](https://github.com/pyca/cryptography/issues/13050). Such bugs can
+cause an abnormal program termination of `badkeys` when using an outdated version of
+`cryptography`. That is, however, not treated as a bug in `badkeys`.
 
 It is recommended to run `badkeys` with the latest versions of its dependencies.
 Currently, all known parser issues in `cryptography` have been addressed in version
