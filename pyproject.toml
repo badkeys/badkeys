@@ -24,6 +24,9 @@ dependencies = [
 ]
 dynamic = ["version"]
 
+[tool.setuptools]
+packages = ["badkeys"]
+
 [tool.setuptools.dynamic]
 version = {attr = "badkeys.__version__"}
 
