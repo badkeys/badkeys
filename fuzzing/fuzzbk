@@ -4,8 +4,8 @@
 #
 # Fuzzing [badkeys](https://badkeys.info) with [python-afl](https://github.com/jwilk/python-afl)
 #
-# Usage example:
-#   py-afl-fuzz -i keys -o out ./fuzzbk.py
+# Usage:
+#   py-afl-fuzz -i keys -o out ./fuzzbk
 
 import sys
 
