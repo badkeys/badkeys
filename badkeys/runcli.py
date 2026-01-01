@@ -267,10 +267,15 @@ def runcli():
         if args.moduli:
             for line in f:
                 count += 1
-                if line.startswith("Modulus="):
-                    n = int(line[8:], 16)
-                else:
-                    n = int(line, 16)
+                try:
+                    if line.startswith("Modulus="):
+                        n = int(line[8:], 16)
+                    else:
+                        n = int(line, 16)
+                except ValueError:
+                    r = {"type": "unparseable", "results": {}}
+                    _printresults(r, f"line {count}", args)
+                    continue
                 r = {"type": "rsa", "bits": n.bit_length()}
                 r["results"] = checkrsa(n, checks=userchecks)
                 _printresults(r, f"modulus {n:02x}", args)
