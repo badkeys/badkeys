@@ -7,12 +7,22 @@
 # Usage:
 #   py-afl-fuzz -i keys -o out ./fuzzbk
 
+import argparse
 import sys
 
 import afl
 
 import badkeys
+from badkeys.dkim import parsedkim
+
+ap = argparse.ArgumentParser()
+ap.add_argument("--dkim", action="store_true")
+args = ap.parse_args()
 
 afl.init()
 
-badkeys.detectandcheck(sys.stdin.read())
+inkey = sys.stdin.read()
+if args.dkim:
+    parsedkim(inkey)
+else:
+    badkeys.detectandcheck(inkey)
