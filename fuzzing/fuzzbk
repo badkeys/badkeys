@@ -19,6 +19,7 @@ from badkeys.dkim import parsedkim
 ap = argparse.ArgumentParser()
 ap.add_argument("--dkim", action="store_true")
 ap.add_argument("--jwk", action="store_true")
+ap.add_argument("--dnssec", action="store_true")
 args = ap.parse_args()
 
 afl.init()
@@ -33,5 +34,7 @@ elif args.jwk:
         pass
     else:
         badkeys.checkjwk(jkey, checks=["blocklist"])
+elif args.dnssec:
+    badkeys.checkdnskey(inkey, checks=["blocklist"])
 else:
     badkeys.detectandcheck(inkey)
