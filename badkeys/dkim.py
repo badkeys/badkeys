@@ -1,4 +1,5 @@
 import base64
+import binascii
 
 from .utils import _warnmsg
 
@@ -36,7 +37,13 @@ def parsedkim(line):
     if dkim["k"] == "rsa":
         return PUBPRE + dkim["p"] + PUBPOST
     if dkim["k"] == "ed25519":
-        der = EDASN1 + base64.b64decode(dkim["p"])
+        try:
+            rawed = base64.b64decode(dkim["p"].encode("ascii"))
+        except (binascii.Error, UnicodeEncodeError):
+            return False
+        if len(rawed) != 32:
+            return False
+        der = EDASN1 + rawed
         return PUBPRE + base64.b64encode(der).decode() + PUBPOST
     _warnmsg(f"Unknown DKIM key type {dkim['k']}")
     return False
