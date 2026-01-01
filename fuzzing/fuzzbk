@@ -8,6 +8,7 @@
 #   py-afl-fuzz -i keys -o out ./fuzzbk
 
 import argparse
+import json
 import sys
 
 import afl
@@ -17,6 +18,7 @@ from badkeys.dkim import parsedkim
 
 ap = argparse.ArgumentParser()
 ap.add_argument("--dkim", action="store_true")
+ap.add_argument("--jwk", action="store_true")
 args = ap.parse_args()
 
 afl.init()
@@ -24,5 +26,12 @@ afl.init()
 inkey = sys.stdin.read()
 if args.dkim:
     parsedkim(inkey)
+elif args.jwk:
+    try:
+        jkey = json.loads(inkey)
+    except (json.decoder.JSONDecodeError, UnicodeDecodeError):
+        pass
+    else:
+        badkeys.checkjwk(jkey, checks=["blocklist"])
 else:
     badkeys.detectandcheck(inkey)
