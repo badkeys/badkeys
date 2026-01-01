@@ -6,10 +6,15 @@ from .checks import checkall, checkrsa
 
 def checkdnskey(rec, checks):
     o = rec.split(maxsplit=3)
-    keytype = int(o[2])
+    if len(o) < 3:
+        return {"type": "unparseable", "results": {}}
+    try:
+        keytype = int(o[2])
+    except ValueError:
+        return {"type": "unparseable", "results": {}}
     try:
         key = base64.b64decode(o[3].replace(" ", "").encode())
-    except binascii.Error:
+    except (binascii.Error, UnicodeEncodeError):
         return {"type": "unparseable", "results": {}}
     r = {}
     if keytype in {1, 5, 7, 8, 10}:  # RSA
