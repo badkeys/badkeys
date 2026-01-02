@@ -30,7 +30,7 @@ if args.dkim:
 elif args.jwk:
     try:
         jkey = json.loads(inkey)
-    except (json.decoder.JSONDecodeError, UnicodeDecodeError):
+    except (json.decoder.JSONDecodeError, UnicodeDecodeError, ValueError):
         pass
     else:
         badkeys.checkjwk(jkey, checks=["blocklist"])

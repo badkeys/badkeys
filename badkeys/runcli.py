@@ -240,7 +240,7 @@ def runcli():
             with open(fn) as f:
                 try:
                     j = json.load(f)
-                except (json.decoder.JSONDecodeError, UnicodeDecodeError):
+                except (json.decoder.JSONDecodeError, UnicodeDecodeError, ValueError):
                     _warnmsg(f"No valid JSON, {_esc(fn)}")
                     continue
             if isinstance(j, dict) and "kty" in j:
