@@ -5,6 +5,10 @@ import sys
 _retval = 0
 
 
+def _esc(inp):
+    return repr(inp)[1:-1]
+
+
 @functools.cache
 def _setret(rv):
     global _retval

@@ -14,7 +14,7 @@ from .jwk import checkjwk
 from .scanssh import scanssh
 from .scantls import scantls
 from .update import update_bl
-from .utils import _errexit, _getret, _setret, _warnmsg
+from .utils import _errexit, _esc, _getret, _setret, _warnmsg
 
 MAXINPUTSIZE = 2048000
 
@@ -46,19 +46,19 @@ def _printresults(key, where, args):
     if "curve" in key:
         kn += f"[{key['curve']}]"
     if key["type"] == "unsupported":
-        _warnmsg(f"Unsupported key type, {where}")
+        _warnmsg(f"Unsupported key type, {_esc(where)}")
     elif key["type"] == "unparseable":
-        _warnmsg(f"Unparseable input, {where}")
+        _warnmsg(f"Unparseable input, {_esc(where)}")
     elif key["type"] == "notfound":
-        _warnmsg(f"No key found, {where}")
+        _warnmsg(f"No key found, {_esc(where)}")
     elif args.verbose or args.all:
         if key["results"] == {}:
-            print(f"{kn} key ok, {where}")
+            print(f"{kn} key ok, {_esc(where)}")
     for check, result in key["results"].items():
         sub = ""
         if "subtest" in result:
             sub = f"/{result['subtest']}"
-        print(f"{check}{sub} vulnerability, {kn}, {where}")
+        print(f"{check}{sub} vulnerability, {kn}, {_esc(where)}")
         _setret(4)
         if args.url and "lookup" in result:
             url, _ = urllookup(result["blid"], result["lookup"])
@@ -222,7 +222,7 @@ def runcli():
             try:
                 records = dns.resolver.resolve(host, "TXT").response
             except (dns.resolver.NXDOMAIN, dns.resolver.NoAnswer):
-                _warnmsg(f"No TXT record found, {host}")
+                _warnmsg(f"No TXT record found, {_esc(host)}")
                 continue
             found = False
             for record in records.answer[-1]:
@@ -233,7 +233,7 @@ def runcli():
                     _printresults(r, host, args)
                     found = True
             if not found:
-                _warnmsg(f"No DKIM/DomainKeys key in TXT record, {host}")
+                _warnmsg(f"No DKIM/DomainKeys key in TXT record, {_esc(host)}")
 
     if args.jwk:
         for fn in args.infiles:
@@ -241,7 +241,7 @@ def runcli():
                 try:
                     j = json.load(f)
                 except (json.decoder.JSONDecodeError, UnicodeDecodeError):
-                    _warnmsg(f"No valid JSON, {fn}")
+                    _warnmsg(f"No valid JSON, {_esc(fn)}")
                     continue
             if isinstance(j, dict) and "kty" in j:
                 r = checkjwk(j, checks=userchecks)
@@ -251,7 +251,7 @@ def runcli():
                     r = checkjwk(k, checks=userchecks)
                     _printresults(r, fn, args)
             else:
-                _warnmsg(f"No JWK/JWKS, {fn}")
+                _warnmsg(f"No JWK/JWKS, {_esc(fn)}")
 
     if args.ssh or args.tls or args.dkim_dns or args.jwk:
         sys.exit(_getret())
@@ -317,7 +317,7 @@ def runcli():
 
             keyrecs = dnskeyre.findall(fcontent)
             if not keyrecs:
-                _warnmsg(f"No DNSSEC key found, {fn}")
+                _warnmsg(f"No DNSSEC key found, {_esc(fn)}")
             for rec in keyrecs:
                 r = checkdnskey(rec, checks=userchecks)
                 _printresults(r, fn, args)
