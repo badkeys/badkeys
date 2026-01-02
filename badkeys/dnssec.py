@@ -6,7 +6,7 @@ from .checks import checkall, checkrsa
 
 def checkdnskey(rec, checks):
     o = rec.split(maxsplit=3)
-    if len(o) < 3:
+    if len(o) != 4:
         return {"type": "unparseable", "results": {}}
     try:
         keytype = int(o[2])
