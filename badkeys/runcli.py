@@ -276,6 +276,10 @@ def runcli():
                     r = {"type": "unparseable", "results": {}}
                     _printresults(r, f"line {count}", args)
                     continue
+                if n <= 0:
+                    r = {"type": "unparseable", "results": {}}
+                    _printresults(r, f"line {count}", args)
+                    continue
                 r = {"type": "rsa", "bits": n.bit_length()}
                 r["results"] = checkrsa(n, checks=userchecks)
                 _printresults(r, f"modulus {n:02x}", args)
