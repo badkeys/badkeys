@@ -238,8 +238,9 @@ def checksshpubkey(sshkey, checks=defaultchecks.keys()):
     except ValueError as e:
         # ValueError: defect keys, non-standard DSA keys (!=1024 bit)
         return _reterr("unparseable", e)
-    except cryptography.exceptions.UnsupportedAlgorithm as e:
+    except (cryptography.exceptions.UnsupportedAlgorithm, NotImplementedError) as e:
         # UnsupportedAlgorithm: unsupported key types
+        # NotImplementedError: unsupported EC point format
         return _reterr("unsupported", e)
     return _checkkey(pkey, checks)
 
