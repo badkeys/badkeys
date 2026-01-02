@@ -45,5 +45,5 @@ def parsedkim(line):
             return False
         der = EDASN1 + rawed
         return PUBPRE + base64.b64encode(der).decode() + PUBPOST
-    _warnmsg(f"Unknown DKIM key type {dkim['k']}")
+    _warnmsg("Unknown DKIM key type")
     return False
