@@ -3,6 +3,7 @@ __all__ = [
     "pattern",
     "roca",
     "rsainvalid",
+    "rsarecover",
     "rsawarnings",
     "sharedprimes",
     "smallfactors",
@@ -12,6 +13,7 @@ from .fermat import fermat
 from .pattern import pattern
 from .roca import roca
 from .rsainvalid import rsainvalid
+from .rsarecover import rsarecover
 from .rsawarnings import rsawarnings
 from .sharedprimes import sharedprimes
 from .smallfactors import smallfactors

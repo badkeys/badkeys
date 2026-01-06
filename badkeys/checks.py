@@ -7,8 +7,8 @@ from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import dh, dsa, ec, ed448, ed25519, rsa, x448, x25519
 
 from .allkeys import blocklist
-from .rsakeys import (fermat, pattern, roca, rsainvalid, rsawarnings, sharedprimes, smallfactors,
-                      xzbackdoor)
+from .rsakeys import (fermat, pattern, roca, rsainvalid, rsarecover, rsawarnings, sharedprimes,
+                      smallfactors, xzbackdoor)
 
 # List of available checks
 defaultchecks = {
@@ -73,14 +73,14 @@ warnings.filterwarnings(
 )
 
 
-def _checkkey(key, checks):
+def _checkkey(key, checks, keyrecover=False):
     r = {}
     if isinstance(key, rsa.RSAPublicKey):
         r["type"] = "rsa"
         r["n"] = key.public_numbers().n
         r["e"] = key.public_numbers().e
         r["bits"] = r["n"].bit_length()
-        r["results"] = checkrsa(r["n"], e=r["e"], checks=checks)
+        r["results"] = checkrsa(r["n"], e=r["e"], checks=checks, keyrecover=keyrecover)
     elif isinstance(key, ec.EllipticCurvePublicKey):
         r["type"] = "ec"
         r["curve"] = key.curve.name
@@ -133,7 +133,7 @@ def _checkkey(key, checks):
     return r
 
 
-def checkrsa(n, e=65537, checks=defaultchecks.keys()):
+def checkrsa(n, e=65537, checks=defaultchecks.keys(), keyrecover=False):
     results = {}
     for check in checks:
         callcheck = allchecks[check]["function"]
@@ -144,6 +144,10 @@ def checkrsa(n, e=65537, checks=defaultchecks.keys()):
         else:
             continue
         if r is not False:
+            if keyrecover and "p" in r and "q" in r:
+                pemkey = rsarecover(r["p"], r["q"], e)
+                if pemkey:
+                    r["privatekey"] = pemkey
             results[check] = r
     return results
 
@@ -164,7 +168,7 @@ def _reterr(rtype, ex):
     return {"type": rtype, "results": {}, "exception": ex.__class__.__name__, "errmsg": str(ex)}
 
 
-def checkpubkey(rawkey, checks=defaultchecks.keys()):
+def checkpubkey(rawkey, checks=defaultchecks.keys(), keyrecover=False):
     try:
         key = serialization.load_pem_public_key(rawkey.encode())
     except ValueError as e:
@@ -174,10 +178,10 @@ def checkpubkey(rawkey, checks=defaultchecks.keys()):
     except cryptography.exceptions.UnsupportedAlgorithm as e:
         # UnsupportedAlgorithm: Unsupported elliptic curves
         return _reterr("unsupported", e)
-    return _checkkey(key, checks)
+    return _checkkey(key, checks, keyrecover=keyrecover)
 
 
-def checkprivkey(rawkey, checks=defaultchecks.keys()):
+def checkprivkey(rawkey, checks=defaultchecks.keys(), keyrecover=False):
     try:
         priv = serialization.load_pem_private_key(rawkey.encode(), password=None)
     except ValueError as e:
@@ -187,10 +191,10 @@ def checkprivkey(rawkey, checks=defaultchecks.keys()):
         # UnsupportedAlgorithm: Unsupported elliptic curves
         # TypeError: passwords-protected keys
         return _reterr("unsupported", e)
-    return _checkkey(priv.public_key(), checks)
+    return _checkkey(priv.public_key(), checks, keyrecover=keyrecover)
 
 
-def checkcrt(rawcert, checks=defaultchecks.keys()):
+def checkcrt(rawcert, checks=defaultchecks.keys(), keyrecover=False):
     try:
         crt = x509.load_pem_x509_certificate(rawcert.encode())
     except (ValueError, cryptography.x509.base.InvalidVersion) as e:
@@ -202,10 +206,10 @@ def checkcrt(rawcert, checks=defaultchecks.keys()):
         # UnsupportedAlgorithm: unsupported curves
         # NotImplementedError: ? (possibly certificate extension issues)
         return _reterr("unsupported", e)
-    return _checkkey(pubkey, checks)
+    return _checkkey(pubkey, checks, keyrecover=keyrecover)
 
 
-def checkcsr(rawcsr, checks=defaultchecks.keys()):
+def checkcsr(rawcsr, checks=defaultchecks.keys(), keyrecover=False):
     try:
         csr = x509.load_pem_x509_csr(rawcsr.encode())
     except (ValueError, cryptography.x509.base.InvalidVersion) as e:
@@ -216,10 +220,10 @@ def checkcsr(rawcsr, checks=defaultchecks.keys()):
         # ValueError: unknown key types, explicit curves
         # UnsupportedAlgorithm: unsupported curves
         return _reterr("unsupported", e)
-    return _checkkey(pubkey, checks)
+    return _checkkey(pubkey, checks, keyrecover=keyrecover)
 
 
-def checksshprivkey(sshkey, checks=defaultchecks.keys()):
+def checksshprivkey(sshkey, checks=defaultchecks.keys(), keyrecover=False):
     try:
         pkey = serialization.load_ssh_private_key(sshkey.encode(), password=None)
     except ValueError as e:
@@ -229,10 +233,10 @@ def checksshprivkey(sshkey, checks=defaultchecks.keys()):
         # UnsupportedAlgorithm: unsupported key types, e.g., sk-*
         # TypeError: password-protected keys
         return _reterr("unsupported", e)
-    return _checkkey(pkey.public_key(), checks)
+    return _checkkey(pkey.public_key(), checks, keyrecover=keyrecover)
 
 
-def checksshpubkey(sshkey, checks=defaultchecks.keys()):
+def checksshpubkey(sshkey, checks=defaultchecks.keys(), keyrecover=False):
     try:
         pkey = serialization.load_ssh_public_key(sshkey.encode())
     except ValueError as e:
@@ -242,28 +246,28 @@ def checksshpubkey(sshkey, checks=defaultchecks.keys()):
         # UnsupportedAlgorithm: unsupported key types
         # NotImplementedError: unsupported EC point format
         return _reterr("unsupported", e)
-    return _checkkey(pkey, checks)
+    return _checkkey(pkey, checks, keyrecover=keyrecover)
 
 
-def detectandcheck(inkey, checks=defaultchecks.keys()):
+def detectandcheck(inkey, checks=defaultchecks.keys(), keyrecover=False):
     if "-----BEGIN CERTIFICATE-----" in inkey:
-        return checkcrt(inkey, checks)
+        return checkcrt(inkey, checks, keyrecover=keyrecover)
     if "-----BEGIN CERTIFICATE REQUEST-----" in inkey:
-        return checkcsr(inkey, checks)
+        return checkcsr(inkey, checks, keyrecover=keyrecover)
     if "-----BEGIN PUBLIC KEY-----" in inkey:
-        return checkpubkey(inkey, checks)
+        return checkpubkey(inkey, checks, keyrecover=keyrecover)
     if "-----BEGIN RSA PUBLIC KEY-----" in inkey:
-        return checkpubkey(inkey, checks)
+        return checkpubkey(inkey, checks, keyrecover=keyrecover)
     if "-----BEGIN PRIVATE KEY-----" in inkey:
-        return checkprivkey(inkey, checks)
+        return checkprivkey(inkey, checks, keyrecover=keyrecover)
     if "-----BEGIN RSA PRIVATE KEY-----" in inkey:
-        return checkprivkey(inkey, checks)
+        return checkprivkey(inkey, checks, keyrecover=keyrecover)
     if "-----BEGIN DSA PRIVATE KEY-----" in inkey:
-        return checkprivkey(inkey, checks)
+        return checkprivkey(inkey, checks, keyrecover=keyrecover)
     if "-----BEGIN EC PRIVATE KEY-----" in inkey:
-        return checkprivkey(inkey, checks)
+        return checkprivkey(inkey, checks, keyrecover=keyrecover)
     if "-----BEGIN OPENSSH PRIVATE KEY-----" in inkey:
-        return checksshprivkey(inkey, checks)
+        return checksshprivkey(inkey, checks, keyrecover=keyrecover)
     if inkey.startswith(("ssh-", "ecdsa-")):
-        return checksshpubkey(inkey, checks)
+        return checksshpubkey(inkey, checks, keyrecover=keyrecover)
     return {"type": "notfound", "results": {}}
