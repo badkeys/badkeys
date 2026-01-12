@@ -23,15 +23,17 @@ def checkdnskey(rec, checks):
             return {"type": "unparseable", "results": {}}
         if key[0] == 0:
             elen = int.from_bytes(key[1:3], byteorder="big")
+            eoffset = 3
         else:
             elen = key[0]
+            eoffset = 1
 
-        if len(key) < elen + 1:
+        if len(key) < elen + eoffset:
             return {"type": "unparseable", "results": {}}
 
         r["type"] = "rsa"
-        r["e"] = int.from_bytes(key[1:1 + elen], byteorder="big")
-        r["n"] = int.from_bytes(key[1 + elen:], byteorder="big")
+        r["e"] = int.from_bytes(key[eoffset:eoffset + elen], byteorder="big")
+        r["n"] = int.from_bytes(key[eoffset + elen:], byteorder="big")
         r["bits"] = r["n"].bit_length()
         r["results"] = checkrsa(r["n"], r["e"], checks=checks)
         return r
