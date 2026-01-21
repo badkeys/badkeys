@@ -1,0 +1,1 @@
+"v=DKIM1;k=rsa;n=escaped quote \" should not break our parser;p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCw0YNSqI9T1VFvRsIOejZ9feiKz1SgGfbe9Xq5tEzt2yJCsbyg+xtcuCswNhdqY5A1ZN7G60HbL4/Hh/TlLhFJ4zNHVylz9mDDx3yp4IIcK2lb566dfTD0B5EQ9Iqub4twLUdLKQCBfyhmJJvsEqKxm4J4QWgI+Brh/Pm3d4piPwIDAQAB"

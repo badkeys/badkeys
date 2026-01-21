@@ -9,6 +9,10 @@ EDASN1 = b"\x30\x2a\x30\x05\x06\x03\x2b\x65\x70\x03\x21\x00"
 
 
 def parsedkim(line):
+
+    # remove escaped quote characters, they can break our parser
+    line = line.replace('\\"', "")
+
     if '"' in line:
         add = 0
         dk = ""
