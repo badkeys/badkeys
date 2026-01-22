@@ -286,6 +286,7 @@ def runcli():
         elif args.crt_lines:
             lno = 0
             for line in f:
+                lno += 1
                 desc = f"{fn}[{lno}]"
                 ll = re.split("[,; ]", line.rstrip(), maxsplit=1)
                 if len(ll) == 2:
@@ -293,29 +294,28 @@ def runcli():
                 crt = PRECRT + ll[0] + POSTCRT
                 r = checkcrt(crt, checks=userchecks)
                 _printresults(r, desc, args)
-                lno += 1
                 count += 1
         elif args.ssh_lines:
             lno = 0
             for line in f:
+                lno += 1
                 desc = f"{fn}[{lno}]"
                 ll = line.rstrip().split(" ", 2)
                 if len(ll) == 3:
                     desc += f" {ll[2]}"
                 r = checksshpubkey(line, checks=userchecks)
                 _printresults(r, desc, args)
-                lno += 1
                 count += 1
         elif args.dkim:
             lno = 0
             for line in f:
+                lno += 1
                 desc = f"{fn}[{lno}]"
                 key = parsedkim(line)
                 if key:
                     r = checkpubkey(key, checks=userchecks)
                     _printresults(r, desc, args)
                     count += 1
-                lno += 1
         elif args.dnssec:
             fcontent = f.read(MAXINPUTSIZE)
 
