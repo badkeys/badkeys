@@ -21,7 +21,7 @@ class TestDkim(unittest.TestCase):
             self.assertFalse(parsedkim(dkey))
         # Valid inputs should return PEM public key
         for dkimvalid in ["dkim-valid-gmail.txt", "dkim-insecure-rfc8463.txt",
-                          "dkim-escaped-quote.txt"]:
+                          "dkim-escaped-quote.txt", "dkim-comment-quotes.txt"]:
             dkey = pathlib.Path(f"{TDPATH}dkim/{dkimvalid}").read_text()
             self.assertTrue(parsedkim(dkey).startswith(PUBPRE))
 
@@ -31,13 +31,11 @@ class TestDkim(unittest.TestCase):
         ret = checkpubkey(parsedkim(dkey))
         self.assertFalse(ret["results"])
 
-        dkey = pathlib.Path(f"{TDPATH}dkim/dkim-insecure-rfc8463.txt").read_text()
-        ret = checkpubkey(parsedkim(dkey))
-        self.assertTrue("blocklist" in ret["results"])
-
-        dkey = pathlib.Path(f"{TDPATH}dkim/dkim-escaped-quote.txt").read_text()
-        ret = checkpubkey(parsedkim(dkey))
-        self.assertTrue("blocklist" in ret["results"])
+        for dkimbl in ["dkim-insecure-rfc8463.txt", "dkim-escaped-quote.txt",
+                       "dkim-comment-quotes.txt"]:
+            dkey = pathlib.Path(f"{TDPATH}dkim/{dkimbl}").read_text()
+            ret = checkpubkey(parsedkim(dkey))
+            self.assertTrue("blocklist" in ret["results"])
 
 
 if __name__ == "__main__":

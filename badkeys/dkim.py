@@ -13,7 +13,12 @@ def parsedkim(line):
     # remove escaped quote characters, they can break our parser
     line = line.replace('\\"', "")
 
-    if '"' in line:
+    qsplit = line.split('"')
+    # Concat quoted strings if we have double quotes.
+    # Exception: if we have a '=' before the first quote it is not
+    # a quoted record, but quotes within a DKIM value (see example
+    # in tests/data/dkim/dkim-comment-quotes.txt).
+    if len(qsplit) >= 2 and "=" not in qsplit[0]:
         add = 0
         dk = ""
         for x in line.split('"'):
