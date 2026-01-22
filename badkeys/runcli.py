@@ -82,85 +82,48 @@ def runcli():
         pass
 
     ap = argparse.ArgumentParser()
-    ap.add_argument(
-        "infiles", nargs="*", help="Input file (certificate, csr or public key)"
-    )
-    ap.add_argument(
-        "-c", "--checks", help="Comma-separated list of checks (default: all)"
-    )
+    ap.add_argument("infiles", nargs="*", help="Input file (certificate, csr or public key)")
+    ap.add_argument("-c", "--checks", help="Comma-separated list of checks (default: all)")
     ap.add_argument("--list", action="store_true", help="Show list of possible checks")
-    ap.add_argument(
-        "-m",
-        "--moduli",
-        action="store_true",
-        help="Input file is list of RSA hex moduli",
-    )
-    ap.add_argument(
-        "--crt-lines", action="store_true", help="Input file is list of base64 certs"
-    )
-    ap.add_argument(
-        "--ssh-lines", action="store_true", help="Input file is list of ssh public keys"
-    )
+    ap.add_argument("-m", "--moduli", action="store_true",
+                    help="Input file is list of RSA hex moduli")
+    ap.add_argument("--crt-lines", action="store_true", help="Input file is list of base64 certs")
+    ap.add_argument("--ssh-lines", action="store_true",
+                    help="Input file is list of ssh public keys")
     ap.add_argument("--dkim", action="store_true", help="Scan DKIM records (in files)")
-    ap.add_argument(
-        "--dkim-dns",
-        action="store_true",
-        help="Scan DKIM DNS record (hostnames instead of files)",
-    )
+    ap.add_argument("--dkim-dns", action="store_true",
+                    help="Scan DKIM DNS record (hostnames instead of files)")
     ap.add_argument("--dnssec", action="store_true", help="Scan DNSKEY/DNSSEC records (in files)")
     ap.add_argument("--jwk", action="store_true", help="Scan JSON Web Keys / Key Sets")
     ap.add_argument("-a", "--all", action="store_true", help="Show all keys")
-    ap.add_argument(
-        "-w",
-        "--warnings",
-        action="store_true",
-        help="Enable extra warnings (keysize etc.)",
-    )
+    ap.add_argument("-w", "--warnings", action="store_true",
+                    help="Enable extra warnings (keysize etc.)")
     ap.add_argument("-v", "--verbose", action="store_true", help="Verbose output")
     ap.add_argument("-j", "--json", action="store_true", help="JSON output")
-    ap.add_argument(
-        "-q", "--quiet", action="store_true", help="Quiet output (for update commands)"
-    )
-    ap.add_argument(
-        "-u", "--url", action="store_true", help="Show private key URL if possible"
-    )
+    ap.add_argument("-q", "--quiet", action="store_true", help="Quiet output (for update commands)")
+    ap.add_argument("-u", "--url", action="store_true", help="Show private key URL if possible")
     ap.add_argument("--update-bl", action="store_true", help="Update blocklist")
     ap.add_argument("-U", "--update-bl-and-urls", action="store_true",
                     help="Update blocklist and optional URL lookup list")
     ap.add_argument("--extrabl", help="comma-separated list of extra blocklist files")
-    ap.add_argument(
-        "-t",
-        "--tls",
-        action="store_true",
-        help="Scan TLS (pass hostnames or IPs instead of files)",
-    )
+    ap.add_argument("-t", "--tls", action="store_true",
+                    help="Scan TLS (pass hostnames or IPs instead of files)")
     # default ports for https, smtps, imaps, pop3s, ldaps, ftps
     # and 8443 as a common non-default https port
-    ap.add_argument(
-        "--tls-ports",
-        default="443,465,636,990,993,995,8443",
-        help="TLS ports (comma-separated)",
-    )
-    ap.add_argument(
-        "-s",
-        "--ssh",
-        action="store_true",
-        help="Scan SSH (pass hostnames or IPs instead of files)",
-    )
+    ap.add_argument("--tls-ports", default="443,465,636,990,993,995,8443",
+                    help="TLS ports (comma-separated)")
+    ap.add_argument("-s", "--ssh", action="store_true",
+                    help="Scan SSH (pass hostnames or IPs instead of files)")
     ap.add_argument("--ssh-ports", default="22", help="SSH ports (comma-separated)")
     ap.add_argument("--version", action="version", version=__version__)
     args = ap.parse_args()
 
-    if (
-        (args.moduli and args.crt_lines)
-        or (args.moduli and args.ssh_lines)
-        or (args.ssh_lines and args.crt_lines)
-    ):
+    if (args.moduli and args.crt_lines) or (args.moduli and args.ssh_lines) \
+       or (args.ssh_lines and args.crt_lines):
         _errexit("Multiple input format parameters cannot be combined.")
 
-    if (args.moduli or args.crt_lines or args.ssh_lines) and (
-        args.tls or args.ssh or args.dkim_dns
-    ):
+    if (args.moduli or args.crt_lines or args.ssh_lines) and \
+       (args.tls or args.ssh or args.dkim_dns):
         _errexit("Scan modes and input file modes cannot be combined.")
 
     if args.update_bl_and_urls:
