@@ -8,7 +8,7 @@ from cryptography.hazmat.primitives.asymmetric import dh, dsa, ec, ed448, ed2551
 
 from .allkeys import blocklist
 from .rsakeys import (fermat, pattern, roca, rsainvalid, rsarecover, rsawarnings, sharedprimes,
-                      smallfactors, xzbackdoor)
+                      smalld, smallfactors, xzbackdoor)
 
 # List of available checks
 defaultchecks = {
@@ -36,6 +36,11 @@ defaultchecks = {
         "type": "rsa",
         "function": sharedprimes,
         "desc": "Shared prime factors (batchgcd)",
+    },
+    "smalld": {
+        "type": "rsa",
+        "function": smalld,
+        "desc": "Small private d (Wiener's attack)",
     },
     "smallfactors": {
         "type": "rsa",

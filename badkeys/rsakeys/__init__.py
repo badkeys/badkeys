@@ -6,6 +6,7 @@ __all__ = [
     "rsarecover",
     "rsawarnings",
     "sharedprimes",
+    "smalld",
     "smallfactors",
     "xzbackdoor",
 ]
@@ -16,5 +17,6 @@ from .rsainvalid import rsainvalid
 from .rsarecover import rsarecover
 from .rsawarnings import rsawarnings
 from .sharedprimes import sharedprimes
+from .smalld import smalld
 from .smallfactors import smallfactors
 from .xzbackdoor import xzbackdoor
