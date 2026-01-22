@@ -31,7 +31,7 @@ def _sighandler(_signum, _handler):
 def _printresults(key, where, args):
     if args.json:
         jout = key
-        for val in ["n", "e", "x"]:
+        for val in ["n", "e", "x", "y"]:
             if val in jout:
                 jout[val] = f"{jout[val]:x}"
         for result in jout["results"]:
