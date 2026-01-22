@@ -264,6 +264,10 @@ def runcli():
             f = sys.stdin
         else:
             f = open(fn, errors="replace")
+
+        if args.moduli or args.ssh_lines or args.crt_lines or args.dkim:
+            lcount = 0
+
         if args.moduli:
             for line in f:
                 count += 1
@@ -283,6 +287,7 @@ def runcli():
                 r = {"type": "rsa", "bits": n.bit_length()}
                 r["results"] = checkrsa(n, checks=userchecks)
                 _printresults(r, f"modulus {n:02x}", args)
+                lcount += 1
         elif args.crt_lines:
             lno = 0
             for line in f:
@@ -295,6 +300,7 @@ def runcli():
                 r = checkcrt(crt, checks=userchecks)
                 _printresults(r, desc, args)
                 count += 1
+                lcount += 1
         elif args.ssh_lines:
             lno = 0
             for line in f:
@@ -306,6 +312,7 @@ def runcli():
                 r = checksshpubkey(line, checks=userchecks)
                 _printresults(r, desc, args)
                 count += 1
+                lcount += 1
         elif args.dkim:
             lno = 0
             for line in f:
@@ -316,6 +323,7 @@ def runcli():
                     r = checkpubkey(key, checks=userchecks)
                     _printresults(r, desc, args)
                     count += 1
+                    lcount += 1
         elif args.dnssec:
             fcontent = f.read(MAXINPUTSIZE)
 
@@ -330,6 +338,10 @@ def runcli():
             fcontent = f.read(MAXINPUTSIZE)
             r = detectandcheck(fcontent, checks=userchecks)
             _printresults(r, fn, args)
+
+        if args.moduli or args.ssh_lines or args.crt_lines or args.dkim:
+            if lcount == 0:
+                _printresults({"type": "notfound", "results": {}}, fn, args)
 
         if fn != "-":
             f.close()
