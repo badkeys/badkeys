@@ -125,11 +125,8 @@ def runcli():
         "-u", "--url", action="store_true", help="Show private key URL if possible"
     )
     ap.add_argument("--update-bl", action="store_true", help="Update blocklist")
-    ap.add_argument(
-        "--update-bl-and-urls",
-        action="store_true",
-        help="Update blocklist and optional URL lookup list",
-    )
+    ap.add_argument("-U", "--update-bl-and-urls", action="store_true",
+                    help="Update blocklist and optional URL lookup list")
     ap.add_argument("--extrabl", help="comma-separated list of extra blocklist files")
     ap.add_argument(
         "-t",
