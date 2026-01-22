@@ -270,7 +270,6 @@ def runcli():
 
         if args.moduli:
             for line in f:
-                count += 1
                 try:
                     if line.startswith("Modulus="):
                         n = int(line[8:], 16)
@@ -287,6 +286,7 @@ def runcli():
                 r = {"type": "rsa", "bits": n.bit_length()}
                 r["results"] = checkrsa(n, checks=userchecks)
                 _printresults(r, f"modulus {n:02x}", args)
+                count += 1
                 lcount += 1
         elif args.crt_lines:
             lno = 0
