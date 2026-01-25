@@ -1,11 +1,11 @@
 import re
 
 # Find suspicious patterns of 16 repeating bytes
-_prex = re.compile(r"(..)\1{15}")
+_bprex = re.compile(rb"(.)\1{15}")
 
 
 def pattern(n, e=0):  # noqa: ARG001
-    r = _prex.search(f"{n:02x}")
-    if r:
+    nbin = n.to_bytes((n.bit_length() + 7) // 8)
+    if _bprex.search(nbin):
         return {"detected": True}
     return False
