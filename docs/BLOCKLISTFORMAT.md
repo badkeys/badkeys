@@ -52,11 +52,12 @@ It is possible to have multiple keys with the same `N` value and different `e` v
 However, in this case, either all keys are secure or all keys are compromised. Imagine
 two RSA pubic keys `k₁=(N₁,e₁)` and `k₂=(N₁,e₂)`, and the private key value `d₁` of `k₁`
 is known. In this case, one can trivially factor `N₁` with the help of `d₁` and get `p`
-and `q`. (An algorithm for this is given in the Handbook of Applied Cryptography,
-chapter 8.2.2(i).) With `p`, `q`, and `e₂`, it is possible to generate the full private
-key belonging to `k₂` the same way one would do during RSA key generation. (To
-reconstruct RSA private keys from partial information, e.g., only knowing `N`, `e`, and
-`d`, [Python Cryptography contains various functions](
+and `q`. (An algorithm for this is given in the [Handbook of Applied Cryptography](
+https://galois.azc.uam.mx/mate/propaganda/Menezes.pdf), chapter 8.2.2(i).) With `p`, `q`
+, and `e₂`, it is possible to generate the full private key belonging to `k₂` the same
+way one would do during RSA key generation. (To reconstruct RSA private keys from
+partial information, e.g., only knowing `N`, `e`, and `d`, [Python Cryptography contains
+various functions](
 https://cryptography.io/en/latest/hazmat/primitives/asymmetric/rsa/#handling-partial-rsa-private-keys).
 Alternatively, [`rsatool`](https://github.com/ius/rsatool) is a convenient command-line
 tool for RSA private key recovery.)
