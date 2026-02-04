@@ -2,7 +2,7 @@
 name = "badkeys"
 description = "Check cryptographic keys for known weaknesses"
 readme = "README.md"
-authors = [{name = "Hanno Böck"}]
+authors = [{ name = "Hanno Böck" }]
 classifiers = [
   "Programming Language :: Python :: 3 :: Only",
   "Programming Language :: Python :: 3",
@@ -13,22 +13,19 @@ classifiers = [
   "Programming Language :: Python :: 3.13",
   "Programming Language :: Python :: 3.14",
   "Natural Language :: English",
-  "Development Status :: 4 - Beta"
+  "Development Status :: 4 - Beta",
 ]
 license = "MIT"
-keywords = ["security", "cryptography", "rsa"]
+keywords = ["cryptography", "rsa", "security"]
 requires-python = ">=3.9"
-dependencies = [
-  "gmpy2",
-  "cryptography"
-]
+dependencies = ["cryptography", "gmpy2"]
 dynamic = ["version"]
 
 [tool.setuptools]
 packages = ["badkeys"]
 
 [tool.setuptools.dynamic]
-version = {attr = "badkeys.__version__"}
+version = { attr = "badkeys.__version__" }
 
 [tool.setuptools_scm]
 
