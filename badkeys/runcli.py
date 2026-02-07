@@ -263,10 +263,21 @@ def runcli():
                 lcount += 1
         elif args.ssh_lines:
             lno = 0
-            for line in f:
+            for sline in f:
                 lno += 1
+                line = sline.strip()
+                if line == "" or line.startswith("#"):
+                    continue
                 desc = f"{fn}[{lno}]"
-                ll = line.rstrip().split(" ", 2)
+                if not line.startswith(("ssh-", "ecdsa-")):
+                    if "ssh-" in line:
+                        line = "ssh-" + line.split("ssh-", 1)[1]
+                    elif "ecdsa-" in line:
+                        line = "ecdsa-" + line.split("ecdsa-", 1)[1]
+                    else:
+                        _warnmsg(f"No SSH key in {desc}")
+                        continue
+                ll = line.split(" ", 2)
                 if len(ll) == 3:
                     desc += f" {ll[2]}"
                 r = checksshpubkey(line, checks=userchecks)
