@@ -46,7 +46,9 @@ def _printresults(key, where, args):
             if "p" in jout["results"][result]:
                 jout["results"][result]["p"] = f'{jout["results"][result]["p"]:x}'
                 jout["results"][result]["q"] = f'{jout["results"][result]["q"]:x}'
-        print(json.dumps(jout))
+        if args.all or jout["results"] or \
+           key["type"] in ["unsupported", "unparseable", "notfound"]:
+            print(json.dumps(jout))
         return
     kn = key["type"]
     if "bits" in key:
