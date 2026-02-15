@@ -1,7 +1,8 @@
 import base64
 import binascii
 
-from .utils import _warnmsg
+from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.primitives.asymmetric import ed25519, rsa
 
 PUBPRE = "-----BEGIN PUBLIC KEY-----\n"
 PUBPOST = "\n-----END PUBLIC KEY-----"
@@ -44,15 +45,28 @@ def parsedkim(line):
         dkim["k"] = "rsa"
 
     if dkim["k"] == "rsa":
-        return PUBPRE + dkim["p"] + PUBPOST
+        try:
+            rawkey = base64.b64decode(dkim["p"].encode())
+        except (binascii.Error, UnicodeEncodeError):
+            return "base64error"
+        try:
+            pubkey = serialization.load_der_public_key(rawkey)
+        except ValueError:
+            try:
+                serialization.load_der_private_key(rawkey, password=None)
+                return "privleak"
+            except ValueError:
+                pass
+            return "keyparseerror"
+        if not isinstance(pubkey, rsa.RSAPublicKey):
+            return "expectedrsa"
+        return pubkey
     if dkim["k"] == "ed25519":
         try:
-            rawed = base64.b64decode(dkim["p"].encode("ascii"))
+            rawed = base64.b64decode(dkim["p"].encode())
         except (binascii.Error, UnicodeEncodeError):
-            return False
+            return "base64error"
         if len(rawed) != 32:
-            return False
-        der = EDASN1 + rawed
-        return PUBPRE + base64.b64encode(der).decode() + PUBPOST
-    _warnmsg("Unknown DKIM key type")
-    return False
+            return "wrongkeylength"
+        return ed25519.Ed25519PublicKey.from_public_bytes(rawed)
+    return "unknowntype"

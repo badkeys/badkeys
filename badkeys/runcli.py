@@ -6,7 +6,7 @@ import sys
 
 from . import __version__
 from .allkeys import loadextrabl, urllookup
-from .checks import (allchecks, checkcrt, checkpubkey, checkrsa, checksshpubkey, defaultchecks,
+from .checks import (_checkkey, allchecks, checkcrt, checkrsa, checksshpubkey, defaultchecks,
                      detectandcheck)
 from .dkim import parsedkim
 from .dnssec import checkdnskey
@@ -22,6 +22,14 @@ count = 0
 
 PRECRT = "-----BEGIN CERTIFICATE-----\n"
 POSTCRT = "\n-----END CERTIFICATE-----\n"
+
+_parseerrmsg = {
+    "privleak": "Private instead of public key",
+    "keyparseerror": "Error decoding DER/ASN.1 key structure",
+    "expectedrsa": "Wrong key type, expected RSA key",
+    "wrongkeylength": "Wrong key length",
+    "unknowntype": "Unknown key type",
+}
 
 
 def _sighandler(_signum, _handler):
@@ -48,7 +56,12 @@ def _printresults(key, where, args):
     if key["type"] == "unsupported":
         _warnmsg(f"Unsupported key type, {_esc(where)}")
     elif key["type"] == "unparseable":
-        _warnmsg(f"Unparseable input, {_esc(where)}")
+        reason = ""
+        if key["reason"] and key["reason"] in _parseerrmsg:
+            reason = f" ({_parseerrmsg[key['reason']]})"
+        elif key["reason"]:
+            reason = f" ({key['reason']})"
+        _warnmsg(f"Unparseable input{reason}, {_esc(where)}")
     elif key["type"] == "notfound":
         _warnmsg(f"No key found, {_esc(where)}")
     elif args.verbose or args.all:
@@ -188,10 +201,15 @@ def runcli():
             for record in records.answer[-1]:
                 dk = b"".join(record.strings).decode()
                 key = parsedkim(dk)
-                if key:
-                    r = checkpubkey(key, checks=userchecks)
-                    _printresults(r, host, args)
-                    found = True
+
+                if not key:
+                    continue
+                found = True
+                if isinstance(key, str):
+                    r = {"type": "unparseable", "reason": key, "results": {}}
+                else:
+                    r = _checkkey(key, checks=userchecks)
+                _printresults(r, host, args)
             if not found:
                 _warnmsg(f"No DKIM/DomainKeys key in TXT record, {_esc(host)}")
 
@@ -290,11 +308,15 @@ def runcli():
                 lno += 1
                 desc = f"{fn}[{lno}]"
                 key = parsedkim(line)
-                if key:
-                    r = checkpubkey(key, checks=userchecks)
-                    _printresults(r, desc, args)
-                    count += 1
-                    lcount += 1
+                if not key:
+                    continue
+                if isinstance(key, str):
+                    r = {"type": "unparseable", "reason": key, "results": {}}
+                else:
+                    r = _checkkey(key, checks=userchecks)
+                _printresults(r, desc, args)
+                count += 1
+                lcount += 1
         elif args.dnssec:
             fcontent = f.read(MAXINPUTSIZE)
 
