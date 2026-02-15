@@ -44,9 +44,9 @@ def _printresults(key, where, args):
             if val in jout:
                 jout[val] = f"{jout[val]:x}"
         for result in jout["results"]:
-            if "p" in jout["results"][result]:
-                jout["results"][result]["p"] = f'{jout["results"][result]["p"]:x}'
-                jout["results"][result]["q"] = f'{jout["results"][result]["q"]:x}'
+            for val in ["p", "q", "e"]:
+                if val in jout["results"][result]:
+                    jout["results"][result][val] = f'{jout["results"][result][val]:x}'
         if args.all or jout["results"] or \
            key["type"] in ["unsupported", "unparseable", "notfound"]:
             print(json.dumps(jout))
