@@ -149,10 +149,13 @@ def checkrsa(n, e=65537, checks=defaultchecks.keys(), keyrecover=False):
         else:
             continue
         if r is not False:
+            pemkey = None
             if keyrecover and "p" in r and "q" in r:
-                pemkey = rsarecover(r["p"], r["q"], e)
-                if pemkey:
-                    r["privatekey"] = pemkey
+                pemkey = rsarecover(p=r["p"], q=r["q"], n=n, e=e)
+            elif keyrecover and "d" in r:
+                pemkey = rsarecover(d=r["d"], n=n, e=e)
+            if pemkey:
+                r["privatekey"] = pemkey
             results[check] = r
     return results
 
