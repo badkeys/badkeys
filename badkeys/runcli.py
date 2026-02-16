@@ -60,9 +60,9 @@ def _printresults(key, where, args):
         _warnmsg(f"Unsupported key type, {_esc(where)}")
     elif key["type"] == "unparseable":
         reason = ""
-        if key["reason"] and key["reason"] in _parseerrmsg:
+        if reason in key and key["reason"] in _parseerrmsg:
             reason = f" ({_parseerrmsg[key['reason']]})"
-        elif key["reason"]:
+        elif "reason" in key:
             reason = f" ({key['reason']})"
         _warnmsg(f"Unparseable input{reason}, {_esc(where)}")
     elif key["type"] == "notfound":
