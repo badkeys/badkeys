@@ -111,14 +111,13 @@ def _checkkey(key, checks, keyrecover=False):
     ):
         r["type"] = "ec"
         r["curve"] = str(type(key).__name__).lower()[:-9]
-        # For Ed25519 the raw key is the x coordinate
-        x_b = key.public_bytes(
+        # convert the raw key into an integer for the blocklist check
+        pub_b = key.public_bytes(
             encoding=serialization.Encoding.Raw,
             format=serialization.PublicFormat.Raw,
         )
-        r["x"] = int.from_bytes(x_b, byteorder="big")
-        # we don't need the y coordinate
-        r["results"] = checkall(r["x"], checks=checks)
+        r["pub"] = int.from_bytes(pub_b, byteorder="big")
+        r["results"] = checkall(r["pub"], checks=checks)
     elif isinstance(key, dh.DHPublicKey):
         r["type"] = "dh"
         try:
