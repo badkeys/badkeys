@@ -4,10 +4,6 @@ import binascii
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import ed25519, rsa
 
-PUBPRE = "-----BEGIN PUBLIC KEY-----\n"
-PUBPOST = "\n-----END PUBLIC KEY-----"
-EDASN1 = b"\x30\x2a\x30\x05\x06\x03\x2b\x65\x70\x03\x21\x00"
-
 
 def parsedkim(line):
 
