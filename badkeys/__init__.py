@@ -1,19 +1,7 @@
 __version__ = "0.0.17"
-__all__ = [
-    "allchecks",
-    "checkcrt",
-    "checkcsr",
-    "checkdnskey",
-    "checkjwk",
-    "checkprivkey",
-    "checkpubkey",
-    "checkrsa",
-    "checksshpubkey",
-    "defaultchecks",
-    "detectandcheck",
-    "scanssh",
-    "warningchecks",
-]
+__all__ = ["allchecks", "checkcrt", "checkcsr", "checkdnskey", "checkjwk", "checkprivkey",
+           "checkpubkey", "checkrsa", "checksshpubkey", "defaultchecks", "detectandcheck",
+           "scanssh", "warningchecks"]
 from .checks import (allchecks, checkcrt, checkcsr, checkprivkey, checkpubkey, checkrsa,
                      checksshpubkey, defaultchecks, detectandcheck, warningchecks)
 from .dnssec import checkdnskey

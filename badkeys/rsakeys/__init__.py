@@ -1,15 +1,6 @@
-__all__ = [
-    "fermat",
-    "pattern",
-    "roca",
-    "rsainvalid",
-    "rsarecover",
-    "rsawarnings",
-    "sharedprimes",
-    "smalld",
-    "smallfactors",
-    "xzbackdoor",
-]
+__all__ = ["fermat", "pattern", "roca", "rsainvalid", "rsarecover", "rsawarnings", "sharedprimes",
+           "smalld", "smallfactors", "xzbackdoor"]
+
 from .fermat import fermat
 from .pattern import pattern
 from .roca import roca
