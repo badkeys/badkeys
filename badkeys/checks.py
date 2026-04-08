@@ -17,11 +17,6 @@ defaultchecks = {
         "function": fermat,
         "desc": "Fermat factorization / close prime vulnerability",
     },
-    "pattern": {
-        "type": "rsa",
-        "function": pattern,
-        "desc": "Implausible repetition pattern in modulus",
-    },
     "roca": {
         "type": "rsa",
         "function": roca,
@@ -47,11 +42,6 @@ defaultchecks = {
         "function": smallfactors,
         "desc": "Small prime factors (<=65537, usually corrupt)",
     },
-    "xzbackdoor": {
-        "type": "rsa",
-        "function": xzbackdoor,
-        "desc": "xz backdoor payload in RSA n",
-    },
     "blocklist": {
         "type": "all",
         "function": blocklist,
@@ -72,7 +62,22 @@ warningchecks = {
     },
 }
 
-allchecks = defaultchecks | warningchecks
+# These lead to a problematic rate of false positives and
+# have limited value. They may be removed in the future.
+extrachecks = {
+    "pattern": {
+        "type": "rsa",
+        "function": pattern,
+        "desc": "Implausible repetition pattern in modulus",
+    },
+    "xzbackdoor": {
+        "type": "rsa",
+        "function": xzbackdoor,
+        "desc": "xz backdoor payload in RSA n",
+    },
+}
+
+allchecks = defaultchecks | warningchecks | extrachecks
 
 # cryptography warns about SSH DSA keys being deprecated.
 # For now, disable the warnings. Needs a better long-term solution.
