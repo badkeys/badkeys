@@ -81,11 +81,8 @@ allchecks = defaultchecks | warningchecks | extrachecks
 
 # cryptography warns about SSH DSA keys being deprecated.
 # For now, disable the warnings. Needs a better long-term solution.
-warnings.filterwarnings(
-    "ignore",
-    category=cryptography.utils.CryptographyDeprecationWarning,
-    module="badkeys.checks",
-)
+warnings.filterwarnings("ignore", category=cryptography.utils.CryptographyDeprecationWarning,
+                        module="badkeys.checks")
 
 
 def _checkkey(key, checks, keyrecover=False):
@@ -110,22 +107,13 @@ def _checkkey(key, checks, keyrecover=False):
         r["y"] = key.public_numbers().y
         r["bits"] = key.key_size
         r["results"] = checkall(r["y"], checks=checks)
-    elif isinstance(
-        key,
-        (
-            ed25519.Ed25519PublicKey,
-            x25519.X25519PublicKey,
-            x448.X448PublicKey,
-            ed448.Ed448PublicKey,
-        ),
-    ):
+    elif isinstance(key, (ed25519.Ed25519PublicKey, x25519.X25519PublicKey,
+                          x448.X448PublicKey, ed448.Ed448PublicKey)):
         r["type"] = "ec"
         r["curve"] = str(type(key).__name__).lower()[:-9]
         # convert the raw key into an integer for the blocklist check
-        pub_b = key.public_bytes(
-            encoding=serialization.Encoding.Raw,
-            format=serialization.PublicFormat.Raw,
-        )
+        pub_b = key.public_bytes(encoding=serialization.Encoding.Raw,
+                                 format=serialization.PublicFormat.Raw)
         r["pub"] = int.from_bytes(pub_b, byteorder="big")
         r["results"] = checkall(r["pub"], checks=checks)
     elif isinstance(key, dh.DHPublicKey):
@@ -139,10 +127,8 @@ def _checkkey(key, checks, keyrecover=False):
     else:
         r["type"] = "unsupported"
         r["results"] = {}
-    spki = key.public_bytes(
-        serialization.Encoding.DER,
-        serialization.PublicFormat.SubjectPublicKeyInfo,
-    )
+    spki = key.public_bytes(serialization.Encoding.DER,
+                            serialization.PublicFormat.SubjectPublicKeyInfo)
     r["spkisha256"] = hashlib.sha256(spki).hexdigest()
     return r
 
