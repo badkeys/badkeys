@@ -37,6 +37,11 @@ def rsabias(n, e=0):  # noqa: ARG001
 
     lowern = n % (1 << (n.bit_length() // 2))
     lowerpct = _bitpct(lowern)
+
+    if pct < 40 and lowerpct < 40:
+        # These will be detected by the rsapoly module
+        return False
+
     if 50 - threshold < lowerpct <= 50 + threshold:
         # No bias in the lower half of the modulus is a strong
         # indication of a "vanity" RSA key

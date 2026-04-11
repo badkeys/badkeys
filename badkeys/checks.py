@@ -7,7 +7,7 @@ from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import dh, dsa, ec, ed448, ed25519, rsa, x448, x25519
 
 from .allkeys import blocklist
-from .rsakeys import (fermat, pattern, roca, rsabias, rsainvalid, rsarecover, rsawarnings,
+from .rsakeys import (fermat, pattern, roca, rsabias, rsainvalid, rsapoly, rsarecover, rsawarnings,
                       sharedprimes, smalld, smallfactors, xzbackdoor)
 
 # List of available checks
@@ -26,6 +26,11 @@ defaultchecks = {
         "type": "rsa",
         "function": rsainvalid,
         "desc": "RSA keys with invalid values",
+    },
+    "rsapoly": {
+        "type": "rsa",
+        "function": rsapoly,
+        "desc": "0-byte pattern in modulus allowing polynomial factoring",
     },
     "sharedprimes": {
         "type": "rsa",
