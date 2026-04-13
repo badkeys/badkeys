@@ -8,13 +8,13 @@ from .smallfactors import smallfactors
 
 
 def _checkbits(n, width, bitmask):
-    _n = n
+    _n = n >> width
     setbits = 0
     while _n:
         # Skip the first chunk, it may contain larger
         # values due to next prime calculation
-        _n >>= width
         setbits |= _n & bitmask
+        _n >>= width
     return setbits == 0
 
 
