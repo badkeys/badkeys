@@ -12,9 +12,20 @@ def _checkbits(n, width, bitmask):
     # values due to next prime calculation
     _n = n >> width
     setbits = 0
+    zerochunks = 0
     while _n:
         setbits |= _n & bitmask
         _n >>= width
+
+        # check if the current chunk is zero
+        if (((1 << width) - 1) & _n) == 0:
+            zerochunks += 1
+
+    if zerochunks >= 2:
+        # if we see more than 1 zero chunk, we've
+        # almost certainly hit a false positive
+        return False
+
     return setbits == 0
 
 
