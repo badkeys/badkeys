@@ -7,7 +7,7 @@ import sys
 from . import __version__
 from .allkeys import loadextrabl, urllookup
 from .checks import (_checkkey, allchecks, checkcrt, checkrsa, checksshpubkey, defaultchecks,
-                     detectandcheck)
+                     detectandcheck, warningchecks)
 from .dkim import parsedkim
 from .dnssec import checkdnskey
 from .jwk import checkjwk
@@ -164,12 +164,18 @@ def runcli():
             loadextrabl(bl)
 
     if args.checks:
-        userchecks = args.checks.split(",")
-        for c in userchecks:
-            if c not in allchecks:
+        userchecks = set()
+        for c in args.checks.split(","):
+            if c == "default":
+                userchecks |= defaultchecks.keys()
+            elif c == "warning":
+                userchecks |= warningchecks.keys()
+            elif c in allchecks:
+                userchecks.add(c)
+            else:
                 _errexit(f"{c} is not a valid check")
     elif args.warnings:
-        userchecks = allchecks.keys()
+        userchecks = defaultchecks.keys() | warningchecks.keys()
     else:
         userchecks = defaultchecks.keys()
 
