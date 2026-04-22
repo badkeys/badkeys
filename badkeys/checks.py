@@ -7,6 +7,7 @@ from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import dh, dsa, ec, ed448, ed25519, rsa, x448, x25519
 
 from .allkeys import blocklist
+from .dsakeys import dsasparse
 from .rsakeys import (fermat, pattern, roca, rsabias, rsainvalid, rsapoly, rsarecover, rsawarnings,
                       sharedprimes, smalld, smallfactors, xzbackdoor)
 
@@ -52,6 +53,11 @@ defaultchecks = {
         "function": blocklist,
         "desc": "Blocklists of compromised keys",
     },
+    "dsasparse": {
+        "type": "dsa",
+        "function": dsasparse,
+        "desc": "DSA sparse key vulnerability"
+    }
 }
 
 warningchecks = {
@@ -110,8 +116,13 @@ def _checkkey(key, checks, keyrecover=False):
     elif isinstance(key, dsa.DSAPublicKey):
         r["type"] = "dsa"
         r["y"] = key.public_numbers().y
+        r["p"] = key.parameters().parameter_numbers().p
+        r["q"] = key.parameters().parameter_numbers().q
+        r["g"] = key.parameters().parameter_numbers().g
         r["bits"] = key.key_size
-        r["results"] = checkall(r["y"], checks=checks)
+        # we currently have no checks using the q, g parameters,
+        # they could be added in the future
+        r["results"] = checkdsa(r["y"], p=r["p"], checks=checks)
     elif isinstance(key, (ed25519.Ed25519PublicKey, x25519.X25519PublicKey,
                           x448.X448PublicKey, ed448.Ed448PublicKey)):
         r["type"] = "ec"
@@ -156,6 +167,21 @@ def checkrsa(n, e=65537, checks=defaultchecks.keys(), keyrecover=False):
                 pemkey = rsarecover(d=r["d"], n=n, e=e)
             if pemkey:
                 r["privatekey"] = pemkey
+            results[check] = r
+    return results
+
+
+def checkdsa(y, p=0, checks=defaultchecks.keys()):
+    results = {}
+    for check in checks:
+        callcheck = allchecks[check]["function"]
+        if allchecks[check]["type"] == "dsa":
+            r = callcheck(y, p=p)
+        elif allchecks[check]["type"] == "all":
+            r = callcheck(y)
+        else:
+            continue
+        if r is not False:
             results[check] = r
     return results
 
