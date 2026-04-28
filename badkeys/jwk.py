@@ -14,7 +14,7 @@ def _ub64toint(b64):
     return int.from_bytes(raw, byteorder="big")
 
 
-def checkjwk(key, checks):
+def checkjwk(key, checks, keyrecover=False):
     r = {}
     if not isinstance(key, dict) or "kty" not in key:
         return {"type": "unparseable", "results": {}}
@@ -27,7 +27,7 @@ def checkjwk(key, checks):
             r["n"] = _ub64toint(key["n"])
             r["e"] = _ub64toint(key["e"])
             r["bits"] = r["n"].bit_length()
-            r["results"] = checkrsa(r["n"], e=r["e"], checks=checks)
+            r["results"] = checkrsa(r["n"], e=r["e"], checks=checks, keyrecover=keyrecover)
         elif key["kty"] == "EC":
             if "x" not in key or "y" not in key or key["x"] == "" or key["y"] == "" \
                or not isinstance(key["x"], str) or not isinstance(key["y"], str) \

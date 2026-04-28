@@ -88,6 +88,8 @@ def _printresults(key, where, args):
             print(f"RSA p {result['p']:02x}")
         if args.verbose and "q" in result:
             print(f"RSA q {result['q']:02x}")
+        if args.keyrecover and "privatekey" in result:
+            print(result["privatekey"], end="")
 
 
 def runcli():
@@ -131,6 +133,8 @@ def runcli():
     ap.add_argument("-s", "--ssh", action="store_true",
                     help="Scan SSH (pass hostnames or IPs instead of files)")
     ap.add_argument("--ssh-ports", default="22", help="SSH ports (comma-separated)")
+    ap.add_argument("--keyrecover", action="store_true",
+                    help="If possible, recover and output private key")
     ap.add_argument("--version", action="version", version=__version__)
     args = ap.parse_args()
 
@@ -217,7 +221,7 @@ def runcli():
                 if isinstance(key, str):
                     r = {"type": "unparseable", "reason": key, "results": {}}
                 else:
-                    r = _checkkey(key, checks=userchecks)
+                    r = _checkkey(key, checks=userchecks, keyrecover=args.keyrecover)
                 _printresults(r, host, args)
             if not found:
                 _warnmsg(f"No DKIM/DomainKeys key in TXT record, {_esc(host)}")
@@ -231,11 +235,11 @@ def runcli():
                     _warnmsg(f"No valid JSON, {_esc(fn)}")
                     continue
             if isinstance(j, dict) and "kty" in j:
-                r = checkjwk(j, checks=userchecks)
+                r = checkjwk(j, checks=userchecks, keyrecover=args.keyrecover)
                 _printresults(r, fn, args)
             elif isinstance(j, dict) and "keys" in j:
                 for k in j["keys"]:
-                    r = checkjwk(k, checks=userchecks)
+                    r = checkjwk(k, checks=userchecks, keyrecover=args.keyrecover)
                     _printresults(r, fn, args)
             else:
                 _warnmsg(f"No JWK/JWKS, {_esc(fn)}")
@@ -271,7 +275,7 @@ def runcli():
                     _printresults(r, f"line {count}", args)
                     continue
                 r = {"type": "rsa", "bits": n.bit_length()}
-                r["results"] = checkrsa(n, checks=userchecks)
+                r["results"] = checkrsa(n, checks=userchecks, keyrecover=args.keyrecover)
                 _printresults(r, f"modulus {n:02x}", args)
                 count += 1
                 lcount += 1
@@ -284,7 +288,7 @@ def runcli():
                 if len(ll) == 2:
                     desc += f" {ll[1]}"
                 crt = PRECRT + ll[0] + POSTCRT
-                r = checkcrt(crt, checks=userchecks)
+                r = checkcrt(crt, checks=userchecks, keyrecover=args.keyrecover)
                 _printresults(r, desc, args)
                 count += 1
                 lcount += 1
@@ -307,7 +311,7 @@ def runcli():
                 ll = line.split(" ", 2)
                 if len(ll) == 3:
                     desc += f" {ll[2]}"
-                r = checksshpubkey(line, checks=userchecks)
+                r = checksshpubkey(line, checks=userchecks, keyrecover=args.keyrecover)
                 _printresults(r, desc, args)
                 count += 1
                 lcount += 1
@@ -322,7 +326,7 @@ def runcli():
                 if isinstance(key, str):
                     r = {"type": "unparseable", "reason": key, "results": {}}
                 else:
-                    r = _checkkey(key, checks=userchecks)
+                    r = _checkkey(key, checks=userchecks, keyrecover=args.keyrecover)
                 _printresults(r, desc, args)
                 count += 1
                 lcount += 1
@@ -333,12 +337,12 @@ def runcli():
             if not keyrecs:
                 _warnmsg(f"No DNSSEC key found, {_esc(fn)}")
             for rec in keyrecs:
-                r = checkdnskey(rec, checks=userchecks)
+                r = checkdnskey(rec, checks=userchecks, keyrecover=args.keyrecover)
                 _printresults(r, fn, args)
                 count += 1
         else:
             fcontent = f.read(MAXINPUTSIZE)
-            r = detectandcheck(fcontent, checks=userchecks)
+            r = detectandcheck(fcontent, checks=userchecks, keyrecover=args.keyrecover)
             _printresults(r, fn, args)
 
         if args.moduli or args.ssh_lines or args.crt_lines or args.dkim:

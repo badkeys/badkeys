@@ -4,7 +4,7 @@ import binascii
 from .checks import checkall, checkrsa
 
 
-def checkdnskey(rec, checks):
+def checkdnskey(rec, checks, keyrecover=False):
     o = rec.split(maxsplit=3)
     if len(o) != 4:
         return {"type": "unparseable", "results": {}}
@@ -35,7 +35,7 @@ def checkdnskey(rec, checks):
         r["e"] = int.from_bytes(key[eoffset:eoffset + elen], byteorder="big")
         r["n"] = int.from_bytes(key[eoffset + elen:], byteorder="big")
         r["bits"] = r["n"].bit_length()
-        r["results"] = checkrsa(r["n"], r["e"], checks=checks)
+        r["results"] = checkrsa(r["n"], r["e"], checks=checks, keyrecover=keyrecover)
         return r
     if keytype in {3, 6}:  # DSA
         # DSA key format description in RFC 2536 Section 2
