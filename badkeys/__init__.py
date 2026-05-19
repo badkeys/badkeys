@@ -1,4 +1,4 @@
-__version__ = "0.0.17"
+__version__ = "0.0.18"
 __all__ = ["allchecks", "checkcrt", "checkcsr", "checkdnskey", "checkjwk", "checkprivkey",
            "checkpubkey", "checkrsa", "checksshpubkey", "defaultchecks", "detectandcheck",
            "scanssh", "warningchecks"]
