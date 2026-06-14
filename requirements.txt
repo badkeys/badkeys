@@ -1,2 +1,2 @@
-cryptography
+cryptography >= 49.0.0
 gmpy2

@@ -18,7 +18,7 @@ classifiers = [
 license = "MIT"
 keywords = ["cryptography", "rsa", "security"]
 requires-python = ">=3.9"
-dependencies = ["cryptography", "gmpy2"]
+dependencies = ["cryptography >= 49.0.0", "gmpy2"]
 dynamic = ["version"]
 
 [tool.setuptools]
