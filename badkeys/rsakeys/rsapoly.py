@@ -55,6 +55,6 @@ def rsapoly(n, e=0):  # noqa: ARG001
         # for unidentified vulnerability subtypes
         return {"subtest": "nautilus", "biaspct": pct}
     if _checkbits(n, 32, 0x03ff00000):
-        return {"subtest": "centipede", "biaspct": pct}
+        return {"subtest": "completeftp", "biaspct": pct}
 
     return {"biaspct": pct}

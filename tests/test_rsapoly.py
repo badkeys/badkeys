@@ -24,7 +24,7 @@ class TestRSAPoly(unittest.TestCase):
         key = pathlib.Path(f"{TDPATH}/rsapoly32.key").read_text()
         r = badkeys.detectandcheck(key, checks=["rsapoly"])
         self.assertTrue("rsapoly" in r["results"])
-        self.assertTrue(r["results"]["rsapoly"]["subtest"] == "centipede")
+        self.assertTrue(r["results"]["rsapoly"]["subtest"] == "completeftp")
 
         key = pathlib.Path(f"{TDPATH}/rsa-ok.key").read_text()
         r = badkeys.detectandcheck(key, checks=["rsapoly"])
