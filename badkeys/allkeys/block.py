@@ -65,7 +65,10 @@ def blocklist(inval):
         except FileNotFoundError:
             _errexit("blocklist.dat not found, you need to run --update-bl")
 
-    inval_b = inval.to_bytes((inval.bit_length() + 7) // 8, byteorder="big")
+    if isinstance(inval, int):
+        inval_b = inval.to_bytes((inval.bit_length() + 7) // 8, byteorder="big")
+    else:
+        inval_b = inval
 
     s256trunc = hashlib.sha256(inval_b).digest()[:15]
 

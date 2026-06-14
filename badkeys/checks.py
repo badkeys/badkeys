@@ -4,7 +4,8 @@ import warnings
 import cryptography
 from cryptography import x509
 from cryptography.hazmat.primitives import serialization
-from cryptography.hazmat.primitives.asymmetric import dh, dsa, ec, ed448, ed25519, rsa, x448, x25519
+from cryptography.hazmat.primitives.asymmetric import (dh, dsa, ec, ed448, ed25519, mldsa, mlkem,
+                                                       rsa, x448, x25519)
 
 from .allkeys import blocklist
 from .dsakeys import dsasparse
@@ -140,6 +141,11 @@ def _checkkey(key, checks, keyrecover=False):
             # happens with e.g. very small (<512) DH keys
             return {"type": "unparseable", "results": {}}
         r["results"] = checkall(r["y"], checks=checks)
+    elif isinstance(key, (mldsa.MLDSA44PublicKey, mldsa.MLDSA65PublicKey, mldsa.MLDSA87PublicKey,
+                          mlkem.MLKEM768PublicKey, mlkem.MLKEM1024PublicKey)):
+        r["type"] = type(key).__name__[0:-9].lower()
+        r["pub"] = key.public_bytes_raw()
+        r["results"] = checkall(r["pub"], checks=checks)
     else:
         r["type"] = "unsupported"
         r["results"] = {}
