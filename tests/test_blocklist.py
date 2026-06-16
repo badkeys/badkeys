@@ -1,3 +1,8 @@
+# SPDX-License-Identifier: MIT
+# (c) Hanno Böck
+#
+# Part of badkeys: https://badkeys.info/
+
 import os
 import pathlib
 import unittest
@@ -50,6 +55,24 @@ class TestBlocklist(unittest.TestCase):
         r = badkeys.checksshpubkey(key, checks=["blocklist"])
         self.assertTrue("blocklist" in r["results"])
         self.assertTrue(r["bits"] == 1024)
+
+    # Test keys in post-quantum formats (ML-DSA/ML-KEM)
+    @unittest.skipUnless(os.environ.get("RUN_ONLINETESTS"), "Skipping blocklist tests")
+    def test_postquantumbl(self):
+        key = pathlib.Path(f"{TDPATH}mldsa44.key").read_text()
+        r = badkeys.checkpubkey(key, checks=["blocklist"])
+        self.assertTrue("blocklist" in r["results"])
+        self.assertTrue(r["results"]["blocklist"]["subtest"] == "rfc")
+        self.assertTrue(r["type"] == "mldsa44")
+        key = pathlib.Path(f"{TDPATH}mlkem768-private.key").read_text()
+        r = badkeys.checkprivkey(key, checks=["blocklist"])
+        self.assertTrue("blocklist" in r["results"])
+        self.assertTrue(r["results"]["blocklist"]["subtest"] == "rfc")
+        self.assertTrue(r["type"] == "mlkem768")
+        key = pathlib.Path(f"{TDPATH}mldsa65-cert.crt").read_text()
+        r = badkeys.checkcrt(key, checks=["blocklist"])
+        self.assertTrue("blocklist" not in r["results"])
+        self.assertTrue(r["type"] == "mldsa65")
 
 
 if __name__ == "__main__":
