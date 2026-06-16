@@ -19,6 +19,9 @@ options, please [check the official Python documentation](
 https://packaging.python.org/en/latest/tutorials/installing-packages/). Alternatively,
 you can directly call _./badkeys-cli_ directly from the git repository.
 
+You can find an overview of [badkeys packages for Linux distributions and other
+operating systems on Repology](https://repology.org/project/badkeys/versions).
+
 # usage
 
 Before using badkeys, you need to download the blocklist data:
