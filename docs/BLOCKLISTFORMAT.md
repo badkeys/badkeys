@@ -103,6 +103,12 @@ differs from the traditional way ECDSA keys are encoded.
 unusual compared to the other key formats where a numeric key value is used. (This was
 initially based on a misunderstanding of the key format.)
 
+ML-DSA / ML-KEM
+---------------
+
+For the post-quantum algorithms ML-KEM and ML-DSA, **badkeys** hashes the raw public key
+bytes.
+
 blocklist file format
 ---------------------
 
