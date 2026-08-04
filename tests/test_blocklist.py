@@ -56,6 +56,16 @@ class TestBlocklist(unittest.TestCase):
         self.assertTrue("blocklist" in r["results"])
         self.assertTrue(r["bits"] == 1024)
 
+    # Testing key in DH pubkey format.
+    # Python cryptography 50.0.0 marks these as deprecated,
+    # so we should have a test to notice once it's gone.
+    @unittest.skipUnless(os.environ.get("RUN_ONLINETESTS"), "Skipping blocklist tests")
+    def test_dhbl(self):
+        key = pathlib.Path(f"{TDPATH}dh-ok.key").read_text()
+        r = badkeys.checkpubkey(key, checks=["blocklist"])
+        self.assertFalse(r["results"])
+        self.assertEqual(r["type"], "dh")
+
     # Test keys in post-quantum formats (ML-DSA/ML-KEM)
     @unittest.skipUnless(os.environ.get("RUN_ONLINETESTS"), "Skipping blocklist tests")
     def test_postquantumbl(self):
