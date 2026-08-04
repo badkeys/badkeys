@@ -1,4 +1,8 @@
+# SPDX-License-Identifier: MIT
+# (c) Hanno Böck
+
 import os
+import pathlib
 import unittest
 
 import badkeys
@@ -8,14 +12,15 @@ TDPATH = f"{os.path.dirname(__file__)}/data/"
 
 class TestRSAInvalid(unittest.TestCase):
     def test_rsainvalid(self):
-        with open(f"{TDPATH}rsa-e1.key") as f:
-            key = f.read()
+        key = pathlib.Path(f"{TDPATH}rsa-e1.key").read_text()
         r = badkeys.checkpubkey(key, checks=["rsainvalid"])
-        self.assertTrue("rsainvalid" in r["results"])
-        self.assertEqual("invalid_e", r["results"]["rsainvalid"]["subtest"])
+        self.assertEqual(r["type"], "unparseable")
 
-        with open(f"{TDPATH}rsa-ok.key") as f:
-            key = f.read()
+        key = pathlib.Path(f"{TDPATH}rsa-e-larger-n.key").read_text()
+        r = badkeys.checkpubkey(key, checks=["rsainvalid"])
+        self.assertEqual(r["type"], "unparseable")
+
+        key = pathlib.Path(f"{TDPATH}rsa-ok.key").read_text()
         r = badkeys.checkpubkey(key, checks=["rsainvalid"])
         self.assertFalse(r["results"])
 
