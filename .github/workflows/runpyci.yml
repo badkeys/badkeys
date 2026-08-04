@@ -27,4 +27,5 @@ jobs:
         env:
           RUN_ONLINETESTS: 1
         run: |
+          PYTHONWARNINGS=e ./badkeys-cli --update-bl  # CUSTOM
           ./runpyci.sh
