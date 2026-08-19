@@ -1,6 +1,7 @@
 import base64
 import binascii
 
+import cryptography
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import ed25519, rsa
 
@@ -54,6 +55,8 @@ def parsedkim(line):
             except ValueError:
                 pass
             return "keyparseerror"
+        except cryptography.exceptions.UnsupportedAlgorithm:
+            return "unsupportednotrsa"
         if not isinstance(pubkey, rsa.RSAPublicKey):
             return "expectedrsa"
         return pubkey

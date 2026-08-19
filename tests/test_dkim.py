@@ -18,7 +18,8 @@ class TestDkim(unittest.TestCase):
     def test_dkimparser(self):
         # Defect inputs should not return anything, but also should not cause
         # unexpected exceptions
-        for dkimbroken in ["dkim-broken-char.txt", "dkim-broken-length.txt"]:
+        for dkimbroken in ["dkim-broken-char.txt", "dkim-broken-length.txt",
+                           "dkim-broken-ecdsa.txt", "dkim-broken-unsupported.txt"]:
             dkey = pathlib.Path(f"{TDPATH}dkim/{dkimbroken}").read_text(errors="ignore")
             self.assertTrue(isinstance(parsedkim(dkey), str))
         # Valid inputs should return PEM public key
