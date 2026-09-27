@@ -257,10 +257,10 @@ def checkcrt(rawcert, checks=defaultchecks.keys(), keyrecover=False):
     if not pubkey and pyopenssl_available:
         try:
             ocrt = OpenSSL.crypto.load_certificate(OpenSSL.crypto.FILETYPE_PEM, rawcert)
-        except ValueError:
+            pubkey = ocrt.get_pubkey().to_cryptography_key()
+        except OpenSSL.crypto.Error:
             return eret
         warn = "fallbackparser"
-        pubkey = ocrt.get_pubkey().to_cryptography_key()
     if not pubkey and not pyopenssl_available:
         return eret
 
