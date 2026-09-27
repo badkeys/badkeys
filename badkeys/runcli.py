@@ -53,9 +53,9 @@ def _printresults(key, where, args):
         return
     if "warn" in key:
         if key["warn"] == "fallbackparser":
-           _warnmsg(f"X.509 error, using fallback parser, {_esc(where)}")
+            _warnmsg(f"X.509 error, using fallback parser, {_esc(where)}")
         else:
-           _warnmsg(f"{key['warn']}, {_esc(where)}")
+            _warnmsg(f"{key['warn']}, {_esc(where)}")
     kn = key["type"]
     if "bits" in key:
         kn += f"[{key['bits']}]"
