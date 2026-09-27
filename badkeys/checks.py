@@ -12,6 +12,12 @@ from .dsakeys import dsasparse
 from .rsakeys import (fermat, pattern, roca, rsabias, rsainvalid, rsapoly, rsarecover, rsawarnings,
                       sharedprimes, smalld, smallfactors, xzbackdoor)
 
+try:
+    import OpenSSL
+    pyopenssl_available = True
+except ImportError:
+    pyopenssl_available = False
+
 # List of available checks
 defaultchecks = {
     "fermat": {
@@ -235,18 +241,33 @@ def checkprivkey(rawkey, checks=defaultchecks.keys(), keyrecover=False):
 
 
 def checkcrt(rawcert, checks=defaultchecks.keys(), keyrecover=False):
+    pubkey = crt = warn = None
     try:
         crt = x509.load_pem_x509_certificate(rawcert.encode())
     except (ValueError, cryptography.x509.base.InvalidVersion) as e:
-        return _reterr("unparseable", e)
-    try:
-        pubkey = crt.public_key()
-    except (cryptography.exceptions.UnsupportedAlgorithm, ValueError, NotImplementedError) as e:
-        # ValueError: unknown key types, explicit curves
-        # UnsupportedAlgorithm: unsupported curves
-        # NotImplementedError: ? (possibly certificate extension issues)
-        return _reterr("unsupported", e)
-    return _checkkey(pubkey, checks, keyrecover=keyrecover)
+        eret = _reterr("unparseable", e)
+    if crt:
+        try:
+            pubkey = crt.public_key()
+        except (cryptography.exceptions.UnsupportedAlgorithm, ValueError, NotImplementedError) as e:
+            # ValueError: unknown key types, explicit curves
+            # UnsupportedAlgorithm: unsupported curves
+            # NotImplementedError: ? (possibly certificate extension issues)
+            eret = _reterr("unsupported", e)
+    if not pubkey and pyopenssl_available:
+        try:
+            ocrt = OpenSSL.crypto.load_certificate(OpenSSL.crypto.FILETYPE_PEM, rawcert)
+        except ValueError:
+            return eret
+        warn = "fallbackparser"
+        pubkey = ocrt.get_pubkey().to_cryptography_key()
+    if not pubkey and not pyopenssl_available:
+        return eret
+
+    ret = _checkkey(pubkey, checks, keyrecover=keyrecover)
+    if warn:
+        ret["warn"] = warn
+    return ret
 
 
 def checkcsr(rawcsr, checks=defaultchecks.keys(), keyrecover=False):
