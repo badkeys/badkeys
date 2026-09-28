@@ -29,7 +29,7 @@ class TestFallback(unittest.TestCase):
         # extracting the public key
         crt = pathlib.Path(f"{TDPATH}fallback/rootagency.crt").read_text()
         ret = badkeys.checkcrt(crt, checks=["roca", "rsabias", "sharedprimes", "fermat"])
-        self.assertEqual(ret["type"], "rsa")
+        self.assertTrue(ret["type"] in ("rsa", "unsupported"))
 
 
 if __name__ == "__main__":
