@@ -20,10 +20,17 @@ class TestBlocklist(unittest.TestCase):
         r = badkeys.checkpubkey(key, checks=["blocklist"])
         self.assertTrue("blocklist" in r["results"])
         self.assertTrue(r["bits"] == 2048)
+
         key = pathlib.Path(f"{TDPATH}rsa-ok.key").read_text()
         r = badkeys.checkpubkey(key, checks=["blocklist"])
         self.assertFalse(r["results"])
         self.assertTrue(r["bits"] == 2048)
+
+        # test with a cert that requires the fallback parser
+        key = pathlib.Path(f"{TDPATH}fallback/rootagency.crt").read_text()
+        r = badkeys.checkcrt(key, checks=["blocklist"])
+        self.assertTrue("blocklist" in r["results"])
+        self.assertTrue(r["bits"] == 512)
 
     @unittest.skipUnless(os.environ.get("RUN_ONLINETESTS"), "Skipping blocklist tests")
     def test_ecbl(self):
