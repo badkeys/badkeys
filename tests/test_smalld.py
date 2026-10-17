@@ -35,6 +35,12 @@ class TestSmalld(unittest.TestCase):
         self.assertTrue("rsawarnings" in r["results"])
         self.assertTrue(r["results"]["rsawarnings"]["subtest"] == "exponent_not_65537")
 
+        # regression test for division by zero bug
+        key = pathlib.Path(f"{TDPATH}/rsa-smalld-divzero.key").read_text()
+        r = badkeys.detectandcheck(key, checks=mychecks)
+        self.assertFalse("smalld" in r["results"])
+        self.assertTrue("rsawarnings" in r["results"])
+
 
 if __name__ == "__main__":
     unittest.main()

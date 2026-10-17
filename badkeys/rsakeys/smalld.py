@@ -58,5 +58,6 @@ def smalld(n, e):
         x = n - phi + 1
         if x % 2 == 0 and gmpy2.is_square((x // 2) ** 2 - n):
             g = edg - phi * k
-            return {"d": dg // g}
+            if g != 0:
+                return {"d": dg // g}
     return False
