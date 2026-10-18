@@ -30,7 +30,7 @@ class TestBlocklist(unittest.TestCase):
         key = pathlib.Path(f"{TDPATH}fallback/rootagency.crt").read_text()
         r = badkeys.checkcrt(key, checks=["blocklist"])
         # May be changed once github actions has newer OpenSSL
-        self.assertTrue(r["type"] in ("rsa", "unsupported"))
+        self.assertTrue(r["type"] in {"rsa", "unsupported"})
         if r["type"] == "rsa":
             self.assertTrue("blocklist" in r["results"])
             self.assertTrue(r["bits"] == 512)

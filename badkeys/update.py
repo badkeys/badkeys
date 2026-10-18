@@ -63,8 +63,8 @@ def update_bl(lookup=False, quiet=False):
     # starting with blocklist.dat
     oldbl_sha256 = ""
     if os.path.exists(os.path.join(_cachedir(), "blocklist.dat")):
-        with open(os.path.join(_cachedir(), "blocklist.dat"), "rb") as f:
-            oldbl_sha256 = hashlib.sha256(f.read()).hexdigest()
+        oldbl = pathlib.Path(os.path.join(_cachedir(), "blocklist.dat")).read_bytes()
+        oldbl_sha256 = hashlib.sha256(oldbl).hexdigest()
 
     if oldbl_sha256 != data["blocklist_sha256"]:
         _dlxz(data["blocklist_url"], "blocklist.dat", data["blocklist_sha256"], quiet)
@@ -72,8 +72,8 @@ def update_bl(lookup=False, quiet=False):
     # starting with lookup.txt
     oldlu_sha256 = ""
     if os.path.exists(os.path.join(_cachedir(), "lookup.txt")):
-        with open(os.path.join(_cachedir(), "lookup.txt"), "rb") as f:
-            oldlu_sha256 = hashlib.sha256(f.read()).hexdigest()
+        oldlu = pathlib.Path(os.path.join(_cachedir(), "lookup.txt")).read_bytes()
+        oldlu_sha256 = hashlib.sha256(oldlu).hexdigest()
         if not lookup and (oldlu_sha256 != data["lookup_sha256"]):
             _warnmsg("Old lookup.txt file found.")
             _warnmsg("You may want to run --update-bl-and-urls")

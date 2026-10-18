@@ -1,4 +1,5 @@
 import os
+import pathlib
 import unittest
 
 import badkeys
@@ -13,8 +14,7 @@ class TestFermat(unittest.TestCase):
         # the distance of the "close" primes to test
         # different rounds of the fermat check.
 
-        with open(f"{TDPATH}rsa-fermat.crt") as f:
-            inp = f.read()
+        inp = pathlib.Path(f"{TDPATH}rsa-fermat.crt").read_text()
         r = badkeys.checkcrt(inp, ["fermat"])
         self.assertTrue("fermat" in r["results"])
         self.assertTrue(r["bits"] == 2048)
@@ -22,8 +22,7 @@ class TestFermat(unittest.TestCase):
         self.assertTrue("fermat" in r["results"])
         self.assertTrue(r["bits"] == 2048)
 
-        with open(f"{TDPATH}rsa-fermat.csr") as f:
-            inp = f.read()
+        inp = pathlib.Path(f"{TDPATH}rsa-fermat.csr").read_text()
         r = badkeys.checkcsr(inp, ["fermat"])
         self.assertTrue("fermat" in r["results"])
         self.assertTrue(r["bits"] == 2048)
@@ -31,8 +30,7 @@ class TestFermat(unittest.TestCase):
         self.assertTrue("fermat" in r["results"])
         self.assertTrue(r["bits"] == 2048)
 
-        with open(f"{TDPATH}rsa-fermat-pkcs1.key") as f:
-            inp = f.read()
+        inp = pathlib.Path(f"{TDPATH}rsa-fermat-pkcs1.key").read_text()
         r = badkeys.checkpubkey(inp, ["fermat"])
         self.assertTrue("fermat" in r["results"])
         self.assertTrue(r["bits"] == 2048)
@@ -40,8 +38,7 @@ class TestFermat(unittest.TestCase):
         self.assertTrue("fermat" in r["results"])
         self.assertTrue(r["bits"] == 2048)
 
-        with open(f"{TDPATH}rsa-fermat-pkcs8.key") as f:
-            inp = f.read()
+        inp = pathlib.Path(f"{TDPATH}rsa-fermat-pkcs8.key").read_text()
         r = badkeys.checkpubkey(inp, checks=["fermat"])
         self.assertTrue("fermat" in r["results"])
         self.assertTrue(r["bits"] == 2048)
@@ -49,8 +46,7 @@ class TestFermat(unittest.TestCase):
         self.assertTrue("fermat" in r["results"])
         self.assertTrue(r["bits"] == 2048)
 
-        with open(f"{TDPATH}rsa-fermat-hexmodulus.txt") as f:
-            inp = f.read()
+        inp = pathlib.Path(f"{TDPATH}rsa-fermat-hexmodulus.txt").read_text()
         n = int(inp, 16)
         r = badkeys.checkrsa(n=n, checks=["fermat"])
         self.assertTrue("fermat" in r)
@@ -59,8 +55,7 @@ class TestFermat(unittest.TestCase):
         q = r["fermat"]["q"]
         self.assertEqual(p * q, n)
 
-        with open(f"{TDPATH}rsa-ok.key") as f:
-            key = f.read()
+        key = pathlib.Path(f"{TDPATH}rsa-ok.key").read_text()
         r = badkeys.checkpubkey(key, checks=["fermat"])
         self.assertFalse(r["results"])
         self.assertTrue(r["bits"] == 2048)

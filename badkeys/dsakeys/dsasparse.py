@@ -4,7 +4,7 @@
 # Part of badkeys: https://badkeys.info/
 
 def dsasparse(y, p=0):  # noqa: ARG001
-    if p.bit_length() != 1024 or (p >> 1000) != 0x800000 :
+    if p.bit_length() != 1024 or (p >> 1000) != 0x800000:
         return False
     _p = p >> 168
     _p ^= 1 << 855

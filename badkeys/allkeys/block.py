@@ -2,6 +2,7 @@ import hashlib
 import json
 import mmap
 import os
+import pathlib
 
 from badkeys.utils import _cachedir, _errexit
 
@@ -14,8 +15,7 @@ def _loadblmeta():
     global _blmeta
     mlist = {}
     try:
-        with open(os.path.join(_cachedir(), "badkeysdata.json")) as f:
-            jdata = json.loads(f.read())
+        jdata = json.loads(pathlib.Path(os.path.join(_cachedir(), "badkeysdata.json")).read_text())
     except FileNotFoundError:
         _errexit("blocklist metadata not found, you need to run --update-bl")
     for bl in jdata["blocklists"]:

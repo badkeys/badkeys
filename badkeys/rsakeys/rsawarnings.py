@@ -10,7 +10,7 @@ def rsawarnings(n, e=65537):
         return {"detected": True, "subtest": "too_small"}
     if (bits % 8) != 0:
         return {"detected": True, "subtest": "not_multiple_of_8"}
-    if bits not in [2048, 3072, 4096]:
+    if bits not in {2048, 3072, 4096}:
         return {"detected": True, "subtest": "unusual_keysize"}
 
     if e == 3:

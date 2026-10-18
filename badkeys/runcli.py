@@ -48,7 +48,7 @@ def _printresults(key, where, args):
                 if val in jout["results"][result]:
                     jout["results"][result][val] = f'{jout["results"][result][val]:x}'
         if args.all or jout["results"] or \
-           key["type"] in ["unsupported", "unparseable", "notfound"]:
+           key["type"] in {"unsupported", "unparseable", "notfound"}:
             print(json.dumps(jout))
         return
     if "warn" in key:
@@ -289,7 +289,7 @@ def runcli():
             for line in f:
                 lno += 1
                 desc = f"{fn}[{lno}]"
-                ll = re.split("[,; ]", line.rstrip(), maxsplit=1)
+                ll = re.split(r"[,; ]", line.rstrip(), maxsplit=1)
                 if len(ll) == 2:
                     desc += f" {ll[1]}"
                 crt = PRECRT + ll[0] + POSTCRT

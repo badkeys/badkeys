@@ -1,3 +1,4 @@
+import pathlib
 from importlib.resources import files
 
 import gmpy2
@@ -14,8 +15,7 @@ def sharedprimes(n, e=0):  # noqa: ARG001
 
     if bits not in _moduli:
         kp = f"{files('badkeys.keydata')}/primes{bits}.dat"
-        with open(kp, "rb") as f:
-            _moduli[bits] = gmpy2.from_binary(f.read())
+        _moduli[bits] = gmpy2.from_binary(pathlib.Path(kp).read_bytes())
 
     breakme = gmpy2.gcd(n, _moduli[bits])
     if breakme == 1:
