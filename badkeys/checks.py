@@ -18,6 +18,9 @@ try:
 except ImportError:
     pyopenssl_available = False
 
+
+RSA_MAX_SIZE = 8192
+
 # List of available checks
 defaultchecks = {
     "fermat": {
@@ -162,6 +165,9 @@ def _checkkey(key, checks, keyrecover=False):
 
 
 def checkrsa(n, e=65537, checks=defaultchecks.keys(), keyrecover=False):
+    if n.bit_length() > RSA_MAX_SIZE:
+        return {"toolarge": {"bits": n.bit_length()} }
+
     results = {}
     for check in checks:
         callcheck = allchecks[check]["function"]
