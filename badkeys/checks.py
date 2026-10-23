@@ -241,7 +241,7 @@ def checkprivkey(rawkey, checks=defaultchecks.keys(), keyrecover=False):
 
 
 def checkcrt(rawcert, checks=defaultchecks.keys(), keyrecover=False):
-    pubkey = crt = warn = None
+    pubkey = crt = None
     try:
         crt = x509.load_pem_x509_certificate(rawcert.encode())
     except (ValueError, cryptography.x509.base.InvalidVersion) as e:
@@ -260,14 +260,10 @@ def checkcrt(rawcert, checks=defaultchecks.keys(), keyrecover=False):
             pubkey = ocrt.get_pubkey().to_cryptography_key()
         except (OpenSSL.crypto.Error, cryptography.exceptions.UnsupportedAlgorithm):
             return eret
-        warn = "fallbackparser"
     if not pubkey and not pyopenssl_available:
         return eret
 
-    ret = _checkkey(pubkey, checks, keyrecover=keyrecover)
-    if warn:
-        ret["warn"] = warn
-    return ret
+    return _checkkey(pubkey, checks, keyrecover=keyrecover)
 
 
 def checkcsr(rawcsr, checks=defaultchecks.keys(), keyrecover=False):
