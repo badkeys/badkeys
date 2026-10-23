@@ -166,7 +166,7 @@ def _checkkey(key, checks, keyrecover=False):
 
 def checkrsa(n, e=65537, checks=defaultchecks.keys(), keyrecover=False):
     if n.bit_length() > RSA_MAX_SIZE:
-        return {"toolarge": {"bits": n.bit_length()} }
+        return {"toolarge": {"bits": n.bit_length()}}
 
     results = {}
     for check in checks:
