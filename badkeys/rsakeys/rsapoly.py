@@ -10,15 +10,15 @@ from .smallfactors import smallfactors
 def _checkbits(n, width, bitmask):
     # Skip the first chunk, it may contain larger
     # values due to next prime calculation
-    _n = n >> width
+    n_ = n >> width
     setbits = 0
     zerochunks = 0
-    while _n:
-        setbits |= _n & bitmask
-        _n >>= width
+    while n_:
+        setbits |= n_ & bitmask
+        n_ >>= width
 
         # check if the current chunk is zero
-        if (((1 << width) - 1) & _n) == 0:
+        if (((1 << width) - 1) & n_) == 0:
             zerochunks += 1
 
     if zerochunks >= 2:
