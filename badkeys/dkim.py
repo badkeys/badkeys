@@ -50,7 +50,8 @@ def parsedkim(line):
             pubkey = serialization.load_der_public_key(rawkey)
         except ValueError:
             try:
-                serialization.load_der_private_key(rawkey, password=None)
+                serialization.load_der_private_key(rawkey, password=None,
+                                                   unsafe_skip_rsa_key_validation=True)
                 return "privleak"
             except ValueError:
                 pass

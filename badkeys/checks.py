@@ -235,7 +235,8 @@ def checkpubkey(rawkey, checks=defaultchecks.keys(), keyrecover=False):
 
 def checkprivkey(rawkey, checks=defaultchecks.keys(), keyrecover=False):
     try:
-        priv = serialization.load_pem_private_key(rawkey.encode(), password=None)
+        priv = serialization.load_pem_private_key(rawkey.encode(), password=None,
+                                                  unsafe_skip_rsa_key_validation=True)
     except ValueError as e:
         # ValueError: defect inputs, unknown key types, explicit curves
         return _reterr("unparseable", e)
@@ -288,7 +289,8 @@ def checkcsr(rawcsr, checks=defaultchecks.keys(), keyrecover=False):
 
 def checksshprivkey(sshkey, checks=defaultchecks.keys(), keyrecover=False):
     try:
-        pkey = serialization.load_ssh_private_key(sshkey.encode(), password=None)
+        pkey = serialization.load_ssh_private_key(sshkey.encode(), password=None,
+                                                  unsafe_skip_rsa_key_validation=True)
     except ValueError as e:
         # ValueError: defect keys
         return _reterr("unparseable", e)
