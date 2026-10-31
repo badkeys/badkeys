@@ -165,11 +165,11 @@ def _checkkey(key, checks, keyrecover=False):
 
 
 def checkrsa(n, e=65537, checks=defaultchecks.keys(), keyrecover=False):
-    if n.bit_length() > RSA_MAX_SIZE:
-        return {"toolarge": {"bits": n.bit_length()}}
-
     results = {}
     for check in checks:
+        if n.bit_length() > RSA_MAX_SIZE and check != "rsawarnings":
+            # skip all checks except rsawarnings on excessively large RSA keys
+            continue
         callcheck = allchecks[check]["function"]
         if allchecks[check]["type"] == "rsa":
             r = callcheck(n, e=e)
