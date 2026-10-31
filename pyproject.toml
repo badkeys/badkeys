@@ -21,8 +21,8 @@ requires-python = ">=3.9"
 dependencies = ["cryptography >= 49.0.0", "gmpy2", "pyopenssl"]
 dynamic = ["version"]
 
-[tool.setuptools]
-packages = ["badkeys"]
+[tool.setuptools.packages.find]
+exclude = ["docs", "fuzzing", "test*"]
 
 [tool.setuptools.dynamic]
 version = { attr = "badkeys.__version__" }
